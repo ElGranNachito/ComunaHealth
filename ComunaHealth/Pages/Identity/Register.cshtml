@@ -1,0 +1,73 @@
+﻿@page
+@model ComunaHealth.Pages.Identity.RegisterModel
+@{
+
+    <div class="container">
+        
+        <form method="post">
+
+            <div class="form-group">
+
+                <label asp-for="Registro.Nombre"></label>
+                <input type="text" class="form-text" asp-for="Registro.Nombre" />
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="Registro.Apellido"></label>
+                <input type="text" class="form-text" asp-for="Registro.Apellido" />
+            </div>
+
+            <div class="form-group">
+                
+                <div class="dropdown">
+                    
+                    <script type="text/javascript">
+
+                        function SeleccionarItemDropdown(indice)
+                        {
+                            switch (indice)
+                            {
+                                case 0:
+                                    document.getElementById("botonSeleccionTipoCuenta").innerText = "Paciente";
+                                    document.getElementById("textTipoCuentaSeleccionado").value = "Paciente";
+                                    break;
+                                case 1:
+                                    document.getElementById("botonSeleccionTipoCuenta").innerText = "Doctor";
+                                    document.getElementById("textTipoCuentaSeleccionado").value = "Doctor";
+                                    break;
+                                default:
+                                    console.log("Tipo de cuenta no reconocido");
+                            }    
+                        }
+                    </script>
+
+                    <button class="dropdown-toggle dropdown-tipo-de-cuenta btn-primary" type="button" data-toggle="dropdown" id="botonSeleccionTipoCuenta">
+                        Paciente
+                    </button>
+
+                    <div class="dropdown-menu">
+                        <button class="dropdown-item" type="button" onclick="SeleccionarItemDropdown(0)">
+                            Paciente
+                        </button>
+                        <button class="dropdown-item" type="button" onclick="SeleccionarItemDropdown(1)">
+                            Doctor
+                        </button>
+                    </div>
+                    
+                    <input type="text" class="collapse" id="textTipoCuentaSeleccionado" asp-for="Registro.TipoCuenta"/>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <input type="submit" value="Registrarse" class="form-text" />
+            </div>
+
+        </form>
+
+    </div>
+
+}
