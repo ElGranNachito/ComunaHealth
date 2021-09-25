@@ -3,49 +3,118 @@
 @{
     <!--Contenedor-->
     <div class="container">
+        
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
         <!--Form registro-->
         <form method="post">
 
+            <!--Nombres del usuario-->
             <div class="form-group">
 
                 <label asp-for="Registro.Nombre"></label>
                 <input type="text" class="form-text" asp-for="Registro.Nombre" />
             </div>
 
+            <!--Apellidos del usuario-->
             <div class="form-group">
 
                 <label asp-for="Registro.Apellido"></label>
                 <input type="text" class="form-text" asp-for="Registro.Apellido" />
             </div>
-
+            
+            <!--Ingreso y confirmacion de DNI-->
+            <table class="form-group">
+                <thead>
+                    <tr>
+                        <td class="pr-3">
+                            <label asp-for="Registro.DNI"></label>
+                        </td>
+                        <td>
+                            <label asp-for="Registro.ConfirmacionDNI"></label>
+                        </td>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>
+                        <input type="password" class="form-text mr-3" asp-for="Registro.DNI" />
+                    </td>
+                    <td>
+                        <input type="password" class="form-text" asp-for="Registro.ConfirmacionDNI" />
+                    </td>
+                </tr>
+            </table>
+            
+            <!--Texto de error sobre el DNI ingresado-->
+            <div class="text-danger" asp-validation-for="Registro.ConfirmacionDNI"></div>
+            
+            <!--Ingreso del mail-->
             <div class="form-group">
 
-                <div class="dropdown">
+                <label asp-for="Registro.Mail"></label>
+                <input type="text" class="form-text" asp-for="Registro.Mail" />
+            </div>
+            
+            <!--Ingreso del telefono-->
+            <div class="form-group">
 
-                    <script type="text/javascript">
+                <label asp-for="Registro.Telefono"></label>
+                <input type="text" class="form-text" asp-for="Registro.Telefono" />
+            </div>
+            
+            <!--Ingreso y confirmacion de la contraseña-->
+            <table class="form-group">
+                <thead>
+                <tr>
+                    <td class="pr-3">
+                        <label asp-for="Registro.Contraseña"></label>
+                    </td>
+                    <td>
+                        <label asp-for="Registro.ConfirmacionContraseña"></label>
+                    </td>
+                </tr>
+                </thead>
+                <tr>
+                    <td>
+                        <input type="password" class="form-text mr-3" asp-for="Registro.Contraseña" />
+                    </td>
+                    <td>
+                        <input type="password" class="form-text" asp-for="Registro.ConfirmacionContraseña" />
+                    </td>
+                </tr>
+            </table>
+            
+            <!--Texto de error sobre la contraseña-->
+            <div class="text-danger" asp-validation-for="Registro.ConfirmacionContraseña"></div>
+            
+            <!--Checkbox mail es publico-->
+            <div class="form-group">
 
-                    </script>
+                <label asp-for="Registro.MailEsPublico"></label>
+                <input type="checkbox" class="form-check" asp-for="Registro.MailEsPublico" />
+            </div>
+            
+            <!--Checkbox telefono es publico-->
+            <div class="form-group">
 
-                    <button class="dropdown-toggle btn-primary" type="button" data-toggle="dropdown" id="botonSeleccionTipoCuenta">
-                        Paciente
-                    </button>
-
-                    <div class="dropdown-menu">
-                        <button class="dropdown-item" type="button" onclick="SeleccionarItemDropdown(0, 'botonSeleccionTipoCuenta', 'textTipoCuentaSeleccionado');">
-                            Paciente
-                        </button>
-                        <button class="dropdown-item" type="button" onclick="SeleccionarItemDropdown(1, 'botonSeleccionTipoCuenta', 'textTipoCuentaSeleccionado');">
-                            Doctor
-                        </button>
-                    </div>
-
-                    <input type="text" class="collapse" id="textTipoCuentaSeleccionado" asp-for="Registro.TipoCuenta" />
-
-                </div>
+                <label asp-for="Registro.TelefonoEsPublico"></label>
+                <input type="checkbox" class="form-check" asp-for="Registro.TelefonoEsPublico" />
+            </div>
+            
+            <!--Checkbox autenticacion de dos factores-->
+            <div class="form-group">
+                <label asp-for="Registro.AutenticacionDeDosFactoresActiva"></label>
+                <input type="checkbox" class="form-check" asp-for="Registro.AutenticacionDeDosFactoresActiva" />
+            </div>
+            
+            <!--Dropdow seleccion de tipo de usuario-->
+            <div class="form-group">
+                
+                <select asp-for="Registro.TipoCuenta" asp-items="@Model.Registro.TiposDeCuentaDisponibles" class="custom-select"></select>
 
             </div>
-
+            
+            <!--Boton submit-->
             <div class="form-group">
 
                 <input type="submit" value="Registrarse" class="form-text" />
@@ -54,6 +123,4 @@
         </form>
 
     </div>
-
-    <script type="text/javascript" src="~/js/Utilidades.js"></script>
 }
