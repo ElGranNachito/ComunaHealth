@@ -111,6 +111,21 @@ namespace ComunaHealth
 			{
 				await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolPaciente, ETipoCuenta.Paciente));
 			}
+            //Creamos el rol medico si no existe
+            if (! await roleManager.RoleExistsAsync(Constantes.NombreRolMedico))
+            {
+                await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolMedico, ETipoCuenta.Medico));
+            }
+            //Creamos el rol administrador si no existe
+            if (! await roleManager.RoleExistsAsync(Constantes.NombreRolAdministrador))
+            {
+                await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolAdministrador, ETipoCuenta.Administrador));
+            }
+            //Creamos el rol administrador jefe si no existe
+            if (! await roleManager.RoleExistsAsync(Constantes.NombreRolAdministradorjefe))
+            {
+                await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolAdministradorjefe, ETipoCuenta.AdministradorJefe));
+            }
 		}
 	}
 }
