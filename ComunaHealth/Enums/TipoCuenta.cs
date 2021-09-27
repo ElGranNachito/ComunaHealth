@@ -26,6 +26,11 @@ namespace ComunaHealth
 		/// <summary>
 		/// Cuenta de un administrador jefe
 		/// </summary>
-		AdministradorJefe = 1<<3
+		AdministradorJefe = 1<<3,
+
+		/// <summary>
+		/// Nada
+		/// </summary>
+		NINGUNO = 0
 	}
 }

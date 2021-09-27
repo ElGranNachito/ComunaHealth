@@ -2,16 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Mime;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
 using ComunaHealth.Modelos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 
 namespace ComunaHealth.Pages.Identity
 {
@@ -23,32 +34,128 @@ namespace ComunaHealth.Pages.Identity
     {
 	    private readonly ComunaDbContext _dbcontext;
 	    private readonly UserManager<ModeloUsuario> _userManager;
+	    private readonly IConfiguration _config;
 
 		[BindProperty]
-		public ViewModelRegistro Registro { get; init; } = new ViewModelRegistro
-		{
-			TiposDeCuentaDisponibles =  EnumHelpers.ToSelectItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(ETipoCuenta.Administrador | ETipoCuenta.AdministradorJefe))
-		};
+	    public ViewModelRegistro_DatosGenerales RegistroDatosGenerales { get; set; } = new ViewModelRegistro_DatosGenerales();
 
-	    public RegisterModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager)
+		[BindProperty]
+	    public ViewModelRegistro_DatosMedico RegistroDatosMedico { get; set; } = new ViewModelRegistro_DatosMedico();
+
+		/// <summary>
+		/// Tipos de cuentas seleccionables
+		/// </summary>
+		public List<SelectListItem> TiposDeCuentaDisponibles { get; init; }
+
+		/// <summary>
+		/// Tipos de cuentas seleccionables
+		/// </summary>
+		public List<SelectListItem> MunicipiosDisponibles { get; init; }
+
+		public RegisterModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, IConfiguration config)
 	    {
 		    _dbcontext   = dbcontext;
 		    _userManager = userManager;
+		    _config      = config;
+
+		    TiposDeCuentaDisponibles = EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValoresFlag(ETipoCuenta.Administrador | ETipoCuenta.AdministradorJefe));
+		    MunicipiosDisponibles    = EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<EMunicipio>());
 	    }
 
 	    public void OnGet()
         {
         }
 
+		[ValidateAntiForgeryToken]
 	    public async Task<IActionResult> OnPost()
 	    {
-		    return await Task.FromResult(Page());
-	    }
-	}
+		    if (!TryValidateModel(RegistroDatosGenerales))
+			    return await Task.FromResult(Page());
 
-	#region ViewModel Registro
+			if(!int.TryParse(RegistroDatosGenerales.DNI, out var nada))
+				ModelState.AddModelError("RegistroDatosGenerales.DNI", "DNI solo puede contener caracteres numericos");
 
-	public class ViewModelRegistro
+			if (await _dbcontext.Users.AnyAsync(p => p.Email == RegistroDatosGenerales.Mail)) 
+				ModelState.AddModelError("RegistroDatosGenerales.Mail", "Ya existe un usuario con esa direccion de mail");
+
+			if(await _dbcontext.Users.AnyAsync(p => p.DNI == int.Parse(RegistroDatosGenerales.DNI)))
+				ModelState.AddModelError("RegistroDatosGenerales.DNI", "Ya existe un usuario con esa direccion de mail");
+
+			//Obtenemos el tamaño maximo permitido para un archivo desde la configuracion
+			var tamañoMaximoImagenes = int.Parse(_config["TamanioMaximoArchivo"]);
+
+		    //Nos aseguramos de que el tamaño de los archivos subidos no sea mayor al maximo
+			if(RegistroDatosGenerales.FotoAnversoDNI.Length > tamañoMaximoImagenes)
+				ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoAnversoDNI), "Imagen demasiado grande");
+
+			if (RegistroDatosGenerales.FotoAnversoDNI.Length > tamañoMaximoImagenes)
+				ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoReversoDNI), "Imagen demasiado grande");
+
+			//Nos aseguramos de que el formato de los archivos subido sea valido
+			if (!RegistroDatosGenerales.FotoAnversoDNI.ImagenEsValida())
+				ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoAnversoDNI), "Imagen no valida");
+
+		    if (!RegistroDatosGenerales.FotoReversoDNI.ImagenEsValida()) 
+			    ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoReversoDNI), "Imagen no valida");
+
+			if(ModelState.ErrorCount > 0)
+				return await Task.FromResult(Page());
+
+			//Creamos un usuario utilizando lo datos ingresados
+			var usuarioCreado = RegistroDatosGenerales.CrearUsuario(_userManager);
+
+			//Si el tipo de cuenta siendo creado es para un medico...
+			if (usuarioCreado is ModeloMedico medico)
+			{
+				//Validamos el modelo
+				if (!TryValidateModel(RegistroDatosMedico))
+					return await Task.FromResult(Page());
+
+				//Obtenemos las especialzaciones seleccionadas
+				StringValues especializaciones = Request.Form["RegistroDatosMedico.Especializaciones"];
+
+				//Si no selecciono ninguna especialidad, tiramos error
+				if (especializaciones.Count == 0)
+				{
+					ModelState.AddModelError(nameof(ViewModelRegistro_DatosMedico.Especializaciones), "Debes especificar al menos una especializacion");
+
+				    return await Task.FromResult(Page());
+				}
+
+				//Guardamos las selecciones
+				medico.StringEspecializaciones = especializaciones;
+				medico.Especializaciones.RemoveAll(e => e == EEspecializacion.NINGUNA);
+
+				medico.Matricula = int.Parse(RegistroDatosMedico.MatriculaMedico);
+			}
+
+			//Establecemos el estado de la cuenta creada como verificacion pendiente
+			usuarioCreado.EstadoCuenta = EEstadoCuenta.VerificacionPendiente;
+
+			try
+			{
+				await _userManager.CreateAsync(usuarioCreado);
+
+				_dbcontext.Add(usuarioCreado);
+
+				await _dbcontext.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				return await Task.FromResult(new JsonResult("Algo salio mal"));
+			}
+
+			return await Task.FromResult(Page());
+		}
+    }
+
+	#region ViewModelRegistro
+
+	/// <summary>
+	/// View model que contiene los datos necesarios para el registro
+	/// </summary>
+	[Serializable]
+	public class ViewModelRegistro_DatosGenerales
 	{
 		[Display(Name = "Nombres")]
 		[DataType(DataType.Text)]
@@ -61,6 +168,11 @@ namespace ComunaHealth.Pages.Identity
 		[StringLength(50, ErrorMessage = "Apellido demasiado largo")]
 		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
 		public string Apellido { get; set; }
+
+		[Display(Name = "Descripcion")]
+		[DataType(DataType.Text)]
+		[StringLength(500, ErrorMessage = "Descripcion demasiado larga")]
+		public string Descripcion { get; set; }
 
 		[Display(Name = "DNI")]
 		[DataType(DataType.Text)]
@@ -79,17 +191,20 @@ namespace ComunaHealth.Pages.Identity
 		[DataType(DataType.Text)]
 		[StringLength(100, ErrorMessage = "Mail demasiado largo")]
 		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
+		[EmailAddress(ErrorMessage = "Mail no valido")]
 		public string Mail { get; set; }
 
 		[Display(Name = "Telefono")]
 		[DataType(DataType.Text)]
 		[StringLength(100, ErrorMessage = "Telefono demasiado largo")]
+		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
 		public string Telefono { get; set; }
 
 		[Display(Name = "Contraseña")]
 		[DataType(DataType.Password)]
 		[StringLength(50, ErrorMessage = "Contraseña demasiado larga")]
 		[PasswordPropertyText]
+		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
 		public string Contraseña { get; set; }
 
 		[Display(Name = "Confirmar contraseña")]
@@ -97,6 +212,7 @@ namespace ComunaHealth.Pages.Identity
 		[StringLength(50, ErrorMessage = "Contraseña demasiado larga")]
 		[Compare(nameof(Contraseña), ErrorMessage = "Las contraseñas no coinciden")]
 		[PasswordPropertyText]
+		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
 		public string ConfirmacionContraseña { get; set; }
 
 		[Display(Name = "Mostrar mail publicamente", Description = "Indica si el mail debe ser mostrado dentro de tu informacion publica")]
@@ -112,10 +228,82 @@ namespace ComunaHealth.Pages.Identity
 		/// Tipo de la cuenta que se esta creando
 		/// </summary>
 		[Display(Name = "Tipo de cuenta")]
+		[Required]
 		public ETipoCuenta TipoCuenta { get; set; }
 
-		public List<SelectListItem> TiposDeCuentaDisponibles { get; init; }
-	} 
+		[Display(Name = "Municipio")]
+		[Required]
+		public EMunicipio Municipio { get; set; }
+
+		[Display(Name = "Anverso DNI")]
+		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
+		public IFormFile FotoAnversoDNI { get; set; }
+
+		[Display(Name = "Reverso DNI")]
+		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
+		public IFormFile FotoReversoDNI { get; set; }
+
+		/// <summary>
+		/// Crea un <see cref="ModeloUsuarioNoAdministrador"/> con los datos de este viewmodel
+		/// </summary>
+		/// <param name="userManager">User manager</param>
+		/// <returns><see cref="ModeloUsuarioNoAdministrador"/> creado</returns>
+		public ModeloUsuarioNoAdministrador CrearUsuario(UserManager<ModeloUsuario> userManager)
+		{
+			//Creamos el tipo de cuenta correspondiente en base al tipo elegido
+			ModeloUsuarioNoAdministrador usuarioCreado = TipoCuenta == ETipoCuenta.Paciente ? new ModeloPaciente() : new ModeloMedico();
+
+			//Guardamos nombre y apellido en el nombre de usuario
+			usuarioCreado.UserName = $"{Nombre} {Apellido}";
+
+			usuarioCreado.Descripcion = Descripcion;
+
+			usuarioCreado.DNI = int.Parse(DNI);
+
+			usuarioCreado.Email = Mail;
+
+			usuarioCreado.PhoneNumber = Telefono;
+
+			usuarioCreado.MailEsPublico     = MailEsPublico;
+			usuarioCreado.TelefonoEsPublico = TelefonoEsPublico;
+			usuarioCreado.TwoFactorEnabled  = AutenticacionDeDosFactoresActiva;
+
+			//Guardamos los bytes de las fotos
+			using (var bReader = new BinaryReader(FotoAnversoDNI.OpenReadStream()))
+			{
+				usuarioCreado.FotoAnversoDNI = bReader.ReadBytes((int) FotoAnversoDNI.Length);
+			}
+
+			using (var bReader = new BinaryReader(FotoReversoDNI.OpenReadStream()))
+			{
+				usuarioCreado.FotoReversoDNI = bReader.ReadBytes((int)FotoReversoDNI.Length);
+			}
+
+			//Hasheamos la contraseña y guardamos el resultado
+			usuarioCreado.PasswordHash = userManager.PasswordHasher.HashPassword(usuarioCreado, Contraseña);
+
+			return usuarioCreado;
+		}
+	}
+
+	/// <summary>
+	/// Viewmodel que contiene los datos extra necesarios para el registro de un medico
+	/// </summary>
+	public class ViewModelRegistro_DatosMedico
+	{
+		/// <summary>
+		/// Matricula del medico
+		/// </summary>
+		[Display(Name = "Numero de matricula")]
+		[StringLength(12, ErrorMessage = "Numero demasiado largo")]
+		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
+		public string MatriculaMedico { get; set; }
+
+		/// <summary>
+		/// Especializaciones del medico
+		/// </summary>
+		public string[] Especializaciones { get; set; }
+	}
 
 	#endregion
 }

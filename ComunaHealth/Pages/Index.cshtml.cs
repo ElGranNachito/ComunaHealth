@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ComunaHealth.Data;
 using ComunaHealth.Modelos;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,10 +16,9 @@ namespace ComunaHealth.Pages
 	{
 		private readonly ILogger<IndexModel> _logger;
 
-		public IndexModel(ILogger<IndexModel> logger, UserManager<ModeloUsuario> userManager)
+		public IndexModel(ILogger<IndexModel> logger)
 		{
 			_logger = logger;
-			
 		}
 
 		public void OnGet()

@@ -16,5 +16,8 @@ namespace ComunaHealth
 		public const string NombreRolAdministradorjefe = "AdministradorJefe";
 
 		public const string MensajeErrorEsteCampoNoPuedeQuedarVacio = "Este campo no puede quedar vacio";
+
+		public const string TrueString = "true";
+		public const string FalseString = "false";
 	}
 }

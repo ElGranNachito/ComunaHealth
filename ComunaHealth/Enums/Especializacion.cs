@@ -16,6 +16,8 @@ namespace ComunaHealth
 		Cardiologo = 1<<5,
 		Dermatologo = 1<<6,
 		Neumologo = 1<<7,
-		Ginecologo = 1<<8
+		Ginecologo = 1<<8,
+
+		NINGUNA = 0
 	}
 }
