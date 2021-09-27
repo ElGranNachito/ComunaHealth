@@ -1,126 +1,245 @@
 ﻿@page
 @model ComunaHealth.Pages.Identity.RegisterModel
 @{
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
     <!--Contenedor-->
     <div class="container">
-        
-        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        @Html.ValidationSummary(true, "", new{@class="text-danger"})
 
         <!--Form registro-->
-        <form method="post">
+        <form method="post"
+              enctype="multipart/form-data"
+              data-ajax="true"
+              data-ajax-method="post"
+              data-ajax-url="Register">
 
             <!--Nombres del usuario-->
             <div class="form-group">
 
-                <label asp-for="Registro.Nombre"></label>
-                <input type="text" class="form-text" asp-for="Registro.Nombre" />
+                <label asp-for="RegistroDatosGenerales.Nombre"></label>
+                <input type="text" class="form-text" asp-for="RegistroDatosGenerales.Nombre" />
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Nombre, "", new { @class = "text-danger" })
             </div>
 
             <!--Apellidos del usuario-->
             <div class="form-group">
 
-                <label asp-for="Registro.Apellido"></label>
-                <input type="text" class="form-text" asp-for="Registro.Apellido" />
+                <label asp-for="RegistroDatosGenerales.Apellido"></label>
+                <input type="text" class="form-text" asp-for="RegistroDatosGenerales.Apellido" />
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Apellido, "", new { @class = "text-danger" })
             </div>
-            
+
+            <!--Descripcion del usuario-->
+            <div class="form-group">
+
+                <label asp-for="RegistroDatosGenerales.Descripcion"></label>
+                <textarea rows="5" cols="50" class="form-text" asp-for="RegistroDatosGenerales.Descripcion"></textarea>
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Descripcion, "", new { @class = "text-danger" })
+            </div>
+
             <!--Ingreso y confirmacion de DNI-->
             <table class="form-group">
                 <thead>
                     <tr>
                         <td class="pr-3">
-                            <label asp-for="Registro.DNI"></label>
+                            <label asp-for="RegistroDatosGenerales.DNI"></label>
                         </td>
                         <td>
-                            <label asp-for="Registro.ConfirmacionDNI"></label>
+                            <label asp-for="RegistroDatosGenerales.ConfirmacionDNI"></label>
                         </td>
                     </tr>
                 </thead>
                 <tr>
                     <td>
-                        <input type="password" class="form-text mr-3" asp-for="Registro.DNI" />
+                        <input type="text" class="form-text mr-3" asp-for="RegistroDatosGenerales.DNI" />
                     </td>
                     <td>
-                        <input type="password" class="form-text" asp-for="Registro.ConfirmacionDNI" />
+                        <input type="text" class="form-text" asp-for="RegistroDatosGenerales.ConfirmacionDNI" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Contraseña, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.ConfirmacionContraseña, "", new { @class = "text-danger" })
                     </td>
                 </tr>
             </table>
-            
+
             <!--Texto de error sobre el DNI ingresado-->
-            <div class="text-danger" asp-validation-for="Registro.ConfirmacionDNI"></div>
-            
+            <div class="text-danger" asp-validation-for="ConfirmacionDNI"></div>
+
             <!--Ingreso del mail-->
             <div class="form-group">
 
-                <label asp-for="Registro.Mail"></label>
-                <input type="text" class="form-text" asp-for="Registro.Mail" />
+                <label asp-for="RegistroDatosGenerales.Mail"></label>
+
+                <input type="text" class="form-text" asp-for="RegistroDatosGenerales.Mail" />
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Mail, "", new { @class = "text-danger" })
             </div>
-            
+
             <!--Ingreso del telefono-->
             <div class="form-group">
 
-                <label asp-for="Registro.Telefono"></label>
-                <input type="text" class="form-text" asp-for="Registro.Telefono" />
+                <label asp-for="RegistroDatosGenerales.Telefono"></label>
+                <input type="text" class="form-text" asp-for="RegistroDatosGenerales.Telefono" />
+
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Telefono, "", new { @class = "text-danger" })
             </div>
-            
+
             <!--Ingreso y confirmacion de la contraseña-->
             <table class="form-group">
                 <thead>
-                <tr>
-                    <td class="pr-3">
-                        <label asp-for="Registro.Contraseña"></label>
-                    </td>
-                    <td>
-                        <label asp-for="Registro.ConfirmacionContraseña"></label>
-                    </td>
-                </tr>
+                    <tr>
+                        <td class="pr-3">
+                            <label asp-for="RegistroDatosGenerales.Contraseña"></label>
+                        </td>
+                        <td>
+                            <label asp-for="RegistroDatosGenerales.ConfirmacionContraseña"></label>
+                        </td>
+                    </tr>
                 </thead>
                 <tr>
                     <td>
-                        <input type="password" class="form-text mr-3" asp-for="Registro.Contraseña" />
+                        <input type="password" class="form-text mr-3" asp-for="RegistroDatosGenerales.Contraseña" />
                     </td>
                     <td>
-                        <input type="password" class="form-text" asp-for="Registro.ConfirmacionContraseña" />
+                        <input type="password" class="form-text" asp-for="RegistroDatosGenerales.ConfirmacionContraseña" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Contraseña, "", new{@class="text-danger"})
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.ConfirmacionContraseña, "", new { @class = "text-danger" })
                     </td>
                 </tr>
             </table>
-            
-            <!--Texto de error sobre la contraseña-->
-            <div class="text-danger" asp-validation-for="Registro.ConfirmacionContraseña"></div>
-            
+
             <!--Checkbox mail es publico-->
             <div class="form-group">
 
-                <label asp-for="Registro.MailEsPublico"></label>
-                <input type="checkbox" class="form-check" asp-for="Registro.MailEsPublico" />
+                <label asp-for="RegistroDatosGenerales.MailEsPublico"></label>
+                <input type="checkbox" class="form-check" asp-for="RegistroDatosGenerales.MailEsPublico" />
             </div>
-            
+
             <!--Checkbox telefono es publico-->
             <div class="form-group">
 
-                <label asp-for="Registro.TelefonoEsPublico"></label>
-                <input type="checkbox" class="form-check" asp-for="Registro.TelefonoEsPublico" />
+                <label asp-for="RegistroDatosGenerales.TelefonoEsPublico"></label>
+                <input type="checkbox" class="form-check" asp-for="RegistroDatosGenerales.TelefonoEsPublico" />
             </div>
-            
+
             <!--Checkbox autenticacion de dos factores-->
             <div class="form-group">
-                <label asp-for="Registro.AutenticacionDeDosFactoresActiva"></label>
-                <input type="checkbox" class="form-check" asp-for="Registro.AutenticacionDeDosFactoresActiva" />
+                <label asp-for="RegistroDatosGenerales.AutenticacionDeDosFactoresActiva"></label>
+                <input type="checkbox" class="form-check" asp-for="RegistroDatosGenerales.AutenticacionDeDosFactoresActiva" />
             </div>
-            
+
+            <!--Dropdow seleccion de ciudad-->
+            <div class="form-group">
+
+                <label asp-for="RegistroDatosGenerales.Municipio"></label>
+                <select asp-for="RegistroDatosGenerales.Municipio" asp-items="@Model.MunicipiosDisponibles" class="custom-select"></select>
+
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Municipio, "", new { @class = "text-danger" })
+
+            </div>
+
             <!--Dropdow seleccion de tipo de usuario-->
             <div class="form-group">
-                
-                <select asp-for="Registro.TipoCuenta" asp-items="@Model.Registro.TiposDeCuentaDisponibles" class="custom-select"></select>
+
+                <label asp-for="RegistroDatosGenerales.TipoCuenta"></label>
+                <select asp-for="RegistroDatosGenerales.TipoCuenta" asp-items="@Model.TiposDeCuentaDisponibles" onchange="TipoDeUsuarioCambio(this.selectedIndex);" class="custom-select"></select>
+
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.TipoCuenta, "", new { @class = "text-danger" })
+            </div>
+
+            <!--Subir archivo anverso DNI-->
+            <div class="form-group custom-file mt-2">
+
+                <input type="file" id="inputAnversoDNI" class="custom-file-input" accept="image/jpg, image/png, image/jpeg" asp-for="RegistroDatosGenerales.FotoAnversoDNI" />
+                <label class="custom-file-label" asp-for="RegistroDatosGenerales.FotoAnversoDNI"></label>
+
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.FotoAnversoDNI, "", new { @class = "text-danger" })
 
             </div>
-            
-            <!--Boton submit-->
-            <div class="form-group">
 
-                <input type="submit" value="Registrarse" class="form-text" />
+            <!--Subir archivo reverso DNI-->
+            <div class="form-group custom-file mt-4">
+
+                <input type="file" id="inputReversoDNI" class="custom-file-input" accept="image/jpg, image/png, image/jpeg" asp-for="RegistroDatosGenerales.FotoReversoDNI" />
+                <label class="custom-file-label" asp-for="RegistroDatosGenerales.FotoReversoDNI">Reverso DNI</label>
+
+                @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.FotoReversoDNI, "", new { @class = "text-danger" })
+
+            </div>
+
+            <!--Matricula medico-->
+            <div class="form-group collapse mt-4" id="inputMatricula">
+
+                <label asp-for="RegistroDatosMedico.MatriculaMedico"></label>
+                <input type="number" class="form-text" asp-for="RegistroDatosMedico.MatriculaMedico" />
+
+                @Html.ValidationMessageFor(m => m.RegistroDatosMedico.MatriculaMedico, "", new { @class = "text-danger" })
+
+            </div>
+
+            <!--Seleccion especializaciones-->
+            <div class="form-group collapse" id="selectEspecializaciones">
+
+                <label asp-for="RegistroDatosMedico.Especializaciones"></label>
+                <select multiple="multiple" class="selectpicker" title="No seleccionadas" asp-for="RegistroDatosMedico.Especializaciones" asp-items="EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValoresFlag<EEspecializacion>(EEspecializacion.NINGUNA))"></select>
+
+                @Html.ValidationMessageFor(m => m.RegistroDatosMedico.Especializaciones, "", new { @class = "text-danger" })
+            </div>
+
+            <!--Boton submit-->
+            <div class="form-group mt-4">
+
+                <input type="submit" value="Confirmar" class="form-text btn btn-primary" />
             </div>
 
         </form>
+
+        @section Scripts{
+            
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+            <script type="text/javascript">
+
+                $('.selectpicker').selectpicker();
+
+                function TipoDeUsuarioCambio(nuevoIndiceSeleccionado) {
+
+                    if (nuevoIndiceSeleccionado === 1) {
+                        $('#inputMatricula').addClass("collapse");
+                        $('#selectEspecializaciones').addClass("collapse");
+                    }
+                    else if (nuevoIndiceSeleccionado === 2) {
+                        $('#inputMatricula').removeClass("collapse");
+                        $('#selectEspecializaciones').removeClass("collapse");
+                    }
+
+                    console.log(nuevoIndiceSeleccionado);
+                }
+
+                $('#inputAnversoDNI').on('change', archivoSeleccionadoHandler);
+                $('#inputReversoDNI').on('change', archivoSeleccionadoHandler);
+
+                function archivoSeleccionadoHandler(evento) {
+                    var target = evento.target;
+
+                    target.nextElementSibling.innerText = target.files[0].name;
+                }
+
+            </script>
+        }
 
     </div>
 }

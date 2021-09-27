@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComunaHealth.Migrations
 {
     [DbContext(typeof(ComunaDbContext))]
-    [Migration("20210924221319_Inicia")]
-    partial class Inicia
+    [Migration("20210927185436_Añadidos_Mas_Modelos_Usuarios")]
+    partial class Añadidos_Mas_Modelos_Usuarios
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -239,21 +239,94 @@ namespace ComunaHealth.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ComunaHealth.Modelos.ModeloAdministrador", b =>
+                {
+                    b.HasBaseType("ComunaHealth.Modelos.ModeloUsuario");
+
+                    b.HasDiscriminator().HasValue("ModeloAdministrador");
+                });
+
+            modelBuilder.Entity("ComunaHealth.Modelos.ModeloMedico", b =>
+                {
+                    b.HasBaseType("ComunaHealth.Modelos.ModeloUsuario");
+
+                    b.Property<string>("Descripcion")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<byte[]>("FotoAnversoDNI")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("image");
+
+                    b.Property<byte[]>("FotoDePerfil")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("image");
+
+                    b.Property<byte[]>("FotoReversoDNI")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("image");
+
+                    b.Property<bool>("MailEsPublico")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Matricula")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StringEspecializaciones")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Especializaciones");
+
+                    b.Property<bool?>("TelefonoEsPublico")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("ModeloMedico");
+                });
+
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloPaciente", b =>
                 {
                     b.HasBaseType("ComunaHealth.Modelos.ModeloUsuario");
 
                     b.Property<string>("Descripcion")
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<byte[]>("FotoAnversoDNI")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("image");
+
+                    b.Property<byte[]>("FotoDePerfil")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("image");
+
+                    b.Property<byte[]>("FotoReversoDNI")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("image");
+
                     b.Property<bool>("MailEsPublico")
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("bit");
 
                     b.Property<bool?>("TelefonoEsPublico")
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("ModeloPaciente");
+                });
+
+            modelBuilder.Entity("ComunaHealth.Modelos.Identity.Usuarios.ModeloAdministradorJefe", b =>
+                {
+                    b.HasBaseType("ComunaHealth.Modelos.ModeloAdministrador");
+
+                    b.HasDiscriminator().HasValue("ModeloAdministradorJefe");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

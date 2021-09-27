@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ComunaHealth.Migrations
 {
-    public partial class Inicia : Migration
+    public partial class Añadidos_Mas_Modelos_Usuarios : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,9 +31,14 @@ namespace ComunaHealth.Migrations
                     TiposCuenta = table.Column<int>(type: "int", nullable: false),
                     EstadoCuenta = table.Column<int>(type: "int", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Especializaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Matricula = table.Column<int>(type: "int", nullable: true),
                     Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     MailEsPublico = table.Column<bool>(type: "bit", nullable: true),
                     TelefonoEsPublico = table.Column<bool>(type: "bit", nullable: true),
+                    FotoDePerfil = table.Column<byte[]>(type: "image", nullable: true),
+                    FotoAnversoDNI = table.Column<byte[]>(type: "image", nullable: true),
+                    FotoReversoDNI = table.Column<byte[]>(type: "image", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

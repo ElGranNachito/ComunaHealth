@@ -3,8 +3,55 @@
 @{
     ViewData["Title"] = "Home page";
 }
+@inject ComunaDbContext dbContext;
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @if (dbContext.Pacientes.Count() != 0)
+    {
+        var pacientes = from p in dbContext.Pacientes select p;
+        var medicos = from m in dbContext.Medicos select m;
+
+        <div class="container">
+            
+            <div class="row bg-primary border-dark">
+
+                <label class="col-3">Nombre</label>
+                <label class="col-3">DNI</label>
+                <label class="col-3">Mail</label>
+                <label class="col-3">Descripcion/Profesion</label>
+
+            </div>
+
+            @foreach (var paciente in pacientes)
+            {
+                <div class="row">
+
+                    <label class="col-3">@paciente.UserName</label>
+                    <img class="col-3" src="data:image;base64,@Convert.ToBase64String(paciente.FotoAnversoDNI)" />
+                    <label class="col-3">@paciente.Email</label>
+                    <label class="col-3">@paciente.Descripcion</label>
+
+                </div>
+            }
+
+            <label class="col-12 text-center bg-primary">Medicos</label>
+
+            @foreach (var medico in medicos)
+            {
+                <div class="row">
+
+                    <label class="col-3">@medico.UserName</label>
+                    <img class="col-3" src="data:image;base64,@Convert.ToBase64String(medico.FotoReversoDNI)" />
+                    <label class="col-3">@medico.Email</label>
+                    <label class="col-3">@medico.StringEspecializaciones</label>
+
+                </div>
+            }
+
+        </div>
+    
+    }
 </div>
