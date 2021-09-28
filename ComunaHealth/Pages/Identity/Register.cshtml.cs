@@ -147,7 +147,13 @@ namespace ComunaHealth.Pages.Identity
 
 			return await Task.FromResult(Page());
 		}
-    }
+
+		public async Task<IActionResult> OnPostVerificarEmailDisponible([FromQuery(Name = "mail")] string mail)
+		{
+		
+			return await Task.FromResult(new JsonResult(await _dbcontext.Users.AnyAsync(p => p.Email == mail) ? "false" : "true"));
+		}
+	}
 
 	#region ViewModelRegistro
 
