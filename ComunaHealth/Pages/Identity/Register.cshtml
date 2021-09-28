@@ -74,11 +74,11 @@
             <div class="text-danger" asp-validation-for="ConfirmacionDNI"></div>
 
             <!--Ingreso del mail-->
-            <div class="form-group">
+            <div class="form-group" id="inputMail">
 
                 <label asp-for="RegistroDatosGenerales.Mail"></label>
 
-                <input type="text" class="form-text" asp-for="RegistroDatosGenerales.Mail" />
+                <input type="text" class="form-text" asp-for="RegistroDatosGenerales.Mail"  id="inputMail" onblur="blurHandler(inputMail);"/>
                 @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Mail, "", new { @class = "text-danger" })
             </div>
 
@@ -125,7 +125,7 @@
             <div class="form-group">
 
                 <label asp-for="RegistroDatosGenerales.MailEsPublico"></label>
-                <input type="checkbox" class="form-check" asp-for="RegistroDatosGenerales.MailEsPublico" />
+                <input type="checkbox" class="form-check" asp-for="RegistroDatosGenerales.MailEsPublico" nombre-propiedad="Mail"/>
             </div>
 
             <!--Checkbox telefono es publico-->
@@ -236,6 +236,28 @@
                     var target = evento.target;
 
                     target.nextElementSibling.innerText = target.files[0].name;
+                }
+
+                function blurHandler (input) {
+
+                    $.ajax({
+
+                        type: "post",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        url: "Register?handler=VerificarEmailDisponible&mail=" + input.value,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("RequestValidationToken", $('input:hidden[name=__RequestVerificationToken]').val());
+                        }
+                    }).done(function (xhr) {
+
+                        if (xhr.toString() === "false"){
+                            input.classList.add("border-danger");
+                        }
+                        else if (xhr.toString() === "true") {
+                            input.classList.remove("border-danger");
+                        }
+                    });
                 }
 
             </script>
