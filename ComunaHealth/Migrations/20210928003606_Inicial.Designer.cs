@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComunaHealth.Migrations
 {
     [DbContext(typeof(ComunaDbContext))]
-    [Migration("20210927185436_Añadidos_Mas_Modelos_Usuarios")]
-    partial class Añadidos_Mas_Modelos_Usuarios
+    [Migration("20210928003606_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -117,6 +117,8 @@ namespace ComunaHealth.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("DNI");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");

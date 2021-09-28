@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using ComunaHealth.Modelos;
+﻿using ComunaHealth.Modelos;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ComunaHealth.Relaciones
 {
@@ -34,16 +34,66 @@ namespace ComunaHealth.Relaciones
     }
 
     /// <summary>
-    /// Representa una relacion de un <see cref="ModeloMedico"/> con el <see cref="ModeloPaciente"/> que tiene contacto
+    /// Representa una relacion de un <see cref="ModeloUsuarioNoAdministrador"/> con un <see cref="ModeloMensajeChat"/> que haya remitido.
     /// </summary>
-    public class TIMedicoPaciente
+    public class TIUsuarioNoAdministradorMensajeChat : TIUsuarioNoAdministrador
+    {
+        [ForeignKey(nameof(MensajeChat))]
+        public int IdMensajeChat { get; set; }
+        public ModeloMensajeChat MensajeChat { get; set; }
+    }
+
+    // Usuario medico.
+
+    /// <summary>
+    /// Representa una relacion con un <see cref="ModeloMedico"/>
+    /// </summary>
+    public abstract class TIMedico
     {
         [ForeignKey(nameof(Medico))]
         public int IdMedico { get; set; }
         public ModeloMedico Medico { get; set; }
+    }
 
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloMedico"/> con el <see cref="ModeloPaciente"/> que tiene contacto
+    /// </summary>
+    public class TIMedicoPaciente : TIMedico
+    {
         [ForeignKey(nameof(Paciente))]
         public int IdPaciente { get; set; }
         public ModeloPaciente Paciente { get; set; }
+    }
+
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloMedico"/> con un <see cref="ModeloEntradaHistorialMedico"/> que crea.
+    /// </summary>
+    public class TIMedicoEntradaHistorialMedico : TIMedico
+    {
+        [ForeignKey(nameof(EntradaHistorialMedico))]
+        public int IDEntradaHistorialMedico { get; set; }
+        public ModeloEntradaHistorialMedico EntradaHistorialMedico { get; set; }
+    }
+
+    // Usuario paciente.
+
+    /// <summary>
+    /// Representa una relacion con un <see cref="ModeloPaciente"/>
+    /// </summary>
+    public abstract class TIPaciente
+    {
+        [ForeignKey(nameof(Paciente))]
+        public int IdPaciente { get; set; }
+        public ModeloPaciente Paciente { get; set; }
+    }
+
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloPaciente"/> con el <see cref="ModeloEntradaHistorialMedico"/> que se le cree por un medico.
+    /// </summary>
+    public class TIPacienteEntradaHistorialMedico : TIPaciente
+    {
+        [ForeignKey(nameof(EntradaHistorialMedico))]
+        public int IDEntradaHistorialMedico { get; set; }
+        public ModeloEntradaHistorialMedico EntradaHistorialMedico { get; set; }
     }
 }

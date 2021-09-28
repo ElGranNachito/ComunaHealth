@@ -1,0 +1,36 @@
+﻿@page
+@model ComunaHealth.Pages.Identity.LoginModel
+@{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+    <!--Contenedor-->
+    <div class="container">
+
+        @Html.ValidationSummary(true, "", new{@class="text-danger"})
+
+        <!--Form registro-->
+        <form method="post"
+              enctype="multipart/form-data"
+              data-ajax="true"
+              data-ajax-method="post"
+              data-ajax-url="Register">
+
+            <div class="form-group">
+
+                <label asp-for="ViewModelLogin.EMail"></label>
+                <input type="email" class="form-text" asp-for="ViewModelLogin.EMail" />
+                @Html.ValidationMessageFor(m => m.ViewModelLogin.EMail, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="ViewModelLogin.Contraseña"></label>
+                <input type="password" class="form-text" asp-for="ViewModelLogin.Contraseña" />
+                @Html.ValidationMessageFor(m => m.ViewModelLogin.Contraseña, "", new {@class="text-danger"})
+            </div>
+
+            <input type="submit" class="btn-primary"/>
+        </form>
+
+    </div>
+}

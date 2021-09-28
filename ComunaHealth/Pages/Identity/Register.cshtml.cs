@@ -132,7 +132,7 @@ namespace ComunaHealth.Pages.Identity
 			//Establecemos el estado de la cuenta creada como verificacion pendiente
 			usuarioCreado.EstadoCuenta = EEstadoCuenta.VerificacionPendiente;
 
-			try
+            try
 			{
 				await _userManager.CreateAsync(usuarioCreado);
 

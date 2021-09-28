@@ -116,6 +116,8 @@ namespace ComunaHealth.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("DNI");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
