@@ -34,7 +34,7 @@ namespace ComunaHealth
 				.AddEntityFrameworkStores<ComunaDbContext>()
 				.AddDefaultTokenProviders();
 
-			services.AddAntiforgery(config => config.HeaderName = "XSRF-TOKEN");
+			services.AddAntiforgery(config => config.HeaderName = "RequestValidationToken");
 
 			services.AddRazorPages();
 
