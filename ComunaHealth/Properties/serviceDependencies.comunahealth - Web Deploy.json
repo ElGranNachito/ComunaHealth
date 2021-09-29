@@ -1,17 +1,10 @@
 {
   "dependencies": {
-    "mssql1": {
-      "type": "mssql.local",
-      "connectionId": "DefaultConnection"
-    },
-    "secrets1": {
-      "type": "secrets.user"
-    },
     "mssql2": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/comunahealth/databases/ComunaHealthDb",
       "type": "mssql.azure",
       "connectionId": "ComunaHealthAzureDb",
-      "secretStore": "LocalSecretsFile"
+      "secretStore": "AzureAppSettings"
     }
   }
 }

@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
 using ComunaHealth.Modelos;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -34,16 +35,18 @@ namespace ComunaHealth.Pages.Identity
     {
 	    private readonly ComunaDbContext _dbcontext;
 	    private readonly UserManager<ModeloUsuario> _userManager;
+		private readonly SignInManager<ModeloUsuario> _signInManager;
 	    private readonly IConfiguration _config;
 
 		[BindProperty]
 		public ViewModelLogin ViewModelLogin { get; set; } = new ViewModelLogin();
 
-		public LoginModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, IConfiguration config)
+		public LoginModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, SignInManager<ModeloUsuario> signInManager, IConfiguration config)
 	    {
 		    _dbcontext   = dbcontext;
 		    _userManager = userManager;
 		    _config      = config;
+			_signInManager = signInManager;
 	    }
 
 	    public void OnGet()
@@ -66,12 +69,31 @@ namespace ComunaHealth.Pages.Identity
             {
 				ModelState.AddModelError("ViewModelLogin.EMail", "Mail o usuario incorrecto");
 
-				return await Task.FromResult(Page());
+				return Page();
 			}
 
-			var contraseñaPiola = _userManager.PasswordHasher.VerifyHashedPassword(resultado, resultado.PasswordHash, ViewModelLogin.Contraseña);
+			if(_userManager.PasswordHasher.VerifyHashedPassword(resultado, resultado.PasswordHash, ViewModelLogin.Contraseña) != PasswordVerificationResult.Success) 
+			{
+				ModelState.AddModelError("ViewModelLogin.EMail", "Mail o usuario incorrecto");
 
-			return await Task.FromResult(Page());
+				return Page();
+			}
+
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Email, resultado.Email),
+				new Claim(ClaimTypes.Name, resultado.UserName),
+				new Claim("DNI", resultado.DNI.ToString()),
+				new Claim(ClaimTypes.Role, resultado.TiposCuenta == ETipoCuenta.Paciente ? Constantes.NombreRolPaciente : Constantes.NombreRolMedico)
+			};
+
+			var identity = new ClaimsIdentity(claims);
+
+			await _userManager.AddClaimsAsync(resultado, claims);
+			await _signInManager.SignInAsync(resultado, new AuthenticationProperties { ExpiresUtc = DateTime.UtcNow + TimeSpan.FromMinutes(30) });
+			await _signInManager.CreateUserPrincipalAsync(resultado);
+
+			return RedirectToPage("/Index");
 		}
     }
 

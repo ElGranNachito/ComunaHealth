@@ -12,122 +12,144 @@ using ComunaHealth.Modelos;
 
 namespace ComunaHealth
 {
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+    public class Startup
+    {
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            Configuration = configuration;
+            Environment = env;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddDbContext<ComunaDbContext>(options =>
-				options.UseSqlServer(
-					Configuration.GetConnectionString("DefaultConnection")));
+        public void ConfigureServices(IServiceCollection services)
+        {
+            if (Environment.IsDevelopment())
+            {
+                services.AddDbContext<ComunaDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else
+            {
+                services.AddDbContext<ComunaDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("AzureConnection")));
+            }
 
-			services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
-			services.AddDefaultIdentity<ModeloUsuario>()
-				.AddRoles<ModeloRol>()
-				.AddEntityFrameworkStores<ComunaDbContext>()
-				.AddDefaultTokenProviders();
+            services.AddDefaultIdentity<ModeloUsuario>()
+                .AddRoles<ModeloRol>()
+                .AddEntityFrameworkStores<ComunaDbContext>()
+                .AddDefaultTokenProviders();
 
-			services.AddAntiforgery(config => config.HeaderName = "RequestValidationToken");
+            services.AddAntiforgery(config => config.HeaderName = "RequestValidationToken");
 
-			services.AddRazorPages();
+            services.AddAuthentication(config =>
+            {
+                config.RequireAuthenticatedSignIn = false;
 
-			//Configuramos el servicio de autenticacion
-			services.Configure<IdentityOptions>(configIdentity =>
-			{
-				//Configuracion de los requisitos de la contraseña
-				configIdentity.Password = new PasswordOptions
-				{
-					RequireDigit     = true,
-					RequireLowercase = true,
-					RequireUppercase = true,
-					RequiredLength = 8
-				};
+            });
 
-				//Configuracion de los requisitos para loguearse
-				configIdentity.SignIn = new SignInOptions
-				{
-					RequireConfirmedAccount = true,
-					RequireConfirmedEmail = true
-				};
+            services.AddRazorPages();
 
-				//Configuracion de las restricciones para crearse un usuario
-				configIdentity.User = new UserOptions
-				{
-					AllowedUserNameCharacters = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789@.",
-					RequireUniqueEmail = true
-				};
+            //Configuramos el servicio de autenticacion
+            services.Configure<IdentityOptions>(configIdentity =>
+            {
+                //Configuracion de los requisitos de la contraseña
+                configIdentity.Password = new PasswordOptions
+                {
+                    RequireDigit = true,
+                    RequireLowercase = true,
+                    RequireUppercase = true,
+                    RequiredLength = 8
+                };
 
-				//Configuracion de la resctriccion en caso de muchos intentos de logueo fallidos
-				configIdentity.Lockout = new LockoutOptions
-				{
-					MaxFailedAccessAttempts = 5,
-					DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5)
-				};
-			});
-		}
+                //Configuracion de los requisitos para loguearse
+                configIdentity.SignIn = new SignInOptions
+                {
+                    RequireConfirmedAccount = true,
+                    RequireConfirmedEmail = true
+                };
 
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider servicios)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-				app.UseMigrationsEndPoint();
-			}
-			else
-			{
-				app.UseExceptionHandler("/Error");
-				
-				app.UseHsts();
-			}
+                //Configuracion de las restricciones para crearse un usuario
+                configIdentity.User = new UserOptions
+                {
+                    AllowedUserNameCharacters = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789@.",
+                    RequireUniqueEmail = true
+                };
 
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
+                //Configuracion de la resctriccion en caso de muchos intentos de logueo fallidos
+                configIdentity.Lockout = new LockoutOptions
+                {
+                    MaxFailedAccessAttempts = 5,
+                    DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5)
+                };
+            });
+        }
 
-			app.UseRouting();
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider servicios)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+                app.UseHsts();
+            }
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapRazorPages();
-			});
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
-			CrearRolesSiNoExisten(servicios.GetRequiredService<RoleManager<ModeloRol>>(), servicios.GetRequiredService<UserManager<ModeloUsuario>>()).Wait();
-		}
+            app.UseRouting();
 
-		/// <summary>
-		/// Crea los roles utilizados por la aplicacion en caso de que aun no existan
-		/// </summary>
-		private async Task CrearRolesSiNoExisten(RoleManager<ModeloRol> roleManager, UserManager<ModeloUsuario> userManager)
-		{
-			//Creamos el rol paciente si no existe
-			if (! await roleManager.RoleExistsAsync(Constantes.NombreRolPaciente))
-			{
-				await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolPaciente, ETipoCuenta.Paciente));
-			}
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
+
+            CrearRolesSiNoExisten(servicios.GetRequiredService<RoleManager<ModeloRol>>(), servicios.GetRequiredService<UserManager<ModeloUsuario>>(), servicios).Wait();
+        }
+
+        /// <summary>
+        /// Crea los roles utilizados por la aplicacion en caso de que aun no existan
+        /// </summary>
+        private async Task CrearRolesSiNoExisten(RoleManager<ModeloRol> roleManager, UserManager<ModeloUsuario> userManager, IServiceProvider servicios)
+        {
+            using (var context = servicios.CreateScope().ServiceProvider.GetRequiredService<ComunaDbContext>())
+            {
+                await context.Database.MigrateAsync();
+            }
+
+            //Creamos el rol paciente si no existe
+            if (!await roleManager.RoleExistsAsync(Constantes.NombreRolPaciente))
+            {
+                await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolPaciente, ETipoCuenta.Paciente));
+            }
             //Creamos el rol medico si no existe
-            if (! await roleManager.RoleExistsAsync(Constantes.NombreRolMedico))
+            if (!await roleManager.RoleExistsAsync(Constantes.NombreRolMedico))
             {
                 await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolMedico, ETipoCuenta.Medico));
             }
             //Creamos el rol administrador si no existe
-            if (! await roleManager.RoleExistsAsync(Constantes.NombreRolAdministrador))
+            if (!await roleManager.RoleExistsAsync(Constantes.NombreRolAdministrador))
             {
                 await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolAdministrador, ETipoCuenta.Administrador));
             }
             //Creamos el rol administrador jefe si no existe
-            if (! await roleManager.RoleExistsAsync(Constantes.NombreRolAdministradorjefe))
+            if (!await roleManager.RoleExistsAsync(Constantes.NombreRolAdministradorjefe))
             {
                 await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolAdministradorjefe, ETipoCuenta.AdministradorJefe));
             }
-		}
-	}
+        }
+    }
 }
