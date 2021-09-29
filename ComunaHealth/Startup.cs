@@ -117,20 +117,16 @@ namespace ComunaHealth
                 endpoints.MapRazorPages();
             });
 
-            CrearRolesSiNoExisten(servicios.GetRequiredService<RoleManager<ModeloRol>>(), servicios.GetRequiredService<UserManager<ModeloUsuario>>(), servicios).Wait();
+            CrearRolesSiNoExisten(servicios.GetRequiredService<RoleManager<ModeloRol>>(), servicios.GetRequiredService<UserManager<ModeloUsuario>>()).Wait();
+            CrearBaseDeDatos(servicios).Wait();
         }
 
         /// <summary>
         /// Crea los roles utilizados por la aplicacion en caso de que aun no existan
         /// </summary>
-        private async Task CrearRolesSiNoExisten(RoleManager<ModeloRol> roleManager, UserManager<ModeloUsuario> userManager, IServiceProvider servicios)
+        private async Task CrearRolesSiNoExisten(RoleManager<ModeloRol> roleManager, UserManager<ModeloUsuario> userManager)
         {
-            using (var context = servicios.CreateScope().ServiceProvider.GetRequiredService<ComunaDbContext>())
-            {
-                await context.Database.MigrateAsync();
-            }
-
-            //Creamos el rol paciente si no existe
+	        //Creamos el rol paciente si no existe
             if (!await roleManager.RoleExistsAsync(Constantes.NombreRolPaciente))
             {
                 await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolPaciente, ETipoCuenta.Paciente));
@@ -150,6 +146,18 @@ namespace ComunaHealth
             {
                 await roleManager.CreateAsync(new ModeloRol(Constantes.NombreRolAdministradorjefe, ETipoCuenta.AdministradorJefe));
             }
+        }
+
+        /// <summary>
+        /// Crea la base de datos y aplica las migraciones
+        /// </summary>
+        /// <param name="servicios">Inyeccion de dependencias</param>
+        private async Task CrearBaseDeDatos(IServiceProvider servicios)
+        {
+	        await using (var context = servicios.CreateScope().ServiceProvider.GetRequiredService<ComunaDbContext>())
+	        {
+		        await context.Database.MigrateAsync();
+	        }
         }
     }
 }
