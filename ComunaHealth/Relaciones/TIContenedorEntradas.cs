@@ -13,11 +13,18 @@ namespace ComunaHealth.Relaciones
         public ModeloContenedorDeEntradas ContenedorDeEntradas { get; set; }
     }
 
-    public class TIContenedorDeEntradasEntrada : TIContenedorDeEntradas
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloContenedorDeEntradas"/> con el <see cref="TEntrada"/> que contenga.
+    /// </summary>
+    public class TIContenedorDeEntradasEntrada<TEntrada>
     {
+        [ForeignKey(nameof(ContenedorDeEntradas))]
+        public int IdContenedorDeEntradas { get; set; }
+        public ModeloContenedorDeEntradas<TEntrada> ContenedorDeEntradas { get; set; }
+
         [ForeignKey(nameof(Entrada))]
         public int IdEntrada { get; set; }
-        public ModeloEntrada Entrada { get; set; }
+        public TEntrada Entrada { get; set; }
     }
 
 

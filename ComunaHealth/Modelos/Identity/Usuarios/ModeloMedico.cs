@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using ComunaHealth.Relaciones;
 
 namespace ComunaHealth.Modelos
 {
@@ -11,8 +12,31 @@ namespace ComunaHealth.Modelos
 	/// </summary>
 	public class ModeloMedico : ModeloUsuarioNoAdministrador
 	{
+		/// <summary>
+		/// Especializacion sanitaria del medico.
+		/// </summary>
 		[NotMapped]
 		public List<EEspecializacion> Especializaciones { get; private set; } = new List<EEspecializacion>();
+
+        /// <summary>
+        /// Notas de el medico.
+        /// </summary>
+        public List<TIMedicoContenedorEntrada> Notas { get; set; } = new List<TIMedicoContenedorEntrada>();
+
+        /// <summary>
+        /// Historial medico del paciente.
+        /// </summary>+
+        public List<TIMedicoContenedorEntradaHistorialMedico> NotasPacientes { get; set; } = new List<TIMedicoContenedorEntradaHistorialMedico>();
+
+        /// <summary>
+		/// Pacientes del medico.
+		/// </summary>
+        public List<TIMedicoPaciente> Pacientes { get; set; } = new List<TIMedicoPaciente>();
+
+		/// <summary>
+		/// Citas con sus pacientes.
+		/// </summary>
+        public List<TICitaMedico> Citas { get; set; } = new List<TICitaMedico>();
 
 		/// <summary>
 		/// Especializaciones del medico
@@ -47,6 +71,7 @@ namespace ComunaHealth.Modelos
 		/// <summary>
 		/// Matricula del medico
 		/// </summary>
+		[Required]
 		public int Matricula { get; set; }
 	}
 }

@@ -71,8 +71,28 @@ namespace ComunaHealth.Relaciones
     public class TIMedicoEntradaHistorialMedico : TIMedico
     {
         [ForeignKey(nameof(EntradaHistorialMedico))]
-        public int IDEntradaHistorialMedico { get; set; }
+        public int IdEntradaHistorialMedico { get; set; }
         public ModeloEntradaHistorialMedico EntradaHistorialMedico { get; set; }
+    }
+
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloMedico"/> con un <see cref="ModeloContenedorDeEntradas<ModeloEntrada>"/> que crea.
+    /// </summary>
+    public class TIMedicoContenedorEntrada : TIMedico
+    {
+        [ForeignKey(nameof(Entrada))]
+        public int IdEntrada { get; set; }
+        public ModeloContenedorDeEntradas<ModeloEntrada> Entrada { get; set; }
+    }
+
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloMedico"/> con un <see cref="ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>"/> que crea para un paciente.
+    /// </summary>
+    public class TIMedicoContenedorEntradaHistorialMedico : TIMedico
+    {
+        [ForeignKey(nameof(EntradaHistorialMedico))]
+        public int IdEntradaHistorialMedico { get; set; }
+        public ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico> EntradaHistorialMedico { get; set; }
     }
 
     // Usuario paciente.
@@ -88,12 +108,32 @@ namespace ComunaHealth.Relaciones
     }
 
     /// <summary>
-    /// Representa una relacion de un <see cref="ModeloPaciente"/> con el <see cref="ModeloEntradaHistorialMedico"/> que se le cree por un medico.
+    /// Representa una relacion de un <see cref="ModeloPaciente"/> con un <see cref="ModeloEntradaHistorialMedico"/> que crea.
     /// </summary>
     public class TIPacienteEntradaHistorialMedico : TIPaciente
     {
         [ForeignKey(nameof(EntradaHistorialMedico))]
-        public int IDEntradaHistorialMedico { get; set; }
+        public int IdEntradaHistorialMedico { get; set; }
         public ModeloEntradaHistorialMedico EntradaHistorialMedico { get; set; }
+    }
+
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloPaciente"/> con un <see cref="ModeloContenedorDeEntradas<ModeloEntrada>"/> que crea.
+    /// </summary>
+    public class TIPacienteContenedorEntrada : TIPaciente
+    {
+        [ForeignKey(nameof(Entrada))]
+        public int IdEntrada { get; set; }
+        public ModeloContenedorDeEntradas<ModeloEntrada> Entrada { get; set; }
+    }
+
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloPaciente"/> con el <see cref="ModeloEntradaHistorialMedico"/> que se le cree por un medico.
+    /// </summary>
+    public class TIPacienteContenedorEntradaHistorialMedico : TIPaciente
+    {
+        [ForeignKey(nameof(EntradaHistorialMedico))]
+        public int IdEntradaHistorialMedico { get; set; }
+        public ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico> EntradaHistorialMedico { get; set; }
     }
 }

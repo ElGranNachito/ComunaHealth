@@ -3,6 +3,9 @@ using ComunaHealth.Modelos;
 
 namespace ComunaHealth.Relaciones
 {
+    /// <summary>
+    /// Representa una relacion con un <see cref="<see cref="ModeloCita"/>
+    /// </summary>
     public abstract class TICita
     {
         [ForeignKey(nameof(Cita))]
