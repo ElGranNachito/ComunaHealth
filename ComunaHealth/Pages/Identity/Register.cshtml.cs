@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
 using ComunaHealth.Modelos;
@@ -126,7 +127,7 @@ namespace ComunaHealth.Pages.Identity
 				}
 
 				//Guardamos las selecciones
-				medico.StringEspecializaciones = especializaciones;
+				medico.StringEspecializaciones = Regex.Replace(string.Join(',', especializaciones), @"\s", "");
 				medico.Especializaciones.RemoveAll(e => e == EEspecializacion.NINGUNA);
 
 				medico.Matricula = int.Parse(RegistroDatosMedico.MatriculaMedico);
@@ -281,6 +282,9 @@ namespace ComunaHealth.Pages.Identity
 			usuarioCreado.MailEsPublico     = MailEsPublico;
 			usuarioCreado.TelefonoEsPublico = TelefonoEsPublico;
 			usuarioCreado.TwoFactorEnabled  = AutenticacionDeDosFactoresActiva;
+
+			usuarioCreado.Municipio   = Municipio;
+			usuarioCreado.TiposCuenta = TipoCuenta;
 
 			//Guardamos los bytes de las fotos
 			using (var bReader = new BinaryReader(FotoAnversoDNI.OpenReadStream()))

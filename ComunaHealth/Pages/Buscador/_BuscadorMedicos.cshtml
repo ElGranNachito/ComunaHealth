@@ -1,0 +1,42 @@
+﻿@model ComunaHealth.Pages.BuscadorModel
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+<div class="container">
+    
+    <form 
+        method="post"
+        class="form-inline d-flex justify-content-center align-top w-75">
+
+        <input type="search" class="form-text w-100" id="barraBusquedaNombre" tipo-usuario=@Constantes.NombreRolPaciente onchange="Prueba(barraBusquedaNombre);" />
+
+        <input type="text" class="form-text w-100" id="barraBusquedaDNI" onchange="Prueba(barraBusquedaNombre);" />
+    
+        <div class="form-group">
+            <label asp-for="Municipio"></label>
+            <select class="custom-select w-100" id="selectMunicipio" asp-items="@Html.GetEnumSelectList(typeof(ComunaHealth.EMunicipio))" asp-for="Municipio" onchange="Prueba(barraBusquedaNombre);"></select>
+        </div>
+    
+        <div class="form-group">
+            <label asp-for="Especializaciones"></label>
+            <select multiple="multiple" class="selectpicker w-100" id="selectEspecializacion" asp-for="Especializaciones" asp-items="EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValoresFlag<EEspecializacion>(EEspecializacion.NINGUNA))"></select>
+        </div>
+
+        <input type="submit" class="btn btn-light" value="Buscar" asp-page-handler="BuscarMedicos">
+    </form>
+
+    <div class="table table-bordered">
+
+        @foreach (var medico in Model.MedicosEncontrados)
+        {
+            <div class="row">
+            
+                <div class="col-2">@medico.UserName</div>
+                <div class="col-4">@medico.StringEspecializaciones</div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

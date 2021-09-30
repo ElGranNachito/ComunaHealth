@@ -276,6 +276,10 @@ namespace ComunaHealth.Migrations
                     b.Property<int>("Matricula")
                         .HasColumnType("int");
 
+                    b.Property<int>("Municipio")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("int");
+
                     b.Property<string>("StringEspecializaciones")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -314,6 +318,10 @@ namespace ComunaHealth.Migrations
                     b.Property<bool>("MailEsPublico")
                         .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("bit");
+
+                    b.Property<int>("Municipio")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("int");
 
                     b.Property<bool?>("TelefonoEsPublico")
                         .ValueGeneratedOnUpdateSometimes()

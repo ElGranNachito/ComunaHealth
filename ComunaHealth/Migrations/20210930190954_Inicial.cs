@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ComunaHealth.Migrations
 {
-    public partial class inicial : Migration
+    public partial class Inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,6 +39,7 @@ namespace ComunaHealth.Migrations
                     FotoDePerfil = table.Column<byte[]>(type: "image", nullable: true),
                     FotoAnversoDNI = table.Column<byte[]>(type: "image", nullable: true),
                     FotoReversoDNI = table.Column<byte[]>(type: "image", nullable: true),
+                    Municipio = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

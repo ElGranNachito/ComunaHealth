@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,6 +20,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -38,6 +41,14 @@ namespace ComunaHealth.Pages
 		private readonly SignInManager<ModeloUsuario> _signInManager;
 		private readonly IConfiguration _config;
 
+		[BindProperty]
+		public EMunicipio Municipio { get; set; }
+
+		[BindProperty]
+		public string[] Especializaciones { get; set; }
+
+		public List<ModeloMedico> MedicosEncontrados { get; set; } = new List<ModeloMedico>();
+
 		public BuscadorModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, SignInManager<ModeloUsuario> signInManager, IConfiguration config)
 		{
 			_dbcontext = dbcontext;
@@ -49,6 +60,22 @@ namespace ComunaHealth.Pages
 		public void OnGet()
 		{
 
+		}
+
+		public async Task<IActionResult> OnPostBuscarMedicos()
+		{
+			var esto = string.Join(',', Especializaciones);
+
+			MedicosEncontrados = (await Task.Run(()=> _dbcontext.Medicos.FromSqlRaw(@"
+			SELECT * FROM [dbo].[AspNetUsers] 
+			WHERE Municipio = @municipio AND Especializaciones = @especializaciones", new SqlParameter("@municipio", 32), new SqlParameter("@especializaciones", string.Join(',', Especializaciones))))).ToList();
+
+			return Page();
+		}
+
+		public async Task<IActionResult> OnPostBuscarPacientes()
+		{
+			return Page();
 		}
 
 		public async Task<IActionResult> BuscarMedicos(

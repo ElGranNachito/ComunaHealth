@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComunaHealth.Migrations
 {
     [DbContext(typeof(ComunaDbContext))]
-    [Migration("20210929223408_inicial")]
-    partial class inicial
+    [Migration("20210930190954_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -278,6 +278,10 @@ namespace ComunaHealth.Migrations
                     b.Property<int>("Matricula")
                         .HasColumnType("int");
 
+                    b.Property<int>("Municipio")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("int");
+
                     b.Property<string>("StringEspecializaciones")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -316,6 +320,10 @@ namespace ComunaHealth.Migrations
                     b.Property<bool>("MailEsPublico")
                         .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("bit");
+
+                    b.Property<int>("Municipio")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("int");
 
                     b.Property<bool?>("TelefonoEsPublico")
                         .ValueGeneratedOnUpdateSometimes()

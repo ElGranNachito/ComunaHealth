@@ -46,5 +46,10 @@ namespace ComunaHealth.Modelos
 		[Required]
 		[Column(TypeName = "image")]
 		public byte[] FotoReversoDNI { get; set; }
+
+		/// <summary>
+		/// Municipio en el que reside
+		/// </summary>
+		public EMunicipio Municipio { get; set; }
 	}
 }
