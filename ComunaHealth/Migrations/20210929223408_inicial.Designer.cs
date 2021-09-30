@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComunaHealth.Migrations
 {
     [DbContext(typeof(ComunaDbContext))]
-    [Migration("20210928003606_Inicial")]
-    partial class Inicial
+    [Migration("20210929223408_inicial")]
+    partial class inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

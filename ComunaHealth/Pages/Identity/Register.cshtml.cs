@@ -69,8 +69,11 @@ namespace ComunaHealth.Pages.Identity
 		[ValidateAntiForgeryToken]
 	    public async Task<IActionResult> OnPost()
 	    {
-		    if (!TryValidateModel(RegistroDatosGenerales))
-			    return await Task.FromResult(Page());
+			if (RegistroDatosGenerales.TipoCuenta == ETipoCuenta.Paciente)
+				ModelState.Remove($"{nameof(RegistroDatosMedico)}.{nameof(RegistroDatosMedico.MatriculaMedico)}");
+				
+			if (!TryValidateModel(RegistroDatosGenerales))
+			    return Page();
 
 			if(!int.TryParse(RegistroDatosGenerales.DNI, out var nada))
 				ModelState.AddModelError("RegistroDatosGenerales.DNI", "DNI solo puede contener caracteres numericos");
@@ -99,7 +102,7 @@ namespace ComunaHealth.Pages.Identity
 			    ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoReversoDNI), "Imagen no valida");
 
 			if(ModelState.ErrorCount > 0)
-				return await Task.FromResult(Page());
+				return Page();
 
 			//Creamos un usuario utilizando lo datos ingresados
 			var usuarioCreado = RegistroDatosGenerales.CrearUsuario(_userManager);
@@ -109,7 +112,7 @@ namespace ComunaHealth.Pages.Identity
 			{
 				//Validamos el modelo
 				if (!TryValidateModel(RegistroDatosMedico))
-					return await Task.FromResult(Page());
+					return Page();
 
 				//Obtenemos las especialzaciones seleccionadas
 				StringValues especializaciones = Request.Form["RegistroDatosMedico.Especializaciones"];
@@ -119,7 +122,7 @@ namespace ComunaHealth.Pages.Identity
 				{
 					ModelState.AddModelError(nameof(ViewModelRegistro_DatosMedico.Especializaciones), "Debes especificar al menos una especializacion");
 
-				    return await Task.FromResult(Page());
+				    return Page();
 				}
 
 				//Guardamos las selecciones
@@ -147,16 +150,16 @@ namespace ComunaHealth.Pages.Identity
 			}
 			catch (Exception ex)
 			{
-				return await Task.FromResult(new JsonResult("Algo salio mal"));
+				return new JsonResult("Algo salio mal");
 			}
 
-			return await Task.FromResult(Page());
+			return Page();
 		}
 
 		public async Task<IActionResult> OnPostVerificarEmailDisponible([FromQuery(Name = "mail")] string mail)
 		{
 		
-			return await Task.FromResult(new JsonResult(await _dbcontext.Users.AnyAsync(p => p.Email == mail) ? "false" : "true"));
+			return new JsonResult(await _dbcontext.Users.AnyAsync(p => p.Email == mail) ? "false" : "true");
 		}
 	}
 
