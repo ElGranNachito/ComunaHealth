@@ -31,7 +31,7 @@ namespace ComunaHealth.Modelos
         /// <summary>
 		/// Pacientes del medico.
 		/// </summary>
-        public List<TIMedicoPaciente> Pacientes { get; set; } = new List<TIMedicoPaciente>();
+        public List<ModeloPaciente> Pacientes { get; set; } = new List<ModeloPaciente>();
 
 		/// <summary>
 		/// Citas con sus pacientes.

@@ -29,7 +29,7 @@ namespace ComunaHealth.Relaciones
     public class TICitaMedico : TICita
     {
         [ForeignKey(nameof(Medico))]
-        public int IdMedico { get; set; }
+        public string IdMedico { get; set; }
         public ModeloMedico Medico { get; set; }
     }
 
@@ -39,7 +39,7 @@ namespace ComunaHealth.Relaciones
     public class TICitaPaciente : TICita
     {
         [ForeignKey(nameof(Paciente))]
-        public int IdPaciente { get; set; }
+        public string IdPaciente { get; set; }
         public ModeloPaciente Paciente { get; set; }
     }
 

@@ -9,7 +9,7 @@ namespace ComunaHealth.Relaciones
     public abstract class TIAdministrador
     {
         [ForeignKey(nameof(Administrador))]
-        public int IdAdministrador { get; set; }
+        public string IdAdministrador { get; set; }
         public ModeloAdministrador Administrador { get; set; }
     }
 
