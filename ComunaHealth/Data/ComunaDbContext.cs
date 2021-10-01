@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using ComunaHealth.Modelos;
 using ComunaHealth.Modelos.Identity;
@@ -31,9 +32,8 @@ namespace ComunaHealth.Data
 			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<ModeloUsuario>().HasAlternateKey(u => u.DNI);
-
 			// Medico:
-            
+
             // - Medico Paciente:
             //modelBuilder.Entity<TIMedicoPaciente>().HasKey(e => new { e.IdMedico, e.IdPaciente});
 
