@@ -1,4 +1,14 @@
-﻿@page
-@model ComunaHealth.Pages.BuscadorModel
-@{
-}
+﻿@model ComunaHealth.Pages.BuscadorModel
+
+<div class="container d-flex flex-column">
+
+    <div>
+        <!--Tipo de cuenta buscada-->
+        <select 
+                class="custom-select"
+                asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(new []{ ETipoCuenta.Administrador, ETipoCuenta.AdministradorJefe, ETipoCuenta.NINGUNO}))">
+
+        </select>
+    </div>
+
+</div>

@@ -1,4 +1,61 @@
-﻿@page
-@model ComunaHealth.Pages.BuscadorModel
-@{
-}
+﻿@model ComunaHealth.Pages.BuscadorModel
+
+<div class="container">
+
+    <!-- Form busqueda paciente -->
+    <form method="post"
+          class="d-flex flex-column justify-content-start align-top w-75">
+
+        <!--Nombre del paciente buscado-->
+        <div class="form-group">
+            <label asp-for="Nombre"></label>
+            <input type="text" class="form-text w-100" asp-for="Nombre" onchange="Prueba(barraBusquedaNombre);" />
+        </div>
+
+        <!--DNI del paciente-->
+        <div class="form-group">
+            <label asp-for="DNI"></label>
+            <input type="text" class="form-text w-100" asp-for="DNI" onchange="Prueba(barraBusquedaNombre);" />
+        </div>
+
+        <!--Boton buscar (submit)-->
+        <div class="form-group">
+            <input type="submit" class="btn btn-light" value="Buscar" asp-page-handler="BuscarPacientes">
+        </div>
+    </form>
+
+    <div class="table table-bordered">
+
+        <!--Listamos a los pacientes encontrados-->
+        @foreach (var paciente in Model.PacientesEncontrados)
+        {
+            <div class="row">
+
+                <div class="col-2">@paciente.UserName</div>
+                <div class="col-4">@paciente.DNI</div>
+
+                <form class="form-inline" method="post">
+                    <input type="hidden" name="ID" value="@paciente.Id" />
+
+                    <!--Boton enviar mensaje-->
+                    <button class="btn btn-light mr-4" type="submit" title="Enviar mensaje" asp-page-handler="ComenzarChat">
+                        <i class="far fa-envelope"></i>
+                    </button>
+
+                    <!--Boton ver historial-->
+                    <button class="btn btn-light mr-4" type="submit" title="Ver historial medico" asp-page-handler="ComenzarChat">
+                        <i class="fas fa-history"></i>
+                    </button>
+
+                    <!--Boton ver notas-->
+                    <button class="btn btn-light" type="submit" title="Ver notas" asp-page-handler="ComenzarChat">
+                        <i class="far fa-sticky-note"></i>
+                    </button>
+                </form>
+
+            </div>
+        }
+
+    </div>
+
+</div>

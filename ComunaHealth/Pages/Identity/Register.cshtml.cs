@@ -154,7 +154,7 @@ namespace ComunaHealth.Pages.Identity
 				return new JsonResult("Algo salio mal");
 			}
 
-			return Page();
+			return RedirectToPage("/Index");
 		}
 
 		public async Task<IActionResult> OnPostVerificarEmailDisponible([FromQuery(Name = "mail")] string mail)
