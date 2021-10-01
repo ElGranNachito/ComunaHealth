@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComunaHealth.Migrations
 {
     [DbContext(typeof(ComunaDbContext))]
-    [Migration("20211001225450_inicial")]
+    [Migration("20211001231901_inicial")]
     partial class inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,7 +147,7 @@ namespace ComunaHealth.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Modelos.ModeloSolicitudPostergacionDeCita", b =>
+            modelBuilder.Entity("ComunaHealth.Modelos.ModeloSolicitudCambioHorarioDeCita", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -166,7 +166,7 @@ namespace ComunaHealth.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ModeloSolicitudPostergacionDeCita");
+                    b.ToTable("ModeloSolicitudCambioHorarioDeCita");
                 });
 
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloUsuario", b =>
@@ -320,23 +320,23 @@ namespace ComunaHealth.Migrations
                     b.ToTable("TICitaPaciente");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TICitaSolicitudPostergacionDeCita", b =>
+            modelBuilder.Entity("ComunaHealth.Relaciones.TICitaSolicitudCambioHorarioCita", b =>
                 {
-                    b.Property<int>("IdSolicitudPostergacionDeCita")
+                    b.Property<int>("IdSolicitudCambioHorarioDeCita")
                         .HasColumnType("int");
 
                     b.Property<int>("IdCita")
                         .HasColumnType("int");
 
-                    b.HasKey("IdSolicitudPostergacionDeCita", "IdCita");
+                    b.HasKey("IdSolicitudCambioHorarioDeCita", "IdCita");
 
                     b.HasIndex("IdCita")
                         .IsUnique();
 
-                    b.HasIndex("IdSolicitudPostergacionDeCita")
+                    b.HasIndex("IdSolicitudCambioHorarioDeCita")
                         .IsUnique();
 
-                    b.ToTable("TICitaSolicitudPostergacionDeCita");
+                    b.ToTable("TICitaSolicitudCambioHorarioCita");
                 });
 
             modelBuilder.Entity("ComunaHealth.Relaciones.TIContenedorDeEntradasEntrada<ComunaHealth.Modelos.ModeloEntrada>", b =>
@@ -498,7 +498,7 @@ namespace ComunaHealth.Migrations
                     b.ToTable("TIUsuarioNoAdministradorMensajeChat");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudPostergacionCita", b =>
+            modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudCambioHorarioCita", b =>
                 {
                     b.Property<int>("IdSolicitudPostergacionCita")
                         .HasColumnType("int");
@@ -513,7 +513,7 @@ namespace ComunaHealth.Migrations
 
                     b.HasIndex("IdUsuarioNoAdministrador");
 
-                    b.ToTable("TIUsuarioNoAdministradorSolicitudPostergacionCita");
+                    b.ToTable("TIUsuarioNoAdministradorSolicitudCambioHorarioCita");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -537,61 +537,6 @@ namespace ComunaHealth.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser<int>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Identity", "(1, 1)");
-
-                    b.ToTable("IdentityUser<int>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -858,23 +803,23 @@ namespace ComunaHealth.Migrations
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TICitaSolicitudPostergacionDeCita", b =>
+            modelBuilder.Entity("ComunaHealth.Relaciones.TICitaSolicitudCambioHorarioCita", b =>
                 {
                     b.HasOne("ComunaHealth.Modelos.ModeloCita", "Cita")
-                        .WithOne("SolicitudDePostergacion")
-                        .HasForeignKey("ComunaHealth.Relaciones.TICitaSolicitudPostergacionDeCita", "IdCita")
+                        .WithOne("SolicitudCambioHorario")
+                        .HasForeignKey("ComunaHealth.Relaciones.TICitaSolicitudCambioHorarioCita", "IdCita")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ComunaHealth.Modelos.ModeloSolicitudPostergacionDeCita", "SolicitudPostergacionDeCita")
+                    b.HasOne("ComunaHealth.Modelos.ModeloSolicitudCambioHorarioDeCita", "SolicitudCambioHorarioDeCita")
                         .WithOne("Cita")
-                        .HasForeignKey("ComunaHealth.Relaciones.TICitaSolicitudPostergacionDeCita", "IdSolicitudPostergacionDeCita")
+                        .HasForeignKey("ComunaHealth.Relaciones.TICitaSolicitudCambioHorarioCita", "IdSolicitudCambioHorarioDeCita")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cita");
 
-                    b.Navigation("SolicitudPostergacionDeCita");
+                    b.Navigation("SolicitudCambioHorarioDeCita");
                 });
 
             modelBuilder.Entity("ComunaHealth.Relaciones.TIContenedorDeEntradasEntrada<ComunaHealth.Modelos.ModeloEntrada>", b =>
@@ -1067,11 +1012,11 @@ namespace ComunaHealth.Migrations
                     b.Navigation("UsuarioNoAdministrador");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudPostergacionCita", b =>
+            modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudCambioHorarioCita", b =>
                 {
-                    b.HasOne("ComunaHealth.Modelos.ModeloSolicitudPostergacionDeCita", "SolicitudPostergacionCita")
+                    b.HasOne("ComunaHealth.Modelos.ModeloSolicitudCambioHorarioDeCita", "SolicitudPostergacionCita")
                         .WithOne("Solicitante")
-                        .HasForeignKey("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudPostergacionCita", "IdSolicitudPostergacionCita")
+                        .HasForeignKey("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudCambioHorarioCita", "IdSolicitudPostergacionCita")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1165,7 +1110,7 @@ namespace ComunaHealth.Migrations
                     b.Navigation("Paciente")
                         .IsRequired();
 
-                    b.Navigation("SolicitudDePostergacion");
+                    b.Navigation("SolicitudCambioHorario");
                 });
 
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloContenedorDeEntradas<ComunaHealth.Modelos.ModeloEntrada>", b =>
@@ -1178,7 +1123,7 @@ namespace ComunaHealth.Migrations
                     b.Navigation("Entradas");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Modelos.ModeloSolicitudPostergacionDeCita", b =>
+            modelBuilder.Entity("ComunaHealth.Modelos.ModeloSolicitudCambioHorarioDeCita", b =>
                 {
                     b.Navigation("Cita")
                         .IsRequired();
