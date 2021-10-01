@@ -32,21 +32,9 @@ namespace ComunaHealth.Data
 			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<ModeloUsuario>().HasAlternateKey(u => u.DNI);
-			// Medico:
-
-            // - Medico Paciente:
-            //modelBuilder.Entity<TIMedicoPaciente>().HasKey(e => new { e.IdMedico, e.IdPaciente});
-
-            //modelBuilder.Entity<TIMedicoPaciente>()
-            //    .HasOne(i => i.Paciente)
-            //    .WithMany(m => m.Medicos)
-            //    .HasForeignKey(i => i.IdPaciente);
-
-            //modelBuilder.Entity<TIMedicoPaciente>()
-            //    .HasOne(i => i.Medico)
-            //    .WithMany(p => p.Pacientes)
-            //    .HasForeignKey(ip => ip.IdMedico);
-
+			
+            
+            // Medico:
 
             // - Medico Cita:
             modelBuilder.Entity<TICitaMedico>().HasKey(e => new { e.IdMedico, e.IdCita});
@@ -81,18 +69,8 @@ namespace ComunaHealth.Data
                 .WithMany(p => p.NotasPacientes)
                 .HasForeignKey(ip => ip.IdMedico);
 
+
 			// Paciente:
-
-            // - Paciente Medico:
-            //modelBuilder.Entity<TIPacienteMedico>().HasKey(e => new { e.IdPaciente, e.IdMedico});
-
-            //modelBuilder.Entity<TIPacienteMedico>()
-            //    .HasOne(i => i.Medico);
-
-            //modelBuilder.Entity<TIPacienteMedico>()
-            //    .HasOne(i => i.Paciente)
-            //    .WithMany(p => p.Medicos)
-            //    .HasForeignKey(ip => ip.IdPaciente);
 
             // - Paciente Cita:
             modelBuilder.Entity<TICitaPaciente>().HasKey(e => new { e.IdPaciente, e.IdCita});
@@ -153,40 +131,40 @@ namespace ComunaHealth.Data
                 .HasForeignKey<TICitaMedico>(ip => ip.IdCita);
 
             // - Cita SolicitudPostergacion:
-            modelBuilder.Entity<TICitaSolicitudPostergacionDeCita>().HasKey(e => new { e.IdCita, e.IdSolicitudPostergacionDeCita});
+            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>().HasKey(e => new { e.IdCita, e.IdSolicitudCambioHorarioDeCita});
 
-            modelBuilder.Entity<TICitaSolicitudPostergacionDeCita>()
-                .HasOne(i => i.SolicitudPostergacionDeCita);
+            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
+                .HasOne(i => i.SolicitudCambioHorarioDeCita);
 
-            modelBuilder.Entity<TICitaSolicitudPostergacionDeCita>()
+            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
                 .HasOne(i => i.Cita)
-                .WithOne(p => p.SolicitudDePostergacion)
-                .HasForeignKey<TICitaSolicitudPostergacionDeCita>(ip => ip.IdCita);
+                .WithOne(p => p.SolicitudCambioHorario)
+                .HasForeignKey<TICitaSolicitudCambioHorarioCita>(ip => ip.IdCita);
 
 
             // SolicitudPostergacionDeCita: 
 
             // - SolicitudPostergacion UsuarioNoAdministrador:
-            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudPostergacionCita>().HasKey(e => new { e.IdSolicitudPostergacionCita, e.IdUsuarioNoAdministrador });
+            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>().HasKey(e => new { e.IdSolicitudPostergacionCita, e.IdUsuarioNoAdministrador });
 
-            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudPostergacionCita>()
+            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>()
                 .HasOne(i => i.UsuarioNoAdministrador);
 
-            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudPostergacionCita>()
+            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>()
                 .HasOne(i => i.SolicitudPostergacionCita)
                 .WithOne(p => p.Solicitante)
-                .HasForeignKey<TIUsuarioNoAdministradorSolicitudPostergacionCita>(ip => ip.IdSolicitudPostergacionCita);
+                .HasForeignKey<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>(ip => ip.IdSolicitudPostergacionCita);
 
             // - SolicitudPostergacion Cita:
-            modelBuilder.Entity<TICitaSolicitudPostergacionDeCita>().HasKey(e => new { e.IdSolicitudPostergacionDeCita, e.IdCita});
+            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>().HasKey(e => new { e.IdSolicitudCambioHorarioDeCita, e.IdCita});
 
-            modelBuilder.Entity<TICitaSolicitudPostergacionDeCita>()
+            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
                 .HasOne(i => i.Cita);
 
-            modelBuilder.Entity<TICitaSolicitudPostergacionDeCita>()
-                .HasOne(i => i.SolicitudPostergacionDeCita)
+            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
+                .HasOne(i => i.SolicitudCambioHorarioDeCita)
                 .WithOne(p => p.Cita)
-                .HasForeignKey<TICitaSolicitudPostergacionDeCita>(ip => ip.IdSolicitudPostergacionDeCita);
+                .HasForeignKey<TICitaSolicitudCambioHorarioCita>(ip => ip.IdSolicitudCambioHorarioDeCita);
 
             // ContenedorDeEntradas:
 

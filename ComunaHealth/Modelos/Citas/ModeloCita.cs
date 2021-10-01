@@ -54,6 +54,6 @@ namespace ComunaHealth.Modelos
         /// <summary>
         /// Solicitud para la postergacion de la fecha apuntada para la cita.
         /// </summary>
-        public TICitaSolicitudPostergacionDeCita SolicitudDePostergacion { get; set; }
+        public TICitaSolicitudCambioHorarioCita SolicitudCambioHorario { get; set; }
     }
 }

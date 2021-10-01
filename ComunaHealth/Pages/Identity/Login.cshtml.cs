@@ -25,13 +25,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
-namespace ComunaHealth.Pages.Citas
+namespace ComunaHealth.Pages.Identity
 {
 	/// <summary>
-    /// Modelo de la pagina encargada de menu de citas medicas de un usuario
+    /// Modelo de la pagina encargada de lidiar con el registro de usuarios
     /// </summary>
     [AllowAnonymous]
-    public class MenuCitasModel : PageModel
+    public class LoginModel : PageModel
     {
 	    private readonly ComunaDbContext _dbcontext;
 	    private readonly UserManager<ModeloUsuario> _userManager;
@@ -39,9 +39,9 @@ namespace ComunaHealth.Pages.Citas
 	    private readonly IConfiguration _config;
 
 		[BindProperty]
-		public ViewModelMenuCitas ViewModelMenuCitas { get; set; } = new ViewModelMenuCitas();
+		public ViewModelLogin ViewModelLogin { get; set; } = new ViewModelLogin();
 
-		public MenuCitasModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, SignInManager<ModeloUsuario> signInManager, IConfiguration config)
+		public LoginModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, SignInManager<ModeloUsuario> signInManager, IConfiguration config)
 	    {
 		    _dbcontext   = dbcontext;
 		    _userManager = userManager;
@@ -62,7 +62,7 @@ namespace ComunaHealth.Pages.Citas
 
 			var resultado = (await Task.Run(() =>
 			{
-				return _dbcontext.Users.Where(u => u.Email == ViewModelMenuCitas.EMail);
+				return _dbcontext.Users.Where(u => u.Email == ViewModelLogin.EMail);
 			})).FirstOrDefault();
 
 			if (resultado == null)
@@ -72,7 +72,7 @@ namespace ComunaHealth.Pages.Citas
 				return Page();
 			}
 
-			if(_userManager.PasswordHasher.VerifyHashedPassword(resultado, resultado.PasswordHash, ViewModelMenuCitas.Contraseña) != PasswordVerificationResult.Success) 
+			if(_userManager.PasswordHasher.VerifyHashedPassword(resultado, resultado.PasswordHash, ViewModelLogin.Contraseña) != PasswordVerificationResult.Success) 
 			{
 				ModelState.AddModelError("ViewModelLogin.EMail", "Mail o usuario incorrecto");
 
@@ -99,7 +99,7 @@ namespace ComunaHealth.Pages.Citas
 
 	#region ViewModelLogin
 
-	public class ViewModelMenuCitas
+	public class ViewModelLogin
     {
 		[Display(Name = "Mail")]
 		[StringLength(320)]

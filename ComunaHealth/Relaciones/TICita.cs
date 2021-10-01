@@ -14,13 +14,13 @@ namespace ComunaHealth.Relaciones
     }
 
     /// <summary>
-    /// Representa una relacion de una <see cref="ModeloSolicitudPostergacionDeCita"/> con la <see cref="ModeloCita"/> a postergar.
+    /// Representa una relacion de una <see cref="ModeloSolicitudCambioHorarioDeCita"/> con la <see cref="ModeloCita"/> a postergar.
     /// </summary>
-    public class TICitaSolicitudPostergacionDeCita : TICita
+    public class TICitaSolicitudCambioHorarioCita : TICita
     {
-        [ForeignKey(nameof(SolicitudPostergacionDeCita))]
-        public int IdSolicitudPostergacionDeCita { get; set; }
-        public ModeloSolicitudPostergacionDeCita SolicitudPostergacionDeCita { get; set; }
+        [ForeignKey(nameof(SolicitudCambioHorarioDeCita))]
+        public int IdSolicitudCambioHorarioDeCita { get; set; }
+        public ModeloSolicitudCambioHorarioDeCita SolicitudCambioHorarioDeCita { get; set; }
     }
 
     /// <summary>

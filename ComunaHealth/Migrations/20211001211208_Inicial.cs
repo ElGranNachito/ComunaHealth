@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ComunaHealth.Migrations
 {
-    public partial class inicial : Migration
+    public partial class Inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -133,7 +133,7 @@ namespace ComunaHealth.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ModeloSolicitudPostergacionDeCita",
+                name: "ModeloSolicitudCambioHorarioDeCita",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -144,7 +144,7 @@ namespace ComunaHealth.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ModeloSolicitudPostergacionDeCita", x => x.Id);
+                    table.PrimaryKey("PK_ModeloSolicitudCambioHorarioDeCita", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -614,31 +614,31 @@ namespace ComunaHealth.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TICitaSolicitudPostergacionDeCita",
+                name: "TICitaSolicitudCambioHorarioCita",
                 columns: table => new
                 {
                     IdCita = table.Column<int>(type: "int", nullable: false),
-                    IdSolicitudPostergacionDeCita = table.Column<int>(type: "int", nullable: false)
+                    IdSolicitudCambioHorarioDeCita = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TICitaSolicitudPostergacionDeCita", x => new { x.IdSolicitudPostergacionDeCita, x.IdCita });
+                    table.PrimaryKey("PK_TICitaSolicitudCambioHorarioCita", x => new { x.IdSolicitudCambioHorarioDeCita, x.IdCita });
                     table.ForeignKey(
-                        name: "FK_TICitaSolicitudPostergacionDeCita_ModeloCita_IdCita",
+                        name: "FK_TICitaSolicitudCambioHorarioCita_ModeloCita_IdCita",
                         column: x => x.IdCita,
                         principalTable: "ModeloCita",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TICitaSolicitudPostergacionDeCita_ModeloSolicitudPostergacionDeCita_IdSolicitudPostergacionDeCita",
-                        column: x => x.IdSolicitudPostergacionDeCita,
-                        principalTable: "ModeloSolicitudPostergacionDeCita",
+                        name: "FK_TICitaSolicitudCambioHorarioCita_ModeloSolicitudCambioHorarioDeCita_IdSolicitudCambioHorarioDeCita",
+                        column: x => x.IdSolicitudCambioHorarioDeCita,
+                        principalTable: "ModeloSolicitudCambioHorarioDeCita",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TIUsuarioNoAdministradorSolicitudPostergacionCita",
+                name: "TIUsuarioNoAdministradorSolicitudCambioHorarioCita",
                 columns: table => new
                 {
                     IdUsuarioNoAdministrador = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -646,17 +646,17 @@ namespace ComunaHealth.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TIUsuarioNoAdministradorSolicitudPostergacionCita", x => new { x.IdSolicitudPostergacionCita, x.IdUsuarioNoAdministrador });
+                    table.PrimaryKey("PK_TIUsuarioNoAdministradorSolicitudCambioHorarioCita", x => new { x.IdSolicitudPostergacionCita, x.IdUsuarioNoAdministrador });
                     table.ForeignKey(
-                        name: "FK_TIUsuarioNoAdministradorSolicitudPostergacionCita_AspNetUsers_IdUsuarioNoAdministrador",
+                        name: "FK_TIUsuarioNoAdministradorSolicitudCambioHorarioCita_AspNetUsers_IdUsuarioNoAdministrador",
                         column: x => x.IdUsuarioNoAdministrador,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TIUsuarioNoAdministradorSolicitudPostergacionCita_ModeloSolicitudPostergacionDeCita_IdSolicitudPostergacionCita",
+                        name: "FK_TIUsuarioNoAdministradorSolicitudCambioHorarioCita_ModeloSolicitudCambioHorarioDeCita_IdSolicitudPostergacionCita",
                         column: x => x.IdSolicitudPostergacionCita,
-                        principalTable: "ModeloSolicitudPostergacionDeCita",
+                        principalTable: "ModeloSolicitudCambioHorarioDeCita",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -739,15 +739,15 @@ namespace ComunaHealth.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TICitaSolicitudPostergacionDeCita_IdCita",
-                table: "TICitaSolicitudPostergacionDeCita",
+                name: "IX_TICitaSolicitudCambioHorarioCita_IdCita",
+                table: "TICitaSolicitudCambioHorarioCita",
                 column: "IdCita",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TICitaSolicitudPostergacionDeCita_IdSolicitudPostergacionDeCita",
-                table: "TICitaSolicitudPostergacionDeCita",
-                column: "IdSolicitudPostergacionDeCita",
+                name: "IX_TICitaSolicitudCambioHorarioCita_IdSolicitudCambioHorarioDeCita",
+                table: "TICitaSolicitudCambioHorarioCita",
+                column: "IdSolicitudCambioHorarioDeCita",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -819,14 +819,14 @@ namespace ComunaHealth.Migrations
                 column: "IdUsuarioNoAdministrador");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TIUsuarioNoAdministradorSolicitudPostergacionCita_IdSolicitudPostergacionCita",
-                table: "TIUsuarioNoAdministradorSolicitudPostergacionCita",
+                name: "IX_TIUsuarioNoAdministradorSolicitudCambioHorarioCita_IdSolicitudPostergacionCita",
+                table: "TIUsuarioNoAdministradorSolicitudCambioHorarioCita",
                 column: "IdSolicitudPostergacionCita",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TIUsuarioNoAdministradorSolicitudPostergacionCita_IdUsuarioNoAdministrador",
-                table: "TIUsuarioNoAdministradorSolicitudPostergacionCita",
+                name: "IX_TIUsuarioNoAdministradorSolicitudCambioHorarioCita_IdUsuarioNoAdministrador",
+                table: "TIUsuarioNoAdministradorSolicitudCambioHorarioCita",
                 column: "IdUsuarioNoAdministrador");
         }
 
@@ -863,7 +863,7 @@ namespace ComunaHealth.Migrations
                 name: "TICitaPaciente");
 
             migrationBuilder.DropTable(
-                name: "TICitaSolicitudPostergacionDeCita");
+                name: "TICitaSolicitudCambioHorarioCita");
 
             migrationBuilder.DropTable(
                 name: "TIContenedorDeEntradasEntrada<ModeloEntrada>");
@@ -896,7 +896,7 @@ namespace ComunaHealth.Migrations
                 name: "TIUsuarioNoAdministradorMensajeChat");
 
             migrationBuilder.DropTable(
-                name: "TIUsuarioNoAdministradorSolicitudPostergacionCita");
+                name: "TIUsuarioNoAdministradorSolicitudCambioHorarioCita");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -920,7 +920,7 @@ namespace ComunaHealth.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ModeloSolicitudPostergacionDeCita");
+                name: "ModeloSolicitudCambioHorarioDeCita");
         }
     }
 }
