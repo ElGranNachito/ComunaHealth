@@ -74,7 +74,7 @@ namespace ComunaHealth.Pages
 		/// </summary>
 		/// <returns></returns>
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = $"{Constantes.NombreRolPaciente}, {Constantes.NombreRolAdministrador}"]
+		[Authorize(Roles = Constantes.NombreRolPaciente + ", " + Constantes.NombreRolAdministrador)]
 		public async Task<IActionResult> OnPostBuscarMedicos()
 		{
 			MedicosEncontrados?.Clear();
@@ -113,7 +113,7 @@ namespace ComunaHealth.Pages
 		}
 
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = $"{Constantes.NombreRolMedico}, {Constantes.NombreRolAdministrador}")]
+		[Authorize(Roles = Constantes.NombreRolMedico + ", " + Constantes.NombreRolAdministrador)]
 		public async Task<IActionResult> OnPostBuscarPacientes()
 		{
 			PacientesEncontrados?.Clear();

@@ -6,7 +6,7 @@
         <!--Tipo de cuenta buscada-->
         <select 
                 class="custom-select"
-                asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(new { ETipoCuenta.Administrador, ETipoCuenta.AdministradorJefe, ETipoCuenta.NINGUNO}))">
+                asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(new []{ ETipoCuenta.Administrador, ETipoCuenta.AdministradorJefe, ETipoCuenta.NINGUNO}))">
 
         </select>
     </div>
