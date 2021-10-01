@@ -24,13 +24,13 @@ namespace ComunaHealth.Relaciones
     }
 
     /// <summary>
-    /// Representa una relacion de un <see cref="ModeloUsuarioNoAdministrador"/> con la <see cref="ModeloSolicitudPostergacionDeCita"/> que tenga pendiente
+    /// Representa una relacion de un <see cref="ModeloUsuarioNoAdministrador"/> con la <see cref="ModeloSolicitudCambioHorarioDeCita"/> que tenga pendiente
     /// </summary>
-    public class TIUsuarioNoAdministradorSolicitudPostergacionCita : TIUsuarioNoAdministrador
+    public class TIUsuarioNoAdministradorSolicitudCambioHorarioCita : TIUsuarioNoAdministrador
     {
         [ForeignKey(nameof(SolicitudPostergacionCita))]
         public int IdSolicitudPostergacionCita { get; set; }
-        public ModeloSolicitudPostergacionDeCita SolicitudPostergacionCita { get; set; }
+        public ModeloSolicitudCambioHorarioDeCita SolicitudPostergacionCita { get; set; }
     }
 
     /// <summary>

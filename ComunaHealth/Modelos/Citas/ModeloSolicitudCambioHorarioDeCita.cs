@@ -7,19 +7,19 @@ namespace ComunaHealth.Modelos
     /// <summary>
     /// Modelo de datos que representa a la solicitud de postergacion de una cita medica.
     /// </summary>
-    public class ModeloSolicitudPostergacionDeCita : ModeloBase
+    public class ModeloSolicitudCambioHorarioDeCita : ModeloBase
     {
         /// <summary>
         /// Usuario no administrador que solicita para postergacion de la cita.
         /// </summary>
         [Required]
-        public TIUsuarioNoAdministradorSolicitudPostergacionCita Solicitante { get; set; }
+        public TIUsuarioNoAdministradorSolicitudCambioHorarioCita Solicitante { get; set; }
 
         /// <summary>
         /// Cita que se pretende postergar.
         /// </summary>
         [Required]
-        public TICitaSolicitudPostergacionDeCita Cita { get; set; }
+        public TICitaSolicitudCambioHorarioCita Cita { get; set; }
 
         /// <summary>
         /// Razon de la solicitud.
