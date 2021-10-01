@@ -13,12 +13,12 @@ namespace ComunaHealth.Modelos
         /// <summary>
         /// Diario de experiencias del paciente.
         /// </summary>
-        public List<TIPacienteContenedorEntrada> Diario              { get; set; } = new List<TIPacienteContenedorEntrada>(); 
+        public List<TIPacienteContenedorEntrada> Diario { get; set; } = new List<TIPacienteContenedorEntrada>(); 
 
         /// <summary>
         /// Notas sobre cambios en el estilo de vida del paciente.
         /// </summary>
-        public List<TIPacienteContenedorEntrada> CambiosEstiloDeVida { get; set; } = new List<TIPacienteContenedorEntrada>(); 
+        public List<TIPacienteContenedorEntradaCambiosEstiloVida> CambiosEstiloDeVida { get; set; } = new List<TIPacienteContenedorEntradaCambiosEstiloVida>(); 
 
 		/// <summary>
 		/// Historial medico del paciente.
@@ -28,7 +28,7 @@ namespace ComunaHealth.Modelos
         /// <summary>
 		/// Medicos añadidos por el paciente.
 		/// </summary>
-        public List<TIMedicoPaciente> Medicos { get; set; } = new List<TIMedicoPaciente>();
+        public List<ModeloMedico> Medicos { get; set; } = new List<ModeloMedico>();
 
 		/// <summary>
 		/// Citas con sus medicos.

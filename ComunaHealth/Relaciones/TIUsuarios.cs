@@ -9,7 +9,7 @@ namespace ComunaHealth.Relaciones
     public abstract class TIUsuarioNoAdministrador
     {
         [ForeignKey(nameof(UsuarioNoAdministrador))]
-        public int IdUsuarioNoAdministrador { get; set; }
+        public string IdUsuarioNoAdministrador { get; set; }
         public ModeloUsuarioNoAdministrador UsuarioNoAdministrador { get; set; }
     }
 
@@ -51,18 +51,8 @@ namespace ComunaHealth.Relaciones
     public abstract class TIMedico
     {
         [ForeignKey(nameof(Medico))]
-        public int IdMedico { get; set; }
+        public string IdMedico { get; set; }
         public ModeloMedico Medico { get; set; }
-    }
-
-    /// <summary>
-    /// Representa una relacion de un <see cref="ModeloMedico"/> con el <see cref="ModeloPaciente"/> que tiene contacto
-    /// </summary>
-    public class TIMedicoPaciente : TIMedico
-    {
-        [ForeignKey(nameof(Paciente))]
-        public int IdPaciente { get; set; }
-        public ModeloPaciente Paciente { get; set; }
     }
 
     /// <summary>
@@ -103,7 +93,7 @@ namespace ComunaHealth.Relaciones
     public abstract class TIPaciente
     {
         [ForeignKey(nameof(Paciente))]
-        public int IdPaciente { get; set; }
+        public string IdPaciente { get; set; }
         public ModeloPaciente Paciente { get; set; }
     }
 
@@ -122,9 +112,19 @@ namespace ComunaHealth.Relaciones
     /// </summary>
     public class TIPacienteContenedorEntrada : TIPaciente
     {
-        [ForeignKey(nameof(Entrada))]
-        public int IdEntrada { get; set; }
-        public ModeloContenedorDeEntradas<ModeloEntrada> Entrada { get; set; }
+        [ForeignKey(nameof(ContenedorEntrada))]
+        public int IdContenedorEntrada { get; set; }
+        public ModeloContenedorDeEntradas<ModeloEntrada> ContenedorEntrada { get; set; }
+    }
+
+    /// <summary>
+    /// Representa una relacion de un <see cref="ModeloPaciente"/> con un <see cref="ModeloContenedorDeEntradas<ModeloEntrada>"/> para describir sus cambios en el estilo de vida.
+    /// </summary>
+    public class TIPacienteContenedorEntradaCambiosEstiloVida : TIPaciente 
+    {
+        [ForeignKey(nameof(ContenedorEntrada))]
+        public int IdContenedorEntrada { get; set; }
+        public ModeloContenedorDeEntradas<ModeloEntrada> ContenedorEntrada { get; set; }
     }
 
     /// <summary>
