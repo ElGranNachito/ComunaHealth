@@ -136,16 +136,14 @@ namespace ComunaHealth.Pages.Identity
 			//Establecemos el estado de la cuenta creada como verificacion pendiente
 			usuarioCreado.EstadoCuenta = EEstadoCuenta.VerificacionPendiente;
 
-			await _userManager.AddToRoleAsync(usuarioCreado, 
-				RegistroDatosGenerales.TipoCuenta == ETipoCuenta.Paciente 
-				? Constantes.NombreRolPaciente 
-				: Constantes.NombreRolMedico);
-
-            try
+			try
 			{
 				await _userManager.CreateAsync(usuarioCreado);
 
-				_dbcontext.Add(usuarioCreado);
+				await _userManager.AddToRoleAsync(usuarioCreado,
+					RegistroDatosGenerales.TipoCuenta == ETipoCuenta.Paciente
+						? Constantes.NombreRolPaciente
+						: Constantes.NombreRolMedico);
 
 				await _dbcontext.SaveChangesAsync();
 			}

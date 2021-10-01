@@ -6,9 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
 using ComunaHealth.Modelos;
+using ComunaHealth.Modelos.Identity.Usuarios;
 
 namespace ComunaHealth
 {
@@ -77,7 +79,7 @@ namespace ComunaHealth
                 //Configuracion de las restricciones para crearse un usuario
                 configIdentity.User = new UserOptions
                 {
-                    AllowedUserNameCharacters = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789@.",
+                    AllowedUserNameCharacters = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789@. ",
                     RequireUniqueEmail = true
                 };
 
@@ -119,6 +121,7 @@ namespace ComunaHealth
 
             CrearRolesSiNoExisten(servicios.GetRequiredService<RoleManager<ModeloRol>>(), servicios.GetRequiredService<UserManager<ModeloUsuario>>()).Wait();
             CrearBaseDeDatos(servicios).Wait();
+            CrearAdministradorJefeSiNoExiste(servicios).Wait();
         }
 
         /// <summary>
@@ -157,6 +160,48 @@ namespace ComunaHealth
 	        await using (var context = servicios.CreateScope().ServiceProvider.GetRequiredService<ComunaDbContext>())
 	        {
 		        await context.Database.MigrateAsync();
+	        }
+        }
+
+        /// <summary>
+        /// Crea una cuenta para el administrador jefe con credenciales por defecto
+        /// </summary>
+        /// <param name="servicios"></param>
+        /// <returns></returns>
+        private async Task CrearAdministradorJefeSiNoExiste(IServiceProvider servicios)
+        {
+	        await using (var context = servicios.CreateScope().ServiceProvider.GetRequiredService<ComunaDbContext>())
+	        {
+		        if (!await context.AdministradoresJefe.AnyAsync())
+		        {
+			        var userManager = servicios.GetRequiredService<UserManager<ModeloUsuario>>();
+                    
+			        ModeloAdministradorJefe administradorJefe = new ModeloAdministradorJefe
+			        {
+				        UserName = "Admin Jefe",
+
+				        TiposCuenta  = ETipoCuenta.AdministradorJefe,
+				        EstadoCuenta = EEstadoCuenta.Habilitada,
+                        Email = "nomail@nada.com"
+			        };
+
+			        administradorJefe.PasswordHash = userManager.PasswordHasher.HashPassword(administradorJefe, @"*&//--ElJefe--\\=¿?");
+                    
+			        try
+			        {
+				        await userManager.CreateAsync(administradorJefe);
+                        
+				        await userManager.AddToRoleAsync(administradorJefe, Constantes.NombreRolAdministradorjefe);
+
+                        await context.SaveChangesAsync();
+			        }
+			        catch (Exception)
+			        {
+				        context.Remove(administradorJefe);
+
+				        await context.SaveChangesAsync();
+                    }
+		        }
 	        }
         }
     }

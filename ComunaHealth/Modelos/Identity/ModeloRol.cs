@@ -11,7 +11,7 @@ namespace ComunaHealth.Modelos
 	/// <summary>
 	/// Modelo para un rol de comuna health
 	/// </summary>
-	public class ModeloRol : IdentityRole
+	public class ModeloRol : IdentityRole<int>
 	{
 		/// <summary>
 		/// Tipo de cuenta representado por este rol

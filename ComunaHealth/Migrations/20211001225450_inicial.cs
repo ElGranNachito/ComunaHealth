@@ -11,7 +11,8 @@ namespace ComunaHealth.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     EspecializacionRepresentada = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -26,7 +27,8 @@ namespace ComunaHealth.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     DNI = table.Column<int>(type: "int", nullable: false),
                     TiposCuenta = table.Column<int>(type: "int", nullable: false),
                     EstadoCuenta = table.Column<int>(type: "int", nullable: false),
@@ -59,6 +61,32 @@ namespace ComunaHealth.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.UniqueConstraint("AK_AspNetUsers_DNI", x => x.DNI);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IdentityUser<int>",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdentityUser<int>", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,7 +181,7 @@ namespace ComunaHealth.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -174,7 +202,7 @@ namespace ComunaHealth.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -196,7 +224,7 @@ namespace ComunaHealth.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,8 +241,8 @@ namespace ComunaHealth.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,7 +265,7 @@ namespace ComunaHealth.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -257,8 +285,8 @@ namespace ComunaHealth.Migrations
                 name: "ModeloMedicoModeloPaciente",
                 columns: table => new
                 {
-                    MedicosId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PacientesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    MedicosId = table.Column<int>(type: "int", nullable: false),
+                    PacientesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,7 +310,7 @@ namespace ComunaHealth.Migrations
                 columns: table => new
                 {
                     IdChat = table.Column<int>(type: "int", nullable: false),
-                    IdUsuario = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -306,7 +334,7 @@ namespace ComunaHealth.Migrations
                 columns: table => new
                 {
                     IdCita = table.Column<int>(type: "int", nullable: false),
-                    IdMedico = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IdMedico = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -330,7 +358,7 @@ namespace ComunaHealth.Migrations
                 columns: table => new
                 {
                     IdCita = table.Column<int>(type: "int", nullable: false),
-                    IdPaciente = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IdPaciente = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -353,7 +381,7 @@ namespace ComunaHealth.Migrations
                 name: "TIMedicoContenedorEntrada",
                 columns: table => new
                 {
-                    IdMedico = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdMedico = table.Column<int>(type: "int", nullable: false),
                     IdEntrada = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -377,7 +405,7 @@ namespace ComunaHealth.Migrations
                 name: "TIPacienteContenedorEntrada",
                 columns: table => new
                 {
-                    IdPaciente = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
                     IdContenedorEntrada = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -401,7 +429,7 @@ namespace ComunaHealth.Migrations
                 name: "TIPacienteContenedorEntradaCambiosEstiloVida",
                 columns: table => new
                 {
-                    IdPaciente = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
                     IdContenedorEntrada = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -425,7 +453,7 @@ namespace ComunaHealth.Migrations
                 name: "TIMedicoContenedorEntradaHistorialMedico",
                 columns: table => new
                 {
-                    IdMedico = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdMedico = table.Column<int>(type: "int", nullable: false),
                     IdEntradaHistorialMedico = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -449,7 +477,7 @@ namespace ComunaHealth.Migrations
                 name: "TIPacienteContenedorEntradaHistorialMedico",
                 columns: table => new
                 {
-                    IdPaciente = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
                     IdEntradaHistorialMedico = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -473,7 +501,7 @@ namespace ComunaHealth.Migrations
                 name: "TIAdministradorLogAdministrador",
                 columns: table => new
                 {
-                    IdAdministrador = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdAdministrador = table.Column<int>(type: "int", nullable: false),
                     IdLogAdministrador = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -545,7 +573,7 @@ namespace ComunaHealth.Migrations
                 name: "TIMedicoEntradaHistorialMedico",
                 columns: table => new
                 {
-                    IdMedico = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdMedico = table.Column<int>(type: "int", nullable: false),
                     IdEntradaHistorialMedico = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -569,7 +597,7 @@ namespace ComunaHealth.Migrations
                 name: "TIPacienteEntradaHistorialMedico",
                 columns: table => new
                 {
-                    IdPaciente = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
                     IdEntradaHistorialMedico = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -593,7 +621,7 @@ namespace ComunaHealth.Migrations
                 name: "TIUsuarioNoAdministradorMensajeChat",
                 columns: table => new
                 {
-                    IdUsuarioNoAdministrador = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdUsuarioNoAdministrador = table.Column<int>(type: "int", nullable: false),
                     IdMensajeChat = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -641,7 +669,7 @@ namespace ComunaHealth.Migrations
                 name: "TIUsuarioNoAdministradorSolicitudPostergacionCita",
                 columns: table => new
                 {
-                    IdUsuarioNoAdministrador = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdUsuarioNoAdministrador = table.Column<int>(type: "int", nullable: false),
                     IdSolicitudPostergacionCita = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -846,6 +874,9 @@ namespace ComunaHealth.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "IdentityUser<int>");
 
             migrationBuilder.DropTable(
                 name: "ModeloMedicoModeloPaciente");

@@ -47,7 +47,7 @@ namespace ComunaHealth.Relaciones
     public class TIChatUsuario : TIChat
     {
         [ForeignKey(nameof(Usuario))]
-        public string IdUsuario { get; set; }
+        public int IdUsuario { get; set; }
         public ModeloUsuario Usuario { get; set; }
     }
 }

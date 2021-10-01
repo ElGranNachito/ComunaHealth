@@ -9,7 +9,7 @@ namespace ComunaHealth.Relaciones
     public abstract class TIUsuarioNoAdministrador
     {
         [ForeignKey(nameof(UsuarioNoAdministrador))]
-        public string IdUsuarioNoAdministrador { get; set; }
+        public int IdUsuarioNoAdministrador { get; set; }
         public ModeloUsuarioNoAdministrador UsuarioNoAdministrador { get; set; }
     }
 
@@ -51,7 +51,7 @@ namespace ComunaHealth.Relaciones
     public abstract class TIMedico
     {
         [ForeignKey(nameof(Medico))]
-        public string IdMedico { get; set; }
+        public int IdMedico { get; set; }
         public ModeloMedico Medico { get; set; }
     }
 
@@ -93,7 +93,7 @@ namespace ComunaHealth.Relaciones
     public abstract class TIPaciente
     {
         [ForeignKey(nameof(Paciente))]
-        public string IdPaciente { get; set; }
+        public int IdPaciente { get; set; }
         public ModeloPaciente Paciente { get; set; }
     }
 

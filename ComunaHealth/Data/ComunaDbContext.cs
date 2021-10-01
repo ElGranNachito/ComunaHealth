@@ -16,7 +16,7 @@ namespace ComunaHealth.Data
 	/// <summary>
 	/// Data context de la aplicacion
 	/// </summary>
-	public class ComunaDbContext : IdentityDbContext<ModeloUsuario, ModeloRol, string>
+	public class ComunaDbContext : IdentityDbContext<ModeloUsuario, ModeloRol, int>
 	{
 		public DbSet<ModeloPaciente> Pacientes { get; set; }
 		public DbSet<ModeloMedico> Medicos { get; set; }
@@ -32,6 +32,7 @@ namespace ComunaHealth.Data
 			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<ModeloUsuario>().HasAlternateKey(u => u.DNI);
+			modelBuilder.Entity<IdentityUser<int>>().HasKey(u => u.Id).HasAnnotation("SqlServer:Identity", "(1, 1)");
 			// Medico:
 
             // - Medico Paciente:
