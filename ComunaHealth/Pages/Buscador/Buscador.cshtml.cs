@@ -33,7 +33,7 @@ namespace ComunaHealth.Pages
 	/// <summary>
 	/// Modelo de la pagina encargada de lidiar con el registro de usuarios
 	/// </summary>
-	[AllowAnonymous]
+	[Authorize]
 	public class BuscadorModel : PageModel
 	{
 		private readonly ComunaDbContext _dbcontext;
@@ -42,12 +42,19 @@ namespace ComunaHealth.Pages
 		private readonly IConfiguration _config;
 
 		[BindProperty]
+		public string Nombre { get; set; }
+
+		[BindProperty]
+		public string DNI { get; set; }
+
+		[BindProperty]
 		public EMunicipio Municipio { get; set; }
 
 		[BindProperty]
 		public string[] Especializaciones { get; set; }
 
 		public List<ModeloMedico> MedicosEncontrados { get; set; } = new List<ModeloMedico>();
+		public List<ModeloPaciente> PacientesEncontrados { get; set; } = new List<ModeloPaciente>();
 
 		public BuscadorModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, SignInManager<ModeloUsuario> signInManager, IConfiguration config)
 		{
@@ -62,30 +69,82 @@ namespace ComunaHealth.Pages
 
 		}
 
+		/// <summary>
+		/// Metodo que obtiene todos los medicos que cumplen con los parametros especificados
+		/// </summary>
+		/// <returns></returns>
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = $"{Constantes.NombreRolPaciente}, {Constantes.NombreRolAdministrador}"]
 		public async Task<IActionResult> OnPostBuscarMedicos()
 		{
-			var esto = string.Join(',', Especializaciones);
+			MedicosEncontrados?.Clear();
 
-			MedicosEncontrados = (await Task.Run(()=> _dbcontext.Medicos.FromSqlRaw(@"
-			SELECT * FROM [dbo].[AspNetUsers] 
-			WHERE Municipio = @municipio AND Especializaciones = @especializaciones", new SqlParameter("@municipio", 32), new SqlParameter("@especializaciones", string.Join(',', Especializaciones))))).ToList();
+			//Consulta apra obtener los medicos que cumplen con los parametros especificados
+			IQueryable<ModeloMedico> consultaMedicos = from medico in _dbcontext.Medicos select medico;
+
+			//Si el usuario ingreso un DNI entonces aplicamos filtro por DNI
+			if(!string.IsNullOrWhiteSpace(DNI))
+			{
+				consultaMedicos = consultaMedicos.Where(medico => medico.DNI == int.Parse(DNI));
+			}
+			
+			//Si el usuario ingreso un nombre entonces aplicamos filtro por nombre
+			if(!string.IsNullOrWhiteSpace(Nombre))
+			{
+				consultaMedicos = consultaMedicos.Where(medico => medico.UserName == Nombre);
+			}
+
+			//Si el usuario ingreso un municipio entonces aplicamos filtro por municipio
+			if(Municipio != EMunicipio.NINGUNO)
+			{
+				consultaMedicos = consultaMedicos.Where(medico => medico.Municipio == Municipio);
+			}
+
+			//Si el usuario ingreso especializaciones entonces aplicamos filtro por especializaciones
+			if(Especializaciones != null && Especializaciones.Length > 0)
+			{
+				consultaMedicos = consultaMedicos.Where(medico => medico.StringEspecializaciones == string.Join(", ", Especializaciones));
+			}
+			
+			//Ejecutamos la consulta
+			MedicosEncontrados = await consultaMedicos.ToListAsync();
 
 			return Page();
 		}
 
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = $"{Constantes.NombreRolMedico}, {Constantes.NombreRolAdministrador}")]
 		public async Task<IActionResult> OnPostBuscarPacientes()
 		{
+			PacientesEncontrados?.Clear();
+
+			var usuario = await _userManager.GetUserAsync(User);
+
+			//Consulta apra obtener los medicos que cumplen con los parametros especificados
+			IQueryable<ModeloPaciente> consultaPaciente = from medico in _dbcontext.Pacientes select medico;
+
+			//Si el usuario ingreso un DNI entonces aplicamos filtro por DNI
+			if (!string.IsNullOrWhiteSpace(DNI))
+			{
+				consultaPaciente = consultaPaciente.Where(paciente => paciente.DNI == int.Parse(DNI));
+			}
+
+			//Si el usuario ingreso un nombre entonces aplicamos filtro por nombre
+			if (!string.IsNullOrWhiteSpace(Nombre))
+			{
+				consultaPaciente = consultaPaciente.Where(paciente => paciente.UserName == Nombre);
+			}
+
+			PacientesEncontrados = await consultaPaciente.ToListAsync();
+
 			return Page();
 		}
 
-		public async Task<IActionResult> BuscarMedicos(
-			[FromQuery(Name = "nombre")] string nombre, 
-			[FromQuery(Name = "dni")]string dni, 
-			[FromQuery(Name = "profesion")] string profesion,
-			[FromQuery(Name = "municipio")] string municipio)
+		public async Task<IActionResult> OnPostComenzarChat()
 		{
+			var idUsuario = Request.Form["ID"];
+			
 			return Page();
 		}
-
 	}
 }
