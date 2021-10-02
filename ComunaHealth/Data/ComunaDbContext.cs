@@ -32,7 +32,7 @@ namespace ComunaHealth.Data
 			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<ModeloUsuario>().HasAlternateKey(u => u.DNI);
-			
+			modelBuilder.Entity<IdentityUser<int>>().Property(u => u.Id).HasAnnotation("SqlServer:Identity", "(1, 1)");
             
             // Medico:
 

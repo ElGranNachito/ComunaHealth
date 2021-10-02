@@ -41,19 +41,38 @@ namespace ComunaHealth.Pages
 		private readonly SignInManager<ModeloUsuario> _signInManager;
 		private readonly IConfiguration _config;
 
+		/// <summary>
+		/// Nombre del usuario buscado
+		/// </summary>
 		[BindProperty]
 		public string Nombre { get; set; }
 
+		/// <summary>
+		/// DNI del usuario buscado
+		/// </summary>
 		[BindProperty]
 		public string DNI { get; set; }
 
+		/// <summary>
+		/// Municipio donde reside el usuario buscado
+		/// </summary>
 		[BindProperty]
 		public EMunicipio Municipio { get; set; }
 
+		/// <summary>
+		/// Especializaciones del usuario (medico) buscado
+		/// </summary>
 		[BindProperty]
 		public string[] Especializaciones { get; set; }
 
+		/// <summary>
+		/// <see cref="ModeloMedico"/> encontrados que coinciden con los criterios ingresados
+		/// </summary>
 		public List<ModeloMedico> MedicosEncontrados { get; set; } = new List<ModeloMedico>();
+
+		/// <summary>
+		/// <see cref="ModeloPaciente"/> encontrados que coinciden con los criterios ingresados
+		/// </summary>
 		public List<ModeloPaciente> PacientesEncontrados { get; set; } = new List<ModeloPaciente>();
 
 		public BuscadorModel(ComunaDbContext dbcontext, UserManager<ModeloUsuario> userManager, SignInManager<ModeloUsuario> signInManager, IConfiguration config)
@@ -109,7 +128,7 @@ namespace ComunaHealth.Pages
 			//Ejecutamos la consulta
 			MedicosEncontrados = await consultaMedicos.ToListAsync();
 
-			return Page();
+			return Partial("_BuscadorMedicos", this);
 		}
 
 		[ValidateAntiForgeryToken]
@@ -137,7 +156,7 @@ namespace ComunaHealth.Pages
 
 			PacientesEncontrados = await consultaPaciente.ToListAsync();
 
-			return Page();
+			return Partial("_BuscadorPacientes", this);
 		}
 
 		public async Task<IActionResult> OnPostComenzarChat()

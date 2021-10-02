@@ -138,7 +138,11 @@ namespace ComunaHealth.Pages.Identity
 
 			try
 			{
+				_dbcontext.Attach(usuarioCreado).State = EntityState.Added;
+
 				await _userManager.CreateAsync(usuarioCreado);
+
+				await _dbcontext.SaveChangesAsync();
 
 				await _userManager.AddToRoleAsync(usuarioCreado,
 					RegistroDatosGenerales.TipoCuenta == ETipoCuenta.Paciente

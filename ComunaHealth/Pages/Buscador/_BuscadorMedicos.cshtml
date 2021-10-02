@@ -1,65 +1,69 @@
 ﻿@model ComunaHealth.Pages.BuscadorModel
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<div id="contenedor">
 
-<div class="container">
-    
-    <!-- Form busqueda medico -->
-    <form 
-        method="post"
-        class="d-flex flex-column justify-content-start align-top w-75">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
-        <!--Nombre del medico buscado-->
+    @*Form busqueda medico*@
+    <form method="post"
+          class="d-flex flex-column justify-content-start align-top w-75"
+          data-ajax="true"
+          data-ajax-method="post"
+          data-ajax-mode="replace"
+          data-ajax-update="#contenedor"
+          data-ajax-url="Buscador?handler=BuscarMedicos">
+
+        @*Nombre medico buscado*@
         <div class="form-group">
             <label asp-for="Nombre"></label>
-            <input type="text" class="form-text w-100" asp-for="Nombre" onchange="Prueba(barraBusquedaNombre);" />
+            <input type="text" class="form-text w-100" asp-for="Nombre" />
         </div>
 
-        <!--DNI del medico-->
+        @*DNI del medico*@
         <div class="form-group">
             <label asp-for="DNI"></label>
-            <input type="text" class="form-text w-100" asp-for="DNI" onchange="Prueba(barraBusquedaNombre);" />
-        </div>
-    
-        <!--Municipio en el que reside el medico-->
-        <div class="form-group">
-            <label asp-for="Municipio"></label>
-            <select class="custom-select w-100" asp-items="@Html.GetEnumSelectList(typeof(ComunaHealth.EMunicipio))" asp-for="Municipio" onchange="Prueba(barraBusquedaNombre);"></select>
-        </div>
-    
-        <!--Especializaciones del medico-->
-        <div class="form-group">
-            <label asp-for="Especializaciones"></label>
-            <select multiple="multiple" class="selectpicker w-100" title="Nada seleccionado" asp-for="Especializaciones" asp-items="EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValoresFlag<EEspecializacion>(EEspecializacion.NINGUNA))"></select>
+            <input type="text" class="form-text w-100" asp-for="DNI" />
         </div>
 
-        <!--Boton buscar (submit)-->
+        @*Municipio en el que reside el medico*@
         <div class="form-group">
-            <input type="submit" class="btn btn-light" value="Buscar" asp-page-handler="BuscarMedicos">
+            <label asp-for="Municipio"></label>
+            <select class="custom-select w-100" asp-items="@Html.GetEnumSelectList(typeof(ComunaHealth.EMunicipio))" asp-for="Municipio"></select>
+        </div>
+
+        @*Especializaciones del medico*@
+        <div class="form-group">
+            <label asp-for="Especializaciones"></label>
+            <select multiple="multiple" class="selectpicker" title="No seleccionadas" asp-for="Especializaciones" asp-items="EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValoresFlag<EEspecializacion>(EEspecializacion.NINGUNA))"></select>
+        </div>
+
+        @*Boton buscar*@
+        <div class="form-group">
+            <input type="submit" class="btn btn-light" value="Buscar">
         </div>
     </form>
 
     <div class="table table-bordered">
 
-        <!--Listamos los medicos encontrados-->
+        @*Listamos los medicos encontrados*@
         @foreach (var medico in Model.MedicosEncontrados)
         {
-        <div class="row">
+            <div class="row">
 
-            <div class="col-2">@medico.UserName</div>
-            <div class="col-4">@medico.StringEspecializaciones</div>
-            
-            <form class="form-inline" method="post">
+                <div class="col-2">@medico.UserName</div>
+                <div class="col-4">@medico.StringEspecializaciones</div>
 
-                <input type="hidden" name="ID" value="@medico.Id"/>
+                <form class="form-inline" method="post">
 
-                <!--Boton enviar mensaje-->
-                <button class="btn btn-light" type="submit" title="Enviar mensaje" asp-page-handler="ComenzarChat">
-                    <i class="far fa-envelope"></i>
-                </button>
-            </form>       
+                    <input type="hidden" name="ID" value="@medico.Id" />
 
-        </div>
+                    @*Boton enviar mensaje*@
+                    <button class="btn btn-light" type="submit" title="Enviar mensaje" asp-page-handler="ComenzarChat">
+                        <i class="far fa-envelope"></i>
+                    </button>
+                </form>
+
+            </div>
         }
 
     </div>

@@ -1,32 +1,37 @@
 ﻿@model ComunaHealth.Pages.BuscadorModel
 
-<div class="container">
+<div id="contenedor">
 
-    <!-- Form busqueda paciente -->
+    @*Form busqueda paciente*@
     <form method="post"
-          class="d-flex flex-column justify-content-start align-top w-75">
+          class="d-flex flex-column justify-content-start align-top w-75"
+          data-ajax="true"
+          data-ajax-method="post"
+          data-ajax-mode="replace"
+          data-ajax-update="#contenedor"
+          data-ajax-url="Buscador?handler=BuscarPacientes">
 
-        <!--Nombre del paciente buscado-->
+        @*Nombre del paciente buscado*@
         <div class="form-group">
             <label asp-for="Nombre"></label>
-            <input type="text" class="form-text w-100" asp-for="Nombre" onchange="Prueba(barraBusquedaNombre);" />
+            <input type="text" class="form-text w-100" asp-for="Nombre" />
         </div>
 
-        <!--DNI del paciente-->
+        @*DNI del paciente*@
         <div class="form-group">
             <label asp-for="DNI"></label>
-            <input type="text" class="form-text w-100" asp-for="DNI" onchange="Prueba(barraBusquedaNombre);" />
+            <input type="text" class="form-text w-100" asp-for="DNI" />
         </div>
 
-        <!--Boton buscar (submit)-->
+        @*Boton buscar*@
         <div class="form-group">
-            <input type="submit" class="btn btn-light" value="Buscar" asp-page-handler="BuscarPacientes">
+            <input type="submit" class="btn btn-light" value="Buscar">
         </div>
     </form>
 
     <div class="table table-bordered">
 
-        <!--Listamos a los pacientes encontrados-->
+        @*Listamos a los pacientes encontrados*@
         @foreach (var paciente in Model.PacientesEncontrados)
         {
             <div class="row">
@@ -37,17 +42,17 @@
                 <form class="form-inline" method="post">
                     <input type="hidden" name="ID" value="@paciente.Id" />
 
-                    <!--Boton enviar mensaje-->
+                    @*Boton enviar mensaje*@
                     <button class="btn btn-light mr-4" type="submit" title="Enviar mensaje" asp-page-handler="ComenzarChat">
                         <i class="far fa-envelope"></i>
                     </button>
 
-                    <!--Boton ver historial-->
+                    @*Boton ver historial medico*@
                     <button class="btn btn-light mr-4" type="submit" title="Ver historial medico" asp-page-handler="ComenzarChat">
                         <i class="fas fa-history"></i>
                     </button>
 
-                    <!--Boton ver notas-->
+                    @*Boton ver notas*@
                     <button class="btn btn-light" type="submit" title="Ver notas" asp-page-handler="ComenzarChat">
                         <i class="far fa-sticky-note"></i>
                     </button>

@@ -215,6 +215,7 @@
 
                 $('.selectpicker').selectpicker();
 
+                @*Metodo llamado cuando el tipo de usuario seleccionado cambio*@
                 function TipoDeUsuarioCambio(nuevoIndiceSeleccionado) {
 
                     if (nuevoIndiceSeleccionado === 1) {
@@ -232,12 +233,14 @@
                 $('#inputAnversoDNI').on('change', archivoSeleccionadoHandler);
                 $('#inputReversoDNI').on('change', archivoSeleccionadoHandler);
 
+                @* Metodo llamado cuando el archivo seleccionado cambio*@
                 function archivoSeleccionadoHandler(evento) {
                     var target = evento.target;
 
                     target.nextElementSibling.innerText = target.files[0].name;
                 }
 
+                @* Metodo llamado cuando el usuario quita el focus del input del mail *@
                 function blurHandler (input) {
 
                     $.ajax({
