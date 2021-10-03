@@ -303,7 +303,7 @@ namespace ComunaHealth.Pages.Identity
 			usuarioCreado.TwoFactorEnabled  = AutenticacionDeDosFactoresActiva;
 
 			usuarioCreado.Municipio   = Municipio;
-			usuarioCreado.TiposCuenta = TipoCuenta;
+			usuarioCreado.StringTiposCuenta = TipoCuenta.ToString();
 
 			//Guardamos los bytes de las fotos
 			using (var bReader = new BinaryReader(FotoAnversoDNI.OpenReadStream()))

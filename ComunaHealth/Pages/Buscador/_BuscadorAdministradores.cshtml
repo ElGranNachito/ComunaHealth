@@ -37,63 +37,31 @@
         </div>
     </form>
 
-    <div class="table table-bordered">
+    <div class="table border-bottom">
 
         @*Listamos los administradores encontrados*@
         @foreach (var admin in Model.AdministradoresEncontrados)
         {
-            <div class="row">
+            <div class="row @EnumHelpers.ObtenerColorTextoParaEstadoCuenta(admin.EstadoCuenta)">
 
                 <div class="col-2">@admin.UserName</div>
                 <div class="col-4">@admin.RegionSanitaria</div>
-                
+
                 @*Boton eliminar*@
-                <button class="btn btn-light" title="Eliminar" onclick="establecerIdAdminEliminar(@admin.Id); toggleDivConfirmacion();">
+                <button class="btn btn-light" title="Eliminar" onclick="ActualizarDatosPopupConfirmacion('¿Desea eliminar a este administrador?', @admin.Id, 'Buscador?handler=EliminarAdministrador'); toggleDivConfirmacion();">
                     <i class="fas fa-user-minus"></i>
                 </button>
 
+                @*Boton rehabilitar*@
+                <button class="btn btn-light" title="Rehabilitar" onclick="ActualizarDatosPopupConfirmacion('¿Desea rehabilitar a este administrador?', @admin.Id, 'Buscador?handler=RehabilitarAdministrador'); toggleDivConfirmacion();">
+                    <i class="fas fa-redo-alt"></i>
+                </button>
+
             </div>
         }
-        
-        @*Cartel confirmacion de eliminacion*@
-        <div class="position-absolute collapse container-fluid sticky-top bg-light pb-5 w-100" id="divConfirmacion" style="top: 25%">
-
-            <div class="row justify-content-center my-5">
-                <h4>¿Desea eliminar este administrador?</h4>
-            </div>
-
-            <div class="row d-flex justify-content-around pt-5">
-                 
-                <form method="post">
-                    <input type="hidden" id="idAdminEliminar" name="idAdminEliminar" />
-                    
-                    @*Boton confirmar eliminacion*@
-                    <button class="btn btn-light" title="Confirmar" type="submit" asp-page-handler="EliminarAdministrador" onclick="toggleDivConfirmacion();">
-                        Confirmar
-                    </button>
-                </form>
-                
-                @*Boton cancelar*@
-                <button class="btn btn-light" title="Cacelar" onclick="toggleDivConfirmacion();">
-                    Cancelar
-                </button>
-            </div>
-
-        </div>
 
     </div>
     
-    <script type="text/javascript">
+    <partial name="Shared/_Popupconfirmacion"/>
 
-        @*Funcion toggle div confirmacion*@
-        function toggleDivConfirmacion() {
-            $('#divConfirmacion').fadeToggle("slow");
-            
-        }
-
-        @*Funcion que establece la id del administrador actual a eliminar*@
-        function establecerIdAdminEliminar(idAdmin) {
-            $('#idAdminEliminar').attr("value", idAdmin);
-        }
-    </script>
 </div>

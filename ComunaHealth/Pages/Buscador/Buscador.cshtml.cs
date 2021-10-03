@@ -194,7 +194,10 @@ namespace ComunaHealth.Pages
 			AdministradoresEncontrados?.Clear();
 
 			//Consulta apra obtener los medicos que cumplen con los parametros especificados
-			IQueryable<ModeloAdministrador> consultaAdministradores = from administrador in _dbcontext.Administradores select administrador;
+			IQueryable<ModeloAdministrador> consultaAdministradores = 
+				from administrador in _dbcontext.Administradores 
+				where !administrador.StringTiposCuenta.Contains(ETipoCuenta.AdministradorJefe.ToString()) 
+				select administrador;
 
 			//Si el usuario ingreso un DNI entonces aplicamos filtro por DNI
 			if (!string.IsNullOrWhiteSpace(DNI))
@@ -224,11 +227,46 @@ namespace ComunaHealth.Pages
 		[Authorize(Roles = Constantes.NombreRolAdministradorjefe)]
 		public async Task<IActionResult> OnPostEliminarAdministrador()
 		{
-			var idAdmin = int.Parse(Request.Form["idAdminEliminar"]);
+			if (!int.TryParse(Request.Form["idModelo"], out int idParseada))
+				return new JsonResult("Algo salio mal");
+
+			//Buscamos el administrador con la id especificada y nos aseguramos de que no sea el administrador jefe
+			var administradorEncontrado = await _dbcontext.Administradores.FirstOrDefaultAsync(a =>
+				a.Id == idParseada && !a.StringTiposCuenta.Contains(ETipoCuenta.AdministradorJefe.ToString()));
+
+			if (administradorEncontrado == null)
+				return new JsonResult("Algo salio mal");
+			
+			//Deshabilitamos la cuenta
+			administradorEncontrado.EstadoCuenta = EEstadoCuenta.Deshabilitada;
+
+			//Guardamos los datos
+			await _dbcontext.SaveChangesAsync();
 
 			return Page();
 		}
 
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = Constantes.NombreRolAdministradorjefe)]
+		public async Task<IActionResult> OnPostRehabilitarAdministrador()
+		{
+			if (!int.TryParse(Request.Form["idModelo"], out int idParseada))
+				return new JsonResult("Algo salio mal");
+
+			var administradorEncontrado = await _dbcontext.Administradores.FirstOrDefaultAsync(a => a.Id == idParseada);
+
+			if (administradorEncontrado == null)
+				return new JsonResult("Algo salio mal");
+
+			administradorEncontrado.EstadoCuenta = EEstadoCuenta.Habilitada;
+
+			//Guardamos los datos
+			await _dbcontext.SaveChangesAsync();
+
+			return Page();
+		}
+
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> OnPostComenzarChat()
 		{
 			var idUsuario = Request.Form["ID"];

@@ -45,27 +45,8 @@ namespace ComunaHealth.Modelos
 		[Column("Especializaciones")]
 		public string StringEspecializaciones
 		{
-			get
-			{
-				StringBuilder bld = new StringBuilder();
-
-				for (var i = 0; i < Especializaciones.Count; i++)
-				{
-					bld.Append(Especializaciones[i].ToString() + (i < Especializaciones.Count - 1 ? ", " : string.Empty));
-				}
-
-				return bld.ToString();
-			}
-			set
-			{
-				string[] especializaciones = value.Split(',');
-
-				foreach (var especializacion in especializaciones)
-				{
-					if (Enum.TryParse<EEspecializacion>(especializacion, out var especializacionParseada))
-						Especializaciones.Add(especializacionParseada);
-				}
-			}
+			get => EnumHelpers.ListaValoresEnumACadena(Especializaciones);
+			set => Especializaciones = EnumHelpers.CadenadaAListaEnums<EEspecializacion>(value);
 		}
 
 		/// <summary>

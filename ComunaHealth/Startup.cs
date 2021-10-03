@@ -174,37 +174,39 @@ namespace ComunaHealth
         {
 	        await using (var context = servicios.CreateScope().ServiceProvider.GetRequiredService<ComunaDbContext>())
 	        {
-		        if (!await context.AdministradoresJefe.AnyAsync())
-		        {
-			        var userManager = servicios.GetRequiredService<UserManager<ModeloUsuario>>();
+                //Si el administrador jefe ya ha sido creado nos pegamos la vuelta
+		        if (await context.AdministradoresJefe.AnyAsync())
+                    return;
+		        
+			    var userManager = servicios.GetRequiredService<UserManager<ModeloUsuario>>();
+                
+			    ModeloAdministradorJefe administradorJefe = new ModeloAdministradorJefe
+			    {
+				    UserName = "Admin Jefe",
+
+				    StringTiposCuenta  = ETipoCuenta.AdministradorJefe.ToString(),
+				    EstadoCuenta = EEstadoCuenta.Habilitada,
+                    Email = "nomail@nada.com"
+			    };
+
+			    administradorJefe.PasswordHash = userManager.PasswordHasher.HashPassword(administradorJefe, @"*&//--ElJefe--\\=¿?");
+                
+			    try
+			    {
+				    await userManager.CreateAsync(administradorJefe);
                     
-			        ModeloAdministradorJefe administradorJefe = new ModeloAdministradorJefe
-			        {
-				        UserName = "Admin Jefe",
+                    //Esta en rol de administrador y administrador jefe
+				    await userManager.AddToRoleAsync(administradorJefe, Constantes.NombreRolAdministradorjefe);
+				    await userManager.AddToRoleAsync(administradorJefe, Constantes.NombreRolAdministrador);
 
-				        TiposCuenta  = ETipoCuenta.AdministradorJefe,
-				        EstadoCuenta = EEstadoCuenta.Habilitada,
-                        Email = "nomail@nada.com"
-			        };
+                    await context.SaveChangesAsync();
+			    }
+			    catch (Exception)
+			    {
+				    context.Remove(administradorJefe);
 
-			        administradorJefe.PasswordHash = userManager.PasswordHasher.HashPassword(administradorJefe, @"*&//--ElJefe--\\=¿?");
-                    
-			        try
-			        {
-				        await userManager.CreateAsync(administradorJefe);
-                        
-				        await userManager.AddToRoleAsync(administradorJefe, Constantes.NombreRolAdministradorjefe);
-				        await userManager.AddToRoleAsync(administradorJefe, Constantes.NombreRolAdministrador);
-
-                        await context.SaveChangesAsync();
-			        }
-			        catch (Exception)
-			        {
-				        context.Remove(administradorJefe);
-
-				        await context.SaveChangesAsync();
-                    }
-		        }
+				    await context.SaveChangesAsync();
+                }
 	        }
         }
     }

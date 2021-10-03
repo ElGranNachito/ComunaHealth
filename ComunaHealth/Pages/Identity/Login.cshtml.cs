@@ -49,11 +49,6 @@ namespace ComunaHealth.Pages.Identity
 			_signInManager = signInManager;
 	    }
 
-	    public void OnGet()
-        {
-
-        }
-
 		[ValidateAntiForgeryToken]
 	    public async Task<IActionResult> OnPost()
 	    {
@@ -79,6 +74,9 @@ namespace ComunaHealth.Pages.Identity
 
 				return Page();
 			}
+
+			if (usuarioEncontrado.EstadoCuenta == EEstadoCuenta.Deshabilitada)
+				return RedirectToPage("/Identity/AvisoCuentaDeshabilitada");
 
 			await _signInManager.SignInAsync(usuarioEncontrado, new AuthenticationProperties { ExpiresUtc = DateTime.UtcNow + TimeSpan.FromMinutes(30) });
 			await _signInManager.CreateUserPrincipalAsync(usuarioEncontrado);

@@ -76,7 +76,7 @@ namespace ComunaHealth.Pages.Identity
 				PhoneNumber = Telefono,
 				Email       = Mail,
 
-				TiposCuenta  = ETipoCuenta.Administrador,
+				StringTiposCuenta  = ETipoCuenta.Administrador.ToString(),
 				EstadoCuenta = EEstadoCuenta.Habilitada,
 				RegionSanitaria = Enum.Parse<ERegionSanitariaBSAS>(RegionSanitaria)
 			};

@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace ComunaHealth.Modelos
 {
@@ -11,6 +11,9 @@ namespace ComunaHealth.Modelos
 	/// </summary>
 	public class ModeloUsuario : IdentityUser<int>
 	{
+		[NotMapped]
+		public List<ETipoCuenta> TiposCuenta { get; private set; }
+
 		/// <summary>
 		/// DNI del usuario
 		/// </summary>
@@ -27,7 +30,12 @@ namespace ComunaHealth.Modelos
 		/// Tipos de esta cuenta
 		/// </summary>
 		[Required]
-		public ETipoCuenta TiposCuenta { get; set; }
+		[Column(name: "TiposCuenta")]
+		public string StringTiposCuenta
+		{
+			get => EnumHelpers.ListaValoresEnumACadena(TiposCuenta);
+			set => TiposCuenta = EnumHelpers.CadenadaAListaEnums<ETipoCuenta>(value);
+		}
 
 		/// <summary>
 		/// Estado de esta cuenta

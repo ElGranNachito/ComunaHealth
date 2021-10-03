@@ -1,0 +1,46 @@
+﻿@*Popup confirmacion*@
+<div class="position-absolute collapse container-fluid sticky-top bg-light pb-5 w-100" id="divConfirmacion" style="top: 25%">
+
+    <div class="row justify-content-center my-5">
+        <h4 id="textoDivConfirmacion"></h4>
+    </div>
+
+    <div class="row d-flex justify-content-around pt-5">
+                 
+        <form 
+            method="post"
+            id="formConfirmar"
+            data-ajax="true"
+            data-ajax-method="post"
+            data-ajax-url="">
+            <input type="hidden" id="idModelo" name="idModelo" />
+                    
+            @*Boton confirmar eliminacion*@
+            <button class="btn btn-light" title="Confirmar" type="submit" onclick="toggleDivConfirmacion();">
+                Confirmar
+            </button>
+        </form>
+                
+        @*Boton cancelar*@
+        <button class="btn btn-light" title="Cacelar" onclick="toggleDivConfirmacion();">
+            Cancelar
+        </button>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    @*Funcion toggle div confirmacion*@
+    function toggleDivConfirmacion() {
+        $('#divConfirmacion').fadeToggle("slow");
+            
+    }
+
+    @*Funcion que actualiza los datos del popup*@
+    function ActualizarDatosPopupConfirmacion(texto, idModelo, handler) {
+        $('#textoDivConfirmacion').text(texto);
+        $('#idModelo').attr("value", idModelo);
+        $('#formConfirmar').attr("data-ajax-url", handler);
+    }
+</script>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ComunaHealth
@@ -45,12 +45,88 @@ namespace ComunaHealth
 			return valoresEnum;
 		}
 
-		public static List<SelectListItem> ToSelectListItemList<TEnum>(List<TEnum> valoresEnum)
+		/// <summary>
+		/// Crea una <see cref="List{T}"/> de <see cref="SelectListItem"/> con los valores de <typeparamref name="TEnum"/>
+		/// </summary>
+		/// <typeparam name="TEnum">Tipo del enum del que obtener los valores</typeparam>
+		/// <param name="valoresEnum">Parametro opcional con los valores especificos del <typeparamref name="TEnum"/> que meter en la lista</param>
+		/// <returns><see cref="List{T}"/> de <see cref="SelectListItem"/></returns>
+		public static List<SelectListItem> ToSelectListItemList<TEnum>(List<TEnum> valoresEnum = null)
 			where TEnum : struct, Enum
 		{
-			return valoresEnum.Select(v => new SelectListItem(v.ToString(), v.ToString())).ToList();
+			var valoresConvertir = valoresEnum ?? Enum.GetValues<TEnum>().ToList();
+
+			return valoresConvertir.Select(v => new SelectListItem(v.ToString(), v.ToString())).ToList();
 		}
 
+		/// <summary>
+		/// Guarda en un <see cref="string"/> los elementos de <paramref name="valores"/>
+		/// </summary>
+		/// <typeparam name="TEnum">Tipo del enum contenido en la lista</typeparam>
+		/// <param name="valores"><see cref="List{T}"/> de valores de <typeparamref name="TEnum"/></param>
+		/// <returns><see cref="string"/> con los valores de <paramref name="valores"/></returns>
+		public static string ListaValoresEnumACadena<TEnum>(List<TEnum> valores)
+			where TEnum : struct, Enum
+		{
+			StringBuilder bld = new StringBuilder();
+
+			for (var i = 0; i < valores.Count; i++)
+			{
+				bld.Append(valores[i].ToString() + (i < valores.Count - 1 ? ", " : string.Empty));
+			}
+
+			return bld.ToString();
+		}
+
+		/// <summary>
+		/// Convierte una <paramref name="cadena"/> a una <see cref="List{T}"/> de <typeparamref name="TEnum"/>
+		/// </summary>
+		/// <typeparam name="TEnum">Tipo de enum al que convertir los valores en la <paramref name="cadena"/></typeparam>
+		/// <param name="cadena">Valores de <typeparamref name="TEnum"/> separados por comas</param>
+		/// <returns><see cref="List{T}"/> de <typeparamref name="TEnum"/></returns>
+		public static List<TEnum> CadenadaAListaEnums<TEnum>(string cadena)
+			where TEnum : struct, Enum
+		{
+			string[] especializaciones = cadena.Split(',');
+
+			var resultado = new List<TEnum>();
+
+			foreach (var especializacion in especializaciones)
+			{
+				if (Enum.TryParse<TEnum>(especializacion, out var especializacionParseada))
+					resultado.Add(especializacionParseada);
+			}
+
+			return resultado;
+		}
+
+		/// <summary>
+		/// Obtiene el color de texto correspondiente para un <paramref name="estadoCuenta"/>
+		/// </summary>
+		/// <param name="estadoCuenta">Estado de cuenta para el cual obtener el color de texto</param>
+		/// <returns>Color de texto correspondiente a <paramref name="estadoCuenta"/></returns>
+		public static string ObtenerColorTextoParaEstadoCuenta(EEstadoCuenta estadoCuenta)
+		{
+			switch (estadoCuenta)
+			{
+				case EEstadoCuenta.Habilitada:
+					return string.Empty;
+				case EEstadoCuenta.Deshabilitada:
+					return "text-danger";
+				case EEstadoCuenta.ConProblemitas:
+					return "text-warning";
+				case EEstadoCuenta.VerificacionPendiente:
+					return "text-muted";
+				default:
+					return string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Obtiene la <see cref="ERegionSanitariaBSAS"/> correspondiente a un <paramref name="municipio"/>
+		/// </summary>
+		/// <param name="municipio">Municipio para el cual obtener al region sanitaria</param>
+		/// <returns><see cref="ERegionSanitariaBSAS"/> a la que pertenece el <paramref name="municipio"/></returns>
 		public static ERegionSanitariaBSAS ObtenerRegionDeSaludCorrespondiente(EMunicipio municipio)
 		{
 			switch (municipio)
