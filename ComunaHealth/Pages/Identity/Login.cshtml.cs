@@ -60,38 +60,28 @@ namespace ComunaHealth.Pages.Identity
 			if(!ModelState.IsValid)
 				return await Task.FromResult(Page());
 
-			var resultado = (await Task.Run(() =>
-			{
-				return _dbcontext.Users.Where(u => u.Email == ViewModelLogin.EMail);
-			})).FirstOrDefault();
+			//Intentamos encontrar un usuario con el mail especificado
+			var usuarioEncontrado = await _dbcontext.Users.FirstOrDefaultAsync(u => u.Email == ViewModelLogin.EMail);
 
-			if (resultado == null)
+			//Si no pudo encontrar al usuario...
+			if (usuarioEncontrado == null)
             {
 				ModelState.AddModelError("ViewModelLogin.EMail", "Mail o usuario incorrecto");
+				ModelState.AddModelError("ViewModelLogin.Contraseña", "Mail o usuario incorrecto");
 
 				return Page();
 			}
 
-			if(_userManager.PasswordHasher.VerifyHashedPassword(resultado, resultado.PasswordHash, ViewModelLogin.Contraseña) != PasswordVerificationResult.Success) 
+			//Si la contraseña ingresada es incorrecta...
+			if(_userManager.PasswordHasher.VerifyHashedPassword(usuarioEncontrado, usuarioEncontrado.PasswordHash, ViewModelLogin.Contraseña) != PasswordVerificationResult.Success) 
 			{
 				ModelState.AddModelError("ViewModelLogin.EMail", "Mail o usuario incorrecto");
 
 				return Page();
 			}
 
-			var claims = new List<Claim>
-			{
-				new Claim(ClaimTypes.Email, resultado.Email),
-				new Claim(ClaimTypes.Name, resultado.UserName),
-				new Claim("DNI", resultado.DNI.ToString()),
-				new Claim(ClaimTypes.Role, resultado.TiposCuenta == ETipoCuenta.Paciente ? Constantes.NombreRolPaciente : Constantes.NombreRolMedico)
-			};
-
-			var identity = new ClaimsIdentity(claims);
-
-			await _userManager.AddClaimsAsync(resultado, claims);
-			await _signInManager.SignInAsync(resultado, new AuthenticationProperties { ExpiresUtc = DateTime.UtcNow + TimeSpan.FromMinutes(30) });
-			await _signInManager.CreateUserPrincipalAsync(resultado);
+			await _signInManager.SignInAsync(usuarioEncontrado, new AuthenticationProperties { ExpiresUtc = DateTime.UtcNow + TimeSpan.FromMinutes(30) });
+			await _signInManager.CreateUserPrincipalAsync(usuarioEncontrado);
 
 			return RedirectToPage("/Index");
 		}

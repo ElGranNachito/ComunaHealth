@@ -76,31 +76,31 @@ namespace ComunaHealth.Pages.Identity
 			if (!TryValidateModel(RegistroDatosGenerales))
 			    return Page();
 
-			if(!int.TryParse(RegistroDatosGenerales.DNI, out var nada))
+			if(!int.TryParse(RegistroDatosGenerales.DNI, out var dniParseado))
 				ModelState.AddModelError("RegistroDatosGenerales.DNI", "DNI solo puede contener caracteres numericos");
 
 			if (await _dbcontext.Users.AnyAsync(p => p.Email == RegistroDatosGenerales.Mail)) 
 				ModelState.AddModelError("RegistroDatosGenerales.Mail", "Ya existe un usuario con esa direccion de mail");
 
-			if(await _dbcontext.Users.AnyAsync(p => p.DNI == int.Parse(RegistroDatosGenerales.DNI)))
+			if(await _dbcontext.Users.AnyAsync(p => p.DNI == dniParseado))
 				ModelState.AddModelError("RegistroDatosGenerales.DNI", "Ya existe un usuario con esa direccion de mail");
 
 			//Obtenemos el tamaño maximo permitido para un archivo desde la configuracion
 			var tamañoMaximoImagenes = int.Parse(_config["TamanioMaximoArchivo"]);
 
-		    //Nos aseguramos de que el tamaño de los archivos subidos no sea mayor al maximo
+			//Nos aseguramos de que el tamaño de los archivos subidos no sea mayor al maximo
 			if(RegistroDatosGenerales.FotoAnversoDNI.Length > tamañoMaximoImagenes)
-				ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoAnversoDNI), "Imagen demasiado grande");
+				ModelState.AddModelError($"{nameof(ViewModelRegistro_DatosGenerales)}.{nameof(ViewModelRegistro_DatosGenerales.FotoAnversoDNI)}", "Imagen demasiado grande");
 
 			if (RegistroDatosGenerales.FotoAnversoDNI.Length > tamañoMaximoImagenes)
-				ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoReversoDNI), "Imagen demasiado grande");
+				ModelState.AddModelError($"{nameof(ViewModelRegistro_DatosGenerales)}.{nameof(ViewModelRegistro_DatosGenerales.FotoReversoDNI)}", "Imagen demasiado grande");
 
 			//Nos aseguramos de que el formato de los archivos subido sea valido
 			if (!RegistroDatosGenerales.FotoAnversoDNI.ImagenEsValida())
-				ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoAnversoDNI), "Imagen no valida");
+				ModelState.AddModelError($"{nameof(ViewModelRegistro_DatosGenerales)}.{nameof(ViewModelRegistro_DatosGenerales.FotoAnversoDNI)}", "Imagen no valida");
 
 		    if (!RegistroDatosGenerales.FotoReversoDNI.ImagenEsValida()) 
-			    ModelState.AddModelError(nameof(ViewModelRegistro_DatosGenerales.FotoReversoDNI), "Imagen no valida");
+			    ModelState.AddModelError($"{nameof(ViewModelRegistro_DatosGenerales)}.{nameof(ViewModelRegistro_DatosGenerales.FotoReversoDNI)}", "Imagen no valida");
 
 			if(ModelState.ErrorCount > 0)
 				return Page();
@@ -130,11 +130,28 @@ namespace ComunaHealth.Pages.Identity
 				medico.StringEspecializaciones = Regex.Replace(string.Join(',', especializaciones), @"\s", "");
 				medico.Especializaciones.RemoveAll(e => e == EEspecializacion.NINGUNA);
 
-				medico.Matricula = int.Parse(RegistroDatosMedico.MatriculaMedico);
+				RegistroDatosMedico.MatriculaMedico = RegistroDatosMedico.MatriculaMedico.ToLower();
+
+				if (await _dbcontext.Medicos.AnyAsync(m => m.Matricula == RegistroDatosMedico.MatriculaMedico))
+				{
+					ModelState.AddModelError($"{nameof(ViewModelRegistro_DatosMedico)}.{nameof(ViewModelRegistro_DatosMedico.MatriculaMedico)}", "Ya existe un medico registrado con esa matricula");
+
+					return Page();
+				}
+
+				medico.Matricula = RegistroDatosMedico.MatriculaMedico;
 			}
 
 			//Establecemos el estado de la cuenta creada como verificacion pendiente
 			usuarioCreado.EstadoCuenta = EEstadoCuenta.VerificacionPendiente;
+
+			//Si se pudo validar el usuario entonces ahora creamos sus claims
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Email, usuarioCreado.Email),
+				new Claim(ClaimTypes.Name, usuarioCreado.UserName),
+				new Claim("DNI", usuarioCreado.DNI.ToString())
+			};
 
 			try
 			{
@@ -144,10 +161,10 @@ namespace ComunaHealth.Pages.Identity
 
 				await _dbcontext.SaveChangesAsync();
 
-				await _userManager.AddToRoleAsync(usuarioCreado,
-					RegistroDatosGenerales.TipoCuenta == ETipoCuenta.Paciente
-						? Constantes.NombreRolPaciente
-						: Constantes.NombreRolMedico);
+				//Añadimos los claims e iniciamos sesion
+				await _userManager.AddClaimsAsync(usuarioCreado, claims);
+
+				await _userManager.AddToRoleAsync(usuarioCreado, EnumHelpers.ObtenerNombreRol(RegistroDatosGenerales.TipoCuenta));
 
 				await _dbcontext.SaveChangesAsync();
 			}
@@ -315,8 +332,8 @@ namespace ComunaHealth.Pages.Identity
 		/// Matricula del medico
 		/// </summary>
 		[Display(Name = "Numero de matricula")]
-		[StringLength(12, ErrorMessage = "Numero demasiado largo")]
-		[Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
+		[StringLength(14, ErrorMessage = "Numero demasiado largo")]
+		[Required(AllowEmptyStrings = false, ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
 		public string MatriculaMedico { get; set; }
 
 		/// <summary>

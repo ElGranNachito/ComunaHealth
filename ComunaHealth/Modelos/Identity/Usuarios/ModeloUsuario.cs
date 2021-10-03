@@ -17,6 +17,9 @@ namespace ComunaHealth.Modelos
 		[Required]
 		public int DNI { get; set; }
 
+		/// <summary>
+		/// Id
+		/// </summary>
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public override int Id { get; set; }
 

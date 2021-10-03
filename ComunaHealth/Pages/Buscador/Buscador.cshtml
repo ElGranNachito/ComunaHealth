@@ -11,22 +11,31 @@
     {
         return;
     }
+    
+    <div id="buscador">
 
-    @if (User.IsInRole(Constantes.NombreRolPaciente))
-    {
-        @*Si el usuario es un paciente*@
-        <partial name="_BuscadorMedicos" />
-    }
-    else if (User.IsInRole(Constantes.NombreRolMedico))
-    {
-        @*Si el usuario es un medico*@
-        <partial name="_BuscadorPacientes" />
-    }
-    else if (User.IsInRole(Constantes.NombreRolAdministrador))
-    {
-        @*Si el usuario es un administrador*@
-        <partial name="_BuscadorPacientesMedicos" />
-    }
+        @if (User.IsInRole(Constantes.NombreRolPaciente))
+        {
+            @*Si el usuario es un paciente*@
+            <partial name="_BuscadorMedicos"/>
+        }
+        else if (User.IsInRole(Constantes.NombreRolMedico))
+        {
+            @*Si el usuario es un medico*@
+            <partial name="_BuscadorPacientes" />
+        }
+        else if (User.IsInRole(Constantes.NombreRolAdministradorjefe) && Model.TipoBuscador == Constantes.NombreBuscadorAdministradores)
+        {
+            @*Si el usuario es un administrador jefe*@
+            <partial name="_BuscadorAdministradores" />
+        }
+        else if (User.IsInRole(Constantes.NombreRolAdministrador))
+        {
+            @*Si el usuario es un administrador*@
+            <partial name="_BuscadorPacientesMedicos" />
+        }
+
+    </div>
 
     @section Scripts
     {

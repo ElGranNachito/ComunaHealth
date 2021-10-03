@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -216,6 +217,30 @@ namespace ComunaHealth
 			}
 
 			return ERegionSanitariaBSAS.Region1;
+		}
+
+		/// <summary>
+		/// Obtiene el nombre del <see cref="ComunaHealth.Modelos.ModeloRol"/> que le corresponde a <paramref name="tipoCuenta"/>
+		/// </summary>
+		/// <param name="tipoCuenta">Tipo de cuenta para el que obtener el nombre de rol</param>
+		/// <returns>Nombre del rol que le corresponde a <paramref name="tipoCuenta"/></returns>
+		public static string ObtenerNombreRol(ETipoCuenta tipoCuenta)
+		{
+			switch (tipoCuenta)
+			{
+				case ETipoCuenta.Paciente:
+					return Constantes.NombreRolPaciente;
+				case ETipoCuenta.Medico:
+					return Constantes.NombreRolMedico;
+				case ETipoCuenta.Administrador:
+					return Constantes.NombreRolAdministrador;
+				case ETipoCuenta.AdministradorJefe:
+					return Constantes.NombreRolAdministradorjefe;
+				default:
+				{
+					throw new ArgumentException("Valor no soportado", nameof(tipoCuenta));
+				}
+			}
 		}
 	}
 }

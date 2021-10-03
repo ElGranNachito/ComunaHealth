@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
 using ComunaHealth.Modelos;
+using ComunaHealth.Modelos.Identity.Usuarios;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,12 @@ namespace ComunaHealth.Pages
 		private readonly IConfiguration _config;
 
 		/// <summary>
+		/// Tipo del buscador. Se utiliza para diferenciar el tipo de buscador que desea
+		/// ver el administrador jefe
+		/// </summary>
+		public string? TipoBuscador { get; set; }
+
+		/// <summary>
 		/// Nombre del usuario buscado
 		/// </summary>
 		[BindProperty]
@@ -66,9 +73,21 @@ namespace ComunaHealth.Pages
 		public string[] Especializaciones { get; set; }
 
 		/// <summary>
+		/// Especializaciones del usuario (medico) buscado
+		/// </summary>
+		[BindProperty]
+		[DisplayName("Regiones sanitarias")]
+		public string[] RegionesSanitarias { get; set; }
+
+		/// <summary>
 		/// <see cref="ModeloMedico"/> encontrados que coinciden con los criterios ingresados
 		/// </summary>
 		public List<ModeloMedico> MedicosEncontrados { get; set; } = new List<ModeloMedico>();
+
+		/// <summary>
+		/// <see cref="ModeloMedico"/> encontrados que coinciden con los criterios ingresados
+		/// </summary>
+		public List<ModeloAdministrador> AdministradoresEncontrados { get; set; } = new List<ModeloAdministrador>();
 
 		/// <summary>
 		/// <see cref="ModeloPaciente"/> encontrados que coinciden con los criterios ingresados
@@ -83,9 +102,18 @@ namespace ComunaHealth.Pages
 			_signInManager = signInManager;
 		}
 
-		public void OnGet()
+		public void OnGet(string? tipoBuscador)
 		{
+			//Si no nos especificaron el tipo de buscador entonces colocamos el por defecto
+			if (tipoBuscador is null)
+			{
+				TipoBuscador = Constantes.NombreBuscadorDefault;
 
+				return;
+			}
+
+			//Si nos lo especificaron lo establecemos
+			TipoBuscador = tipoBuscador;
 		}
 
 		/// <summary>
@@ -159,10 +187,52 @@ namespace ComunaHealth.Pages
 			return Partial("_BuscadorPacientes", this);
 		}
 
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = Constantes.NombreRolAdministradorjefe)]
+		public async Task<IActionResult> OnPostBuscarAdministradores()
+		{
+			AdministradoresEncontrados?.Clear();
+
+			//Consulta apra obtener los medicos que cumplen con los parametros especificados
+			IQueryable<ModeloAdministrador> consultaAdministradores = from administrador in _dbcontext.Administradores select administrador;
+
+			//Si el usuario ingreso un DNI entonces aplicamos filtro por DNI
+			if (!string.IsNullOrWhiteSpace(DNI))
+			{
+				consultaAdministradores = consultaAdministradores.Where(administrador => administrador.DNI == int.Parse(DNI));
+			}
+
+			//Si el usuario ingreso un nombre entonces aplicamos filtro por nombre
+			if (!string.IsNullOrWhiteSpace(Nombre))
+			{
+				consultaAdministradores = consultaAdministradores.Where(administrador => administrador.UserName == Nombre);
+			}
+
+			var valoresRegionesBSAS = RegionesSanitarias.Select(r => Enum.Parse<ERegionSanitariaBSAS>(r)).ToArray();
+
+			if (valoresRegionesBSAS.Length != 0)
+			{
+				consultaAdministradores = consultaAdministradores.Where(administrador => valoresRegionesBSAS.Contains(administrador.RegionSanitaria));
+			}
+
+			AdministradoresEncontrados = await consultaAdministradores.ToListAsync();
+
+			return Partial("_BuscadorAdministradores", this);
+		}
+
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = Constantes.NombreRolAdministradorjefe)]
+		public async Task<IActionResult> OnPostEliminarAdministrador()
+		{
+			var idAdmin = int.Parse(Request.Form["idAdminEliminar"]);
+
+			return Page();
+		}
+
 		public async Task<IActionResult> OnPostComenzarChat()
 		{
 			var idUsuario = Request.Form["ID"];
-			
+
 			return Page();
 		}
 	}
