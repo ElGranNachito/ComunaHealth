@@ -1,0 +1,44 @@
+﻿@page
+@using ComunaHealth.Modelos
+@using Microsoft.EntityFrameworkCore
+@model ComunaHealth.Pages.Citas.MenuCitasModel
+
+<div>
+
+    <form method="post"
+          enctype="multipart/form-data"
+          data-ajax="true"
+          data-ajax-method="post"
+          data-ajax-url="MenuCitas"
+          data-ajax-update="#listaCitas"
+          class="form-inline">
+
+        <!--Dropdown filtrado por estado de las citas-->
+        <div class="form-group">
+
+            <label class="m-2" asp-for="FiltroEstadoCitas"></label>
+            <select asp-for="FiltroEstadoCitas" asp-items="@Model.EstadosDeCitaDisponibles" class="custom-select m-2"></select>
+
+            @Html.ValidationMessageFor(m => m.FiltroEstadoCitas, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="m-2">
+            <input type="submit" value="Aplicar filtro" class="form-text btn btn-primary" />
+        </div>
+
+    </form>
+    
+    <div id="listaCitas">
+        <partial name="_Citas" />
+    </div>
+
+    @section Scripts
+    {
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+        
+        <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+
+    }
+
+</div>

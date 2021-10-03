@@ -1,0 +1,99 @@
+﻿@using ComunaHealth.Modelos
+@model ComunaHealth.Pages.Citas.MenuCitasModel
+
+@inject ComunaDbContext dbContext
+@inject UserManager<ModeloUsuario> _userManager
+
+@{
+    var usuario = (ModeloUsuarioNoAdministrador) await _userManager.GetUserAsync(User);
+
+    if (User.IsInRole(Constantes.NombreRolPaciente))
+    {
+        var citas = ((ModeloPaciente)usuario).Citas;
+
+        <div class="container">
+
+            <div class="row bg-primary border-success">
+
+                <label class="col-3">Especializacion</label>
+                <label class="col-3">Medico</label>
+                <label class="col-3">Fecha</label>
+
+            </div>
+
+            @foreach (var cita in citas)
+            {
+                @if (cita.Cita.EstadoCita == @Model.FiltroEstadoCitas)
+                {
+                    <div class="row">
+
+                        <label class="col-3">@cita.Cita.EspecializacionCita</label>
+                        <label class="col-3">@cita.Cita.Medico.Medico.UserName</label>
+                        <label class="col-3">@cita.Cita.Fecha</label>
+
+                        <input class="col-3" class="form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Cita.Id)" />
+
+                    </div>
+
+                    <div class="row" id=@cita.Cita.Id>
+                        <label class="col-12">@cita.Cita.Duracion</label>
+                    </div>
+                }
+            }
+
+        </div>
+    }
+    else if (User.IsInRole(Constantes.NombreRolMedico))
+    {
+        var citas = ((ModeloMedico)usuario).Citas;
+
+
+        <div class="container">
+
+            @*<div class="row bg-primary border-success">
+
+                <label class="col-3">Especializacion</label>
+                <label class="col-3">Paciente</label>
+                <label class="col-3">Fecha</label>
+
+            </div>*@
+
+            @foreach (var cita in citas)
+            {
+                @if (cita.Cita.EstadoCita == @Model.FiltroEstadoCitas)
+                {
+                    <div class="d-block">
+
+                        <label class="col-3">@cita.Cita.EspecializacionCita</label>
+                        <label class="col-3">@cita.Cita.Paciente.Paciente.UserName</label>
+                        <label class="col-3">@cita.Cita.Fecha</label>
+
+                        <input class="col-3 form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Cita.Id)"/>
+
+                    </div>
+
+                    <div class="row" id=@cita.Cita.Id>
+                        <label class="col-12">@cita.Cita.Duracion</label>
+                    </div>
+                }
+            }
+
+        </div>
+
+        <div>
+            <input class="form-text btn btn-primary" type="button" value="Crear Cita" asp-page="CreacionCita"/>
+        </div>
+
+
+    }
+}
+
+<script type="text/javascript">
+
+    @*Metodo llamado cuando el boton mostrar mas en la lista de citas es seleccionado*@
+    function MostrarDescripcionCita(descripcion)
+    {
+        descripcion.classList.toggle("collapse");
+    }
+
+</script>

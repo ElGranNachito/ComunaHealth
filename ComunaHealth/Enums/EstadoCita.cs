@@ -1,15 +1,12 @@
-﻿namespace ComunaHealth
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ComunaHealth
 {
     /// <summary>
     /// Representa el estado de una cita
     /// </summary>
     public enum EEstadoCita
     {
-        /// <summary>
-        /// La cita ha sido efectuada y finalizada.
-        /// </summary>
-        Completada,
-
         /// <summary>
         /// Se ha reservado la cita y se esta en espera para ser atendida.
         /// </summary>
@@ -18,16 +15,22 @@
         /// <summary>
         /// La cita esta siendo efectuada.
         /// </summary>
+        [Display(Name = "En curso")]
         EnCurso,
         
         /// <summary>
-        /// La cita fue efectivamente cancelada y no se ha acordado ninguna fecha de postergacion.
+        /// La cita ha sido efectuada y finalizada.
         /// </summary>
-        Cancelada,
-        
+        Completada,
+
         /// <summary>
         /// Se ha solicitado un cambio en la fecha acordada para la ficha.
         /// </summary>
-        Suspendida
+        Suspendida,
+
+        /// <summary>
+        /// La cita fue efectivamente cancelada y no se ha acordado ninguna fecha de postergacion.
+        /// </summary>
+        Cancelada
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComunaHealth.Migrations
 {
     [DbContext(typeof(ComunaDbContext))]
-    [Migration("20211002152002_añadida_anotacion_identity")]
+    [Migration("20211002175020_añadida_anotacion_identity")]
     partial class añadida_anotacion_identity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

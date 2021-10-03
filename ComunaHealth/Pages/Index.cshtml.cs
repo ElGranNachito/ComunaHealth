@@ -36,5 +36,10 @@ namespace ComunaHealth.Pages
 
 			return RedirectToPage("/Index");
 		}
+
+        public async Task<IActionResult> OnPostMenuCitas()
+        {
+            return RedirectToPage("/Citas/MenuCitas");
+        }
 	}
 }
