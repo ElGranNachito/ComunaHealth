@@ -1,0 +1,111 @@
+﻿@page
+@model ComunaHealth.Pages.Identity.RegisterAdministradorModel
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+@*Contenedor de la form de registro*@
+<div class="container">
+
+    @Html.ValidationSummary(true, "", new{@class="text-danger"})
+
+    @*Form de registro*@
+    <form method="post"
+          enctype="multipart/form-data">
+
+        @*Nombre del administrador*@
+        <div class="form-group">
+
+            <label asp-for="NombreAdministrador"></label>
+            <input type="text" class="form-text" asp-for="NombreAdministrador" />
+            @Html.ValidationMessageFor(m => m.NombreAdministrador, "", new { @class = "text-danger" })
+        </div>
+
+        @*Mail del administrador*@
+        <div class="form-group" id="inputMail">
+
+            <label asp-for="Mail"></label>
+
+            <input type="text" class="form-text" asp-for="Mail" id="inputMail" onblur="blurHandler(inputMail);" />
+            @Html.ValidationMessageFor(m => m.Mail, "", new { @class = "text-danger" })
+        </div>
+
+        @*Telefono del administrador*@
+        <div class="form-group">
+
+            <label asp-for="Telefono"></label>
+            <input type="text" class="form-text" asp-for="Telefono" />
+
+            @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+        </div>
+        
+        <!--Ingreso y confirmacion de DNI-->
+        <table class="form-group">
+            <thead>
+                <tr>
+                    <td class="pr-3">
+                        <label asp-for="DNI"></label>
+                    </td>
+                    <td>
+                        <label asp-for="ConfirmacionDNI"></label>
+                    </td>
+                </tr>
+            </thead>
+            <tr>
+                <td>
+                    <input type="text" class="form-text mr-3" asp-for="DNI" />
+                </td>
+                <td>
+                    <input type="text" class="form-text" asp-for="ConfirmacionDNI" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-left">
+                    <pre>@Html.ValidationMessageFor(m => m.DNI, "", new {@class = "text-danger"})</pre>
+                    @Html.ValidationMessageFor(m => m.ConfirmacionDNI, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+        </table>
+
+        @*Contraseña del administrador*@
+        <table class="form-group">
+            <thead>
+            <tr>
+                <td class="pr-3">
+                    <label asp-for="Contraseña"></label>
+                </td>
+                <td>
+                    <label asp-for="ConfirmacionContraseña"></label>
+                </td>
+            </tr>
+            </thead>
+            <tr>
+                <td>
+                    <input type="password" class="form-text mr-3" asp-for="Contraseña" />
+                </td>
+                <td>
+                    <input type="password" class="form-text" asp-for="ConfirmacionContraseña" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-left">
+                    <pre>@Html.ValidationMessageFor(m => m.Contraseña, "", new {@class = "text-danger"})</pre>
+                    @Html.ValidationMessageFor(m => m.ConfirmacionContraseña, "", new{@class="text-danger"})
+                </td>
+            </tr>
+        </table>
+        
+        <div class="form-group">
+
+            <label asp-for="RegionSanitaria"></label>
+            <select class="custom-select" asp-for="RegionSanitaria" asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValoresFlag<ERegionSanitariaBSAS>(ERegionSanitariaBSAS.NINGUNA))"></select>
+
+            @Html.ValidationMessageFor(m => m.RegionSanitaria, "", new{ @class="text-danger"})
+        </div>
+        
+        <!--Boton submit-->
+        <div class="form-group mt-4">
+
+            <input type="submit" value="Confirmar" class="form-text btn btn-primary" />
+        </div>
+    </form>
+<</div>

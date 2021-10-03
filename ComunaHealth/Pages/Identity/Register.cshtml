@@ -60,14 +60,6 @@
                         <input type="text" class="form-text" asp-for="RegistroDatosGenerales.ConfirmacionDNI" />
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.Contraseña, "", new { @class = "text-danger" })
-                    </td>
-                    <td>
-                        @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.ConfirmacionContraseña, "", new { @class = "text-danger" })
-                    </td>
-                </tr>
             </table>
 
             <!--Texto de error sobre el DNI ingresado-->
@@ -184,7 +176,7 @@
             <div class="form-group collapse mt-4" id="inputMatricula">
 
                 <label asp-for="RegistroDatosMedico.MatriculaMedico"></label>
-                <input type="number" class="form-text" asp-for="RegistroDatosMedico.MatriculaMedico" />
+                <input type="text" class="form-text" asp-for="RegistroDatosMedico.MatriculaMedico" />
 
                 @Html.ValidationMessageFor(m => m.RegistroDatosMedico.MatriculaMedico, "", new { @class = "text-danger" })
 

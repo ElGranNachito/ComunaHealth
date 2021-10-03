@@ -4,14 +4,16 @@ using ComunaHealth.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ComunaHealth.Migrations
 {
     [DbContext(typeof(ComunaDbContext))]
-    partial class ComunaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211002191001_añadida_region_sanitaria_admin")]
+    partial class añadida_region_sanitaria_admin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -765,9 +767,8 @@ namespace ComunaHealth.Migrations
                 {
                     b.HasBaseType("ComunaHealth.Modelos.ModeloUsuarioNoAdministrador");
 
-                    b.Property<string>("Matricula")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Matricula")
+                        .HasColumnType("int");
 
                     b.Property<string>("StringEspecializaciones")
                         .IsRequired()

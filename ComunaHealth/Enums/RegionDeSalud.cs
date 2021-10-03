@@ -8,19 +8,22 @@ namespace ComunaHealth
 	/// <summary>
 	/// Representa una region de salud de la provincia de buenos aires
 	/// </summary>
+	[Flags]
 	public enum ERegionSanitariaBSAS
 	{
-		Region1,
-		Region2,
-		Region3,
-		Region4,
-		Region5,
-		Region6,
-		Region7,
-		Region8,
-		Region9,
-		Region10,
-		Region11,
-		Region12
+		Region1 = 1<<0,
+		Region2 = 1<<1,
+		Region3 = 1<<2,
+		Region4 = 1<<3,
+		Region5 = 1<<4,
+		Region6 = 1<<5,
+		Region7 = 1<<6,
+		Region8 = 1<<7,
+		Region9 = 1<<8,
+		Region10 = 1<<9,
+		Region11 = 1<<10,
+		Region12 = 1<<11,
+
+		NINGUNA = 0
 	}
 }

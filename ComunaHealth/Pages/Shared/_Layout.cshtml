@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ComunaHealth</title>
+    <title>ComunaHealth</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" crossorigin="anonymous">
@@ -12,28 +12,92 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">ComunaHealth</a>
+                
+                @*Si el usuario es un administrador mostramos 'ComunaHealth - Administracion'*@
+                @if (User.IsInRole(Constantes.NombreRolAdministrador))
+                {
+                    <a class="navbar-brand" asp-area="" asp-page="/Index">ComunaHealth - Administracion</a>
+                }
+                else
+                {
+                    <a class="navbar-brand" asp-area="" asp-page="/Index">ComunaHealth</a>
+                }
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon">asd</span>
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Buscador/Buscador">Buscador</a>
-                        </li>
-                    </ul>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    
+                    @*Si el usuario es un administrador no mostramos los botones 'Inicio' y 'Buscador'*@
+                    @if (!User.IsInRole(Constantes.NombreRolAdministrador))
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Index">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Buscador/Buscador">Buscador</a>
+                            </li>
+                        </ul>
+                    }
+                    
+                <div class="align-self-end">
                     <partial name="_LoginPartial" />
+                </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div>
         <main role="main" class="pb-3">
-            @RenderBody()
+
+            @*Si el usuario es un administrador...*@
+            @if (User.IsInRole(Constantes.NombreRolAdministrador))
+            {
+                @*La estrucutra de la pagina esta conformada por un menu a la izquierda y el contenido aparecera a la derecha*@
+                <div class="container-fluid">
+                    
+                    @*Menu lateral*@
+                    <div class="row w-100">
+                        <nav class="navbar d-flex flex-column w-25 h-100 border-right col-3">
+
+                            <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-page="/Buscador/Buscador">
+                                Buscar usuarios
+                            </a>
+
+                            <a class="nav-item align-self-start btn btn-light w-100 text-left">
+                                Ver reportes
+                            </a>
+
+                            <a class="nav-item align-self-start btn btn-light w-100 text-left">
+                                Chat
+                            </a>
+
+                            @*Si el usuario es el administrador jefe entonces añadimos una opcion al menu para administrar administradores*@
+                            @if (User.IsInRole(Constantes.NombreRolAdministradorjefe))
+                            {
+                                <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-page="/Buscador/Buscador" asp-route-tipoBuscador="@Constantes.NombreBuscadorAdministradores">
+                                    Buscar administradores
+                                </a>
+
+                                <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-area="" asp-page="/Identity/RegisterAdministrador">
+                                    Crear administradores
+                                </a>
+                            }
+                        </nav>
+                        
+                        @*Contenido actual*@
+                        <div class="col-9">
+                            @RenderBody()
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @RenderBody()
+            }
         </main>
     </div>
 

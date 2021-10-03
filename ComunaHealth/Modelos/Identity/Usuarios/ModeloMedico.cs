@@ -72,6 +72,6 @@ namespace ComunaHealth.Modelos
 		/// Matricula del medico
 		/// </summary>
 		[Required]
-		public int Matricula { get; set; }
+		public string Matricula { get; set; }
 	}
 }

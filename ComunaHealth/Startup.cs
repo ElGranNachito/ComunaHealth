@@ -66,7 +66,9 @@ namespace ComunaHealth
                     RequireDigit = true,
                     RequireLowercase = true,
                     RequireUppercase = true,
-                    RequiredLength = 8
+                    RequireNonAlphanumeric = true,
+                    RequiredLength = 8,
+                    RequiredUniqueChars = 3
                 };
 
                 //Configuracion de los requisitos para loguearse
@@ -192,6 +194,7 @@ namespace ComunaHealth
 				        await userManager.CreateAsync(administradorJefe);
                         
 				        await userManager.AddToRoleAsync(administradorJefe, Constantes.NombreRolAdministradorjefe);
+				        await userManager.AddToRoleAsync(administradorJefe, Constantes.NombreRolAdministrador);
 
                         await context.SaveChangesAsync();
 			        }
