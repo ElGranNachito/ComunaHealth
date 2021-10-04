@@ -33,6 +33,11 @@ namespace ComunaHealth.Pages.Citas
         public List<SelectListItem> EstadosDeCitaDisponibles { get; init; }
 
         /// <summary>
+        /// Cita que el usuario selecciona para mostrar en la vista _InformacionCita>
+        /// </summary>
+        public ModeloCita CitaSeleccionada { get; set; }
+
+        /// <summary>
         /// Constructor del modelo.
         /// </summary>
         public MenuCitasModel(ComunaDbContext dbContext, UserManager<ModeloUsuario> userManager)
