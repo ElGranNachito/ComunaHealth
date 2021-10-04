@@ -72,13 +72,22 @@
                 </div>
 
                 @*Form enviar mensaje*@
-                <form class="h-25 d-flex flex-row" style="position: absolute; bottom: 0%">
+                <form 
+                    method="post"
+                    class="h-25 d-flex flex-row" 
+                    id="formEnviarMensaje" 
+                    style="position: absolute; bottom: 0%"
+                    data-ajax="true"
+                    data-ajax-method="post"
+                    data-ajax-url="Chat?handler=EnviarMensaje">
 
                     <div class="align-self-end">Mensaje: </div>
 
-                    <input type="text" title="Mensaje" class="align-self-end mx-4"/>
+                    <textarea type="text" title="Mensaje" name="mensaje" class="align-self-end mx-4"></textarea>
+                    
+                    <input type="hidden" id="idChatActual" name="idChatActual"/>
 
-                    <button type="submit" title="Mensaje" class="align-self-end btn btn-primary">
+                    <button disabled="disabled" type="submit" title="Mensaje" class="align-self-end btn btn-primary" id="botonEnviar" onclick="EnviarMensaje(event, formEnviarMensaje);">
                         <i class="fas fa-paper-plane"></i>
                     </button>
 
@@ -93,7 +102,8 @@
 
 @section Scripts{
     
-    <script type="text/javascript" src="js/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript" src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript" src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
 
     <script type="text/javascript">
 
@@ -101,14 +111,40 @@
 
         InicializarSignalR();
 
+        var conexionSignalR;
+
         function InicializarSignalR()
         {
-            var conexionSignalR = signalR.HubConnectionBuilder().withUrl("/HubChat").build();
+            conexionSignalR = new signalR.HubConnectionBuilder().withUrl("/ChatHub").build();
+
+            conexionSignalR.start().then(function() {
+
+                $('.chat').each(function (indice) {
+
+                    console.log($(this)[0]["idChat"].value);
+
+                    conexionSignalR.invoke("ConectarAChat", $(this)[0]["idChat"].value)
+                        .catch(err =>
+                    {
+                        console.log(err);
+                    });
+                });
+
+                $('#botonEnviar').prop('disabled', false);
+
+            });
+
+            conexionSignalR.on("RecibirMensaje",
+                function (guidChat, contenidoMensaje, fechaMensaje, nombreRemitente) {
+                    AñadirMensaje(contenidoMensaje, fechaMensaje, true);
+                });
         }
 
         function ActualizarVentanaChatActual(e, form) {
 
             e.preventDefault();
+
+            $('#idChatActual').value = $('#' + form)["idChat"];
 
             $.ajax({
                 type: "post",
@@ -120,6 +156,9 @@
             }).done(function(xhr) {
                 $('#mensajes').html(xhr);
             });
+        }
+
+        function EnviarMensaje(e, form) {
         }
 
     </script>

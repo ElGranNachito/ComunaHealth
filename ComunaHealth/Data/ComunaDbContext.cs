@@ -43,6 +43,11 @@ namespace ComunaHealth.Data
         /// </summary>
         public DbSet<ModeloChat> Chats { get; set; }
 
+        /// <summary>
+        /// Mensajes chat
+        /// </summary>
+        public DbSet<ModeloMensajeChat> MensajesChat { get; set; }
+
 		public ComunaDbContext(DbContextOptions<ComunaDbContext> options)
 			: base(options)
 		{}

@@ -1,22 +1,36 @@
-﻿@model ComunaHealth.Pages.Chat.ChatModel
+﻿@using ComunaHealth.Modelos
+@using Microsoft.EntityFrameworkCore
+@model ComunaHealth.Pages.Chat.ChatModel
+@inject UserManager<ModeloUsuario> UserManager
+@inject ComunaDbContext DbContext
 
-<div class="align-self-start d-flex" style="max-width: 40%;">
+@if (Model.ChatActual == null)
+{
+    return;
+}
 
-    <div class="p-2" style="overflow-wrap: break-word; background: aqua;">
-        <span> Un mensajito re piola para probar cosas piolas como lo es un sistema de chat bien UwU </span>
-    </div>
-    <div class="align-self-end ml-2">
-        11:00
-    </div>
-</div>
+@foreach (var mensaje in @Model.ChatActual.Entradas)
+{
+    var mensajeActual = await DbContext.MensajesChat.Where(m => m.Id == mensaje.Id).Include(m => m.Remitente).FirstOrDefaultAsync();
 
-<div class="align-self-end d-flex" style="max-width: 40%;">
+    @if (mensajeActual.Remitente.Id.ToString() == UserManager.GetUserId(User))
+    {
+        
+    }
+    else
+    {
+        
+    }
+}
 
-    <div class="align-self-end mr-2">
-        @DateTime.UtcNow
-    </div>
+<script type="text/javascript">
+    function AñadirMensaje(contenido, fecha, esDeEsteUsuario)
+    {
+        if (esDeEsteUsuario) {
+            $('#mensajes').append('<div class="align-self-start d-flex" style="max-width: 40%;"><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><span>' + contenido + '</span></div><div class="align-self-end ml-2">' + fecha + '</div></div>');
+        } else {
+            $('#mensajes').append('<div class="align-self-end d-flex" style="max-width: 40%;"><div class="align-self-end mr-2">' + fecha + '</div><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><span>' + contenido + '</span></div></div>');
+        }
 
-    <div class="p-2" style="overflow-wrap: break-word; background: aqua;">
-        <span> Re pelotudo </span>
-    </div>
-</div>
+    }
+</script>
