@@ -42,7 +42,7 @@
 
                     <input type="hidden" name="idChat" value="@chat.GuidChat"/>
 
-                    <button onclick="ActualizarVentanaChatActual(event, 'chat-@chat.GuidChat');" class="w-100 h-100 container btn btn-light pl-4" style="max-height: 100%; text-overflow: ellipsis; overflow: hidden;">
+                    <button onclick="ActualizarVentanaChatActual(event, 'chat-@chat.GuidChat');" class="w-95 h-100 container btn btn-light pl-4" style="max-height: 100%; text-overflow: ellipsis; overflow: hidden;">
                         <div class="row">
                             <span class="text-left" style="font-size: small"> @otroParticipante.UserName </span>
                         </div>
@@ -65,7 +65,7 @@
             <div >
 
                 @*Mensajes*@
-                <div class="h-75 text-center d-flex flex-column" id="mensajes">
+                <div class="d-flex flex-column" id="mensajes" style="overflow-scrolling: auto; overflow: auto; overflow-x: hidden; position: absolute; width: 95%; height: 90%; direction: rtl">
 
                     <partial name="_MensajesChat"/>
 
@@ -74,20 +74,22 @@
                 @*Form enviar mensaje*@
                 <form 
                     method="post"
-                    class="h-25 d-flex flex-row" 
+                    class="w-100 form-inline border-top" 
                     id="formEnviarMensaje" 
-                    style="position: absolute; bottom: 0%"
+                    style="position: absolute; bottom: 0%; height: 10%"
                     data-ajax="true"
                     data-ajax-method="post"
-                    data-ajax-url="Chat?handler=EnviarMensaje">
-
-                    <div class="align-self-end">Mensaje: </div>
-
-                    <textarea type="text" title="Mensaje" name="mensaje" class="align-self-end mx-4"></textarea>
+                    data-ajax-url="Chat?handler=EnviarMensaje"
+                    data-ajax-complete="MensajeEnviadoHandler">
                     
+                    @*Input mensaje*@
+                    <textarea type="text" title="Mensaje" name="mensaje" id="inputMensaje" class="align-self-end mx-4" rows="2" style="resize: none; width: 85%;"></textarea>
+                    
+                    @*Guid del chat actual*@
                     <input type="hidden" id="idChatActual" name="idChatActual"/>
-
-                    <button disabled="disabled" type="submit" title="Mensaje" class="align-self-end btn btn-primary" id="botonEnviar" onclick="EnviarMensaje(event, formEnviarMensaje);">
+                    
+                    @*Boton enviar*@
+                    <button disabled="disabled" type="submit" title="Mensaje" class="align-self-center btn btn-primary" id="botonEnviar" onclick="EnviarMensaje(event, formEnviarMensaje);">
                         <i class="fas fa-paper-plane"></i>
                     </button>
 
@@ -104,61 +106,106 @@
     
     <script type="text/javascript" src="~/js/signalr/dist/browser/signalr.min.js"></script>
     <script type="text/javascript" src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
-
+    
+    @*Scripts*@
     <script type="text/javascript">
+
+        @*Id del usuario*@
+        var idUsuarioActual = @userManager.GetUserId(User);
+
+        @*Guid del chat actual*@
+        var guidChatActual;
+
+        @*Conexion con el hub*@
+        var conexionSignalR;
+
+        @*Mandamos al usuario al fondo de la pagina*@
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+
+        @*Ocultamos el scroll horizontal*@
+        $("body").css("overflow-x", "hidden");
 
         "use strict";
 
         InicializarSignalR();
 
-        var conexionSignalR;
-
+        @*Funcion encargada de inicializar la conexion con signalR*@
         function InicializarSignalR()
         {
+            @*Nos conectamos con el hub*@
             conexionSignalR = new signalR.HubConnectionBuilder().withUrl("/ChatHub").build();
 
-            conexionSignalR.start().then(function() {
+            @*Abrimos la conexion*@
+            conexionSignalR.start().then(
+                @*Una vez tengamos la conexion abierta...*@
+                function () {
 
+                @*Por cada chat que tenga el usuario...*@
                 $('.chat').each(function (indice) {
 
-                    console.log($(this)[0]["idChat"].value);
-
+                    @*Nos conectamos al chat*@
                     conexionSignalR.invoke("ConectarAChat", $(this)[0]["idChat"].value)
                         .catch(err =>
-                    {
-                        console.log(err);
-                    });
+                        {
+                            console.log(err);
+                        });
                 });
 
+                @*Creamos un handler para el evento de RecibirMensaje*@
+                conexionSignalR.on("RecibirMensaje",
+
+                    @*Cuando recibamos un mensaje...*@
+                    function (contenidoMensaje, fechaMensaje, nombreUsuario, idUsuario) {
+
+                        @*Lo añadimos a la lista de mensajes*@
+                        AñadirMensaje(contenidoMensaje, fechaMensaje, nombreUsuario, idUsuario == idUsuarioActual);
+
+                        @*Hacemos scroll al fondo de la lista de mensajes*@
+                        $('#mensajes').scrollTop($('#mensajes').prop('scrollHeight'));
+                    });
+
+                @*Habilitamos el boton de enviar mensaje*@
                 $('#botonEnviar').prop('disabled', false);
 
             });
-
-            conexionSignalR.on("RecibirMensaje",
-                function (guidChat, contenidoMensaje, fechaMensaje, nombreRemitente) {
-                    AñadirMensaje(contenidoMensaje, fechaMensaje, true);
-                });
         }
 
+        @*Funcion llamada cuando el usuario selecciona un chat*@
         function ActualizarVentanaChatActual(e, form) {
 
+            @*Detenemos la propagacion del evento por defecto*@
             e.preventDefault();
 
-            $('#idChatActual').value = $('#' + form)["idChat"];
+            @*Obtenemos la guid del nuevo chat*@
+            guidChatActual = $('#' + form)[0]["idChat"].value;
+            $('#idChatActual').val(guidChatActual);
 
+            console.log(guidChatActual);
+
+            @*Enviamos la solicitud de listar los mensajes del chat al servidor*@
             $.ajax({
                 type: "post",
                 datatype: "html",
                 contenttype: "application/json; charset=utf-8",
                 url: "Chat",
                 data: $('#' + form).serialize(),
-                beforesend: function(xhr) { xhr.setHeader("RequestValidationToken", $("input:hidden[name=__RequestVerificationToken]")) }
-            }).done(function(xhr) {
-                $('#mensajes').html(xhr);
+                beforesend: function(xhr) { xhr.setHeader("RequestValidationToken", $("input:hidden[name=__RequestVerificationToken]")) },
+                success: function(respuesta) { $('#mensajes').html(respuesta); }
             });
         }
 
+        @*Funcion llamada al presionar el boton de enviar mensaje*@
         function EnviarMensaje(e, form) {
+
+            @*Invocamos el metodo EnviarMensaje del hub*@
+            conexionSignalR.invoke("EnviarMensaje", guidChatActual, form["mensaje"].value);
+        }
+
+        @*Funcion llamada cuando se envia el mensaje*@
+        function MensajeEnviadoHandler()
+        {
+            @*Borramos el input*@
+            $('#inputMensaje').val('');
         }
 
     </script>

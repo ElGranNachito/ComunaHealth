@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
 using ComunaHealth.Hubs;
@@ -14,74 +15,73 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ComunaHealth.Pages.Chat
 {
+	/// <summary>
+	/// Modelo de la pagina del chat
+	/// </summary>
     [Authorize]
     public class ChatModel : PageModel
     {
-	    private readonly IHubContext<ChatHub> _chatHub;
-
 	    private readonly UserManager<ModeloUsuario> _userManager;
 
 	    private readonly ComunaDbContext _dbContext;
 
-	    private string mIdChatAcutal;
+	    public ModeloChat chatActual;
 
-		public ModeloChat ChatActual { get; private set; }
-
-	    [TempData]
-	    public Guid IdChatActual
-	    {
-		    get => string.IsNullOrEmpty(mIdChatAcutal) ? Guid.Empty : Guid.Parse(mIdChatAcutal);
-		    set => mIdChatAcutal = value.ToString();
-	    }
-
-        public ChatModel(IHubContext<ChatHub> chatHub, UserManager<ModeloUsuario> userManager, ComunaDbContext dbContext)
+		public ChatModel(IHubContext<ChatHub> chatHub, UserManager<ModeloUsuario> userManager, ComunaDbContext dbContext)
         {
-	        _chatHub = chatHub;
 	        _userManager = userManager;
-	        _dbContext = dbContext;
+	        _dbContext   = dbContext;
         }
 
-        public void OnGet()
-        {
-	        
-        }
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> OnPost()
+		{
+			string guidChatActual = Request.Form["idChat"].ToString();
 
-        public async Task<IActionResult> OnPost()
-        {
-	        if (Request.Form["idChat"] != string.Empty)
-	        {
-		        IdChatActual = Guid.Parse( Request.Form["idChat"]);
+			chatActual = await _dbContext.Chats.Where(c => c.GuidChat == guidChatActual).Include(c => c.Entradas)
+				.Include(c => c.Participantes).FirstOrDefaultAsync();
 
-				ChatActual = await _dbContext.Chats.Where(c => c.GuidChat == mIdChatAcutal).Include(c => c.Entradas).FirstOrDefaultAsync();
+			return Partial("_MensajesChat", this);
+		}
 
-				return Partial("_MensajesChat", this);
-	        }
-            
-	        return Page();
-        }
-
+		/// <summary>
+		/// Metodo encargado de crear y guardar un mensaje 
+		/// </summary>
+		/// <returns></returns>
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostEnviarMensaje()
         {
+			//Obtenemos el usuario actual
 	        var usuariosActual = await _userManager.GetUserAsync(User);
 
-	        ChatActual = await _dbContext.Chats.Where(c => c.GuidChat == mIdChatAcutal).FirstOrDefaultAsync();
+			//Guid del chat actual
+	        var idChatActual = Request.Form["idChatActual"].ToString();
 
+	        if (string.IsNullOrWhiteSpace(idChatActual))
+		        return BadRequest();
+
+			//Intentamos encontrar el chat con la guid especificada
+	        chatActual = await _dbContext.Chats.Where(c => c.GuidChat == idChatActual).FirstOrDefaultAsync();
+
+			if (chatActual == null)
+				return BadRequest();
+
+			//Creamos el nuevo mensaje
 			var nuevoMensaje = new ModeloMensajeChat
 	        {
 		        Contenido = Request.Form["Mensaje"],
-		        FechaDeCreacion = DateTimeOffset.Now,
+		        FechaDeCreacion = DateTimeOffset.UtcNow,
 		        Remitente = usuariosActual
 	        };
 
-			ChatActual.Entradas.Add(nuevoMensaje);
+			//Añadimos el nuevo mensaje al chat
+			chatActual.Entradas.Add(nuevoMensaje);
 
+			//Añadimos el nuevo mensaje a la base de datos y guardamos
 			await _dbContext.AddAsync(nuevoMensaje);
 			await _dbContext.SaveChangesAsync();
 
-	        await _chatHub.Clients.Group(IdChatActual.ToString()).SendAsync("RecibirMensaje", IdChatActual.ToString(), nuevoMensaje.Contenido, nuevoMensaje.FechaDeCreacion, nuevoMensaje.Remitente.UserName);
-
-	        return Page();
+			return new AcceptedResult();
         }
     }
 }

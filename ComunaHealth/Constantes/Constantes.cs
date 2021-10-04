@@ -17,9 +17,6 @@ namespace ComunaHealth
 
 		public const string MensajeErrorEsteCampoNoPuedeQuedarVacio = "Este campo no puede quedar vacio";
 
-		public const string NombreBuscadorDefault = "Default";
-		public const string NombreBuscadorAdministradores = "Administradores";
-
 		public const string TrueString = "true";
 		public const string FalseString = "false";
 

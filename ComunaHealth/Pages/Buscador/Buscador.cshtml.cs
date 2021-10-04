@@ -47,7 +47,9 @@ namespace ComunaHealth.Pages
 		/// Tipo del buscador. Se utiliza para diferenciar el tipo de buscador que desea
 		/// ver el administrador jefe
 		/// </summary>
-		public string? TipoBuscador { get; set; }
+		[DisplayName("Tipo de usuario buscado")]
+		[BindProperty]
+		public ETipoCuenta? TipoBuscador { get; set; } = ETipoCuenta.NINGUNO;
 
 		/// <summary>
 		/// Nombre del usuario buscado
@@ -103,12 +105,12 @@ namespace ComunaHealth.Pages
 			_signInManager = signInManager;
 		}
 
-		public void OnGet(string? tipoBuscador)
+		public void OnGet(ETipoCuenta? tipoBuscador)
 		{
 			//Si no nos especificaron el tipo de buscador entonces colocamos el por defecto
 			if (tipoBuscador is null)
 			{
-				TipoBuscador = Constantes.NombreBuscadorDefault;
+				TipoBuscador = ETipoCuenta.NINGUNO;
 
 				return;
 			}
@@ -265,6 +267,23 @@ namespace ComunaHealth.Pages
 			await _dbcontext.SaveChangesAsync();
 
 			return Page();
+		}
+
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = Constantes.NombreRolAdministrador)]
+		public async Task<IActionResult> OnPostObtenerBuscadorTipoUsuarioSeleccionado([FromQuery(Name = "tipoBuscador")] string tipoBuscador)
+		{
+			if (!Enum.TryParse<ETipoCuenta>(tipoBuscador, true, out var tipoBuscadorParseado))
+				return BadRequest();
+
+			if (tipoBuscadorParseado == ETipoCuenta.Paciente)
+			{
+				return Partial("_BuscadorPacientes", this);
+			}
+			else
+			{
+				return Partial("_BuscadorMedicos", this);
+			}
 		}
 
 		[ValidateAntiForgeryToken]

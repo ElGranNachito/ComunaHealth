@@ -24,7 +24,7 @@
             @*Si el usuario es un medico*@
             <partial name="_BuscadorPacientes" />
         }
-        else if (User.IsInRole(Constantes.NombreRolAdministradorjefe) && Model.TipoBuscador == Constantes.NombreBuscadorAdministradores)
+        else if (User.IsInRole(Constantes.NombreRolAdministradorjefe) && Model.TipoBuscador == ETipoCuenta.Administrador)
         {
             @*Si el usuario es un administrador jefe*@
             <partial name="_BuscadorAdministradores" />

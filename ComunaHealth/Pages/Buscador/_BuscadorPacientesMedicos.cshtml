@@ -2,13 +2,44 @@
 
 <div class="container d-flex flex-column">
 
-    <div>
-        <!--Tipo de cuenta buscada-->
-        <select 
-                class="custom-select"
-                asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(new []{ ETipoCuenta.Administrador, ETipoCuenta.AdministradorJefe, ETipoCuenta.NINGUNO}))">
+    <div class="form-group">
 
-        </select>
+        <div class="form-group">
+            <label asp-for="TipoBuscador"></label>
+
+            <!--Tipo de cuenta buscada-->
+            <select class="custom-select btn btn-light"
+                    id="selectTipoBuscador"
+                    asp-for="TipoBuscador"
+                    asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(new[] {ETipoCuenta.Administrador, ETipoCuenta.AdministradorJefe, ETipoCuenta.NINGUNO}))"
+                    onchange="ActualizarBuscador()">
+            </select>
+
+            @Html.ValidationMessageFor(m => m.TipoBuscador, "", new { @class = "text-danger" })
+        </div>
     </div>
 
+    <div class="buscador">
+    </div>
+    
+    <script type="text/javascript">
+
+        window.addEventListener("load", function() { ActualizarBuscador(); });
+
+        function ActualizarBuscador() {
+
+            $.ajax({
+                type: "post",
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                url: "Buscador?handler=ObtenerBuscadorTipoUsuarioSeleccionado&tipoBuscador=" + $('#selectTipoBuscador').val(),
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("RequestValidationToken", $('input:hidden[name=__RequestVerificationToken]').val());
+                },
+                success: function (res) {
+                    $('.buscador:last').html(res);
+                }
+            });
+        }
+    </script>
 </div>

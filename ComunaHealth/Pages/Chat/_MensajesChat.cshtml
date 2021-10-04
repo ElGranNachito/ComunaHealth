@@ -1,36 +1,63 @@
 ﻿@using ComunaHealth.Modelos
 @using Microsoft.EntityFrameworkCore
+
 @model ComunaHealth.Pages.Chat.ChatModel
+
 @inject UserManager<ModeloUsuario> UserManager
 @inject ComunaDbContext DbContext
 
-@if (Model.ChatActual == null)
+@*Si no hay chat actual nos pegamos la vuelta*@
+@if (Model.chatActual == null)
 {
     return;
 }
 
-@foreach (var mensaje in @Model.ChatActual.Entradas)
+@*Por cada entrada en el chat actual...*@
+@foreach (var mensaje in @Model.chatActual.Entradas)
 {
+    @*Cargamos el remitente del mensaje actual*@
     var mensajeActual = await DbContext.MensajesChat.Where(m => m.Id == mensaje.Id).Include(m => m.Remitente).FirstOrDefaultAsync();
 
+    @*Si el remitente de este mensaje es el usuario actual...*@
     @if (mensajeActual.Remitente.Id.ToString() == UserManager.GetUserId(User))
     {
-        
+        <div class="align-self-start d-flex my-2" style="max-width: 40%;">
+            <div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;">
+                <p>:@mensaje.Remitente.UserName</p>
+                <span style="overflow-wrap: break-word; max-width: 100%;">@mensaje.Contenido</span>
+            </div>
+            <div class="align-self-end ml-2">
+                @mensaje.FechaDeCreacion.ToLocalTime().ToString("d")
+            </div>
+        </div>
     }
+    @*Si no lo es...*@
     else
     {
-        
+        <div class="align-self-end d-flex my-2" style="max-width: 40%;">
+
+            <div class="align-self-end mr-2">
+                @mensaje.FechaDeCreacion.ToLocalTime().ToString("d")
+            </div>
+            <div class="p-2" style="overflow-wrap: break-word; background: aqua;">
+                <p>:@mensaje.Remitente.UserName</p>
+                <span>@mensaje.Contenido</span>
+            </div>
+        </div>
     }
 }
 
 <script type="text/javascript">
-    function AñadirMensaje(contenido, fecha, esDeEsteUsuario)
-    {
-        if (esDeEsteUsuario) {
-            $('#mensajes').append('<div class="align-self-start d-flex" style="max-width: 40%;"><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><span>' + contenido + '</span></div><div class="align-self-end ml-2">' + fecha + '</div></div>');
-        } else {
-            $('#mensajes').append('<div class="align-self-end d-flex" style="max-width: 40%;"><div class="align-self-end mr-2">' + fecha + '</div><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><span>' + contenido + '</span></div></div>');
-        }
 
+    @*Metodo encargado de añadir un mensaje a la lista sin recargar la pagina*@
+    function AñadirMensaje(contenido, fecha, remitente, esDeEsteUsuario)
+    {
+        console.log("Mensaje añadido");
+
+        if (esDeEsteUsuario) {
+            $('#mensajes').append('<div class="align-self-start d-flex my-2" style="max-width: 40%;"><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</P><span>' + contenido + '</span></div><div class="align-self-end ml-2">' + fecha + '</div></div>');
+        } else {
+            $('#mensajes').append('<div class="align-self-end d-flex my-2" style="max-width: 40%;"><div class="align-self-end mr-2">' + fecha + '</div><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</p><span>' + contenido + '</span></div></div>');
+        }
     }
 </script>
