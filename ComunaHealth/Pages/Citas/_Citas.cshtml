@@ -21,21 +21,6 @@
                     <h4 class="text-left">Citas @Model.FiltroEstadoCitas.ToString():</h4>
                 </div>
 
-                @*<div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
-
-                        <div class="d-flex flex-column">
-                            <label class="text-left">Paciente: Juancho Juanches</label>
-                            <label class="text-left">Especializacion: @EEspecializacion.Ginecologo</label>
-                            <label class="text-left">Fecha: @DateTimeOffset.Now</label>
-                        </div>
-
-                        <div class="pl-3 mr-2 mt-4">
-                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
-                            <a class="form-text btn btn-primary btn-sm" asp-page="EditarCita">Editar</a>
-                        </div>
-
-                    </div>*@
-
                 @foreach (var cita in citas)
                 {
                     <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
@@ -45,10 +30,21 @@
                             <label class="text-left">Especializacion: @cita.EspecializacionCita</label>
                             <label class="text-left">Fecha: @cita.Fecha</label>
                         </div>
+                        
+                        <!--Form filtrado de citas-->
+                        <form method="post"
+                              enctype="multipart/form-data"
+                              data-ajax="true"
+                              data-ajax-method="post"
+                              data-ajax-url="MenuCitas/InformacionCita"
+                              data-ajax-update="#informacionCita"
+                              class="form-inline">
+                            
+                            <div class="pl-3 mr-2 mt-4">
+                                <input type="submit" value="Mas" class="form-text btn btn-primary" />
+                            </div>
 
-                        <div class="pl-3 mr-2 mt-4">
-                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
-                        </div>
+                        </form>
 
                     </div>
                 }
@@ -70,21 +66,6 @@
                     <h4 class="text-left">Citas @Model.FiltroEstadoCitas.ToString():</h4>
                 </div>
 
-                @*<div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
-
-                        <div class="d-flex flex-column">
-                            <label class="text-left">Paciente: Juancho Juanches</label>
-                            <label class="text-left">Especializacion: @EEspecializacion.Ginecologo</label>
-                            <label class="text-left">Fecha: @DateTimeOffset.Now</label>
-                        </div>
-
-                        <div class="pl-3 mr-2 mt-4">
-                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
-                            <a class="form-text btn btn-primary btn-sm" asp-page="EditarCita">Editar</a>
-                        </div>
-
-                    </div>*@
-
                 @foreach (var cita in citas)
                 {
                     <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
@@ -95,10 +76,20 @@
                             <label class="text-left">Fecha: @cita.Fecha</label>
                         </div>
 
-                        <div class="pl-3 mr-2 mt-4">
-                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
-                            <a class="form-text btn btn-primary btn-sm" asp-page="EditarCita">Editar</a>
-                        </div>
+                        <!--Form filtrado de citas-->
+                        <form method="post"
+                              enctype="multipart/form-data"
+                              data-ajax="true"
+                              data-ajax-method="post"
+                              data-ajax-url="MenuCitas/InformacionCita"
+                              data-ajax-update="#informacionCita"
+                              class="form-inline">
+
+                            <div class="pl-3 mr-2 mt-4">
+                                <input type="submit" value="Mas" class="form-text btn btn-primary" />
+                            </div>
+
+                        </form>
 
                     </div>
                 }
