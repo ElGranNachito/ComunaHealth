@@ -13,13 +13,13 @@ namespace ComunaHealth.Modelos
         /// Medico con el que se tiene la cita.
         /// </summary>
         [Required]
-        public TICitaMedico Medico { get; set; }
+        public ModeloMedico Medico { get; set; }
 
         /// <summary>
         /// Paciente apuntado a la cita.
         /// </summary>
         [Required]
-        public TICitaPaciente Paciente { get; set; }
+        public ModeloPaciente Paciente { get; set; }
 
         /// <summary>
         /// Especializaciones abarcadas en el motivo de la cita.

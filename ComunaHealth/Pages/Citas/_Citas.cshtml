@@ -5,13 +5,15 @@
 @inject UserManager<ModeloUsuario> _userManager
 
 @{
+    //Obtenemos el modelo del usuario actual.
     var usuario = (ModeloUsuarioNoAdministrador) await _userManager.GetUserAsync(User);
 
+    //Verificamos si el usuario actual tiene el rol de paciente o medico. La muestra y gestion de citas dependera del rol del usuario.
     if (User.IsInRole(Constantes.NombreRolPaciente))
     {
         var citas = ((ModeloPaciente)usuario).Citas;
 
-        <div class="container">
+        <div class="container text-left">
 
             <div class="row bg-primary border-success">
 
@@ -23,20 +25,21 @@
 
             @foreach (var cita in citas)
             {
-                @if (cita.Cita.EstadoCita == @Model.FiltroEstadoCitas)
+                @if (cita.EstadoCita == @Model.FiltroEstadoCitas)
                 {
                     <div class="row">
 
-                        <label class="col-3">@cita.Cita.EspecializacionCita</label>
-                        <label class="col-3">@cita.Cita.Medico.Medico.UserName</label>
-                        <label class="col-3">@cita.Cita.Fecha</label>
+                        <label class="col-3">@cita.EspecializacionCita</label>
+                        <label class="col-3">@cita.Medico.UserName</label>
+                        <label class="col-3">@cita.Fecha</label>
 
-                        <input class="col-3" class="form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Cita.Id)" />
+                        <input class="col-3" class="form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Id)" />
 
                     </div>
 
-                    <div class="row" id=@cita.Cita.Id>
-                        <label class="col-12">@cita.Cita.Duracion</label>
+                    <div class="row bg-primary border-success" id=@cita.Id>
+                        <label class="col-3">Descripcion</label>
+                        <label class="col-12">@cita.Descripcion</label>
                     </div>
                 }
             }
@@ -48,40 +51,45 @@
         var citas = ((ModeloMedico)usuario).Citas;
 
 
-        <div class="container">
+        <div class="form-inline">
 
-            @*<div class="row bg-primary border-success">
+            <div class="container">
 
-                <label class="col-3">Especializacion</label>
-                <label class="col-3">Paciente</label>
-                <label class="col-3">Fecha</label>
+                <div class="row bg-primary border-success">
 
-            </div>*@
+                    <label class="col-3">Especializacion</label>
+                    <label class="col-3">Paciente</label>
+                    <label class="col-3">Fecha</label>
 
-            @foreach (var cita in citas)
-            {
-                @if (cita.Cita.EstadoCita == @Model.FiltroEstadoCitas)
+                </div>
+
+                @foreach (var cita in citas)
                 {
-                    <div class="d-block">
+                    @if (cita.EstadoCita == @Model.FiltroEstadoCitas)
+                    {
+                        <div class="row">
 
-                        <label class="col-3">@cita.Cita.EspecializacionCita</label>
-                        <label class="col-3">@cita.Cita.Paciente.Paciente.UserName</label>
-                        <label class="col-3">@cita.Cita.Fecha</label>
+                            <label class="col-3">@cita.EspecializacionCita</label>
+                            <label class="col-3">@cita.Paciente.UserName</label>
+                            <label class="col-3">@cita.Fecha</label>
 
-                        <input class="col-3 form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Cita.Id)"/>
+                            <input class="col-3 form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Id)"/>
 
-                    </div>
+                        </div>
 
-                    <div class="row" id=@cita.Cita.Id>
-                        <label class="col-12">@cita.Cita.Duracion</label>
-                    </div>
+                        <div class="row bg-primary border-success" id=@cita.Id>
+                            <label class="col-3">Descripcion</label>
+                            <label class="col-12">@cita.Descripcion</label>
+                        </div>
+                    }
                 }
-            }
 
-        </div>
+            </div>
 
-        <div>
-            <input class="form-text btn btn-primary" type="button" value="Crear Cita" asp-page="CreacionCita"/>
+            <div class="mr-5">
+                <a class="form-text btn btn-primary" asp-page="CreacionCita">Crear Cita</a>
+            </div>
+
         </div>
 
 

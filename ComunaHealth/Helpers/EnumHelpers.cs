@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ComunaHealth.Modelos;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ComunaHealth
@@ -51,7 +53,7 @@ namespace ComunaHealth
 			return valoresEnum.Select(v => new SelectListItem(v.ToString(), v.ToString())).ToList();
 		}
 
-		public static ERegionSanitariaBSAS ObtenerRegionDeSaludCorrespondiente(EMunicipio municipio)
+        public static ERegionSanitariaBSAS ObtenerRegionDeSaludCorrespondiente(EMunicipio municipio)
 		{
 			switch (municipio)
 			{

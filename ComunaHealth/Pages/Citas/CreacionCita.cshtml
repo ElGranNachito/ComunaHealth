@@ -1,4 +1,125 @@
 ﻿@page
+@using ComunaHealth.Modelos
+@using ComunaHealth.Helpers
 @model ComunaHealth.Pages.Citas.CreacionCitaModel
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+@inject ComunaDbContext dbContext
+@inject UserManager<ModeloUsuario> userManager
+@*Contenedor de la form de registro*@
 @{
+    @if (User.IsInRole(Constantes.NombreRolMedico))
+    {
+        //Obtenemos el modelo del usuario actual.
+        var usuario = (ModeloMedico)((ModeloUsuarioNoAdministrador)await userManager.GetUserAsync(User));
+
+        //Creamos la lista de pacientes seleccionables.
+        List<SelectListItem> PacientesDisponibles = UserHelpers.ToSelectListItemListUsuarioId<ModeloPaciente>(usuario.Pacientes);
+        
+        List<SelectListItem> EspecializacionesDisponibles = EnumHelpers.ToSelectListItemList<EEspecializacion>(usuario.Especializaciones);
+
+        <div class="d-flex flex-row h-75 w-100 position-absolute">
+
+            <div class="ml-5 p-3 overflow-auto border border-warning rounded">
+                
+                <div class="pb-3">
+                    <h4 class="text-left">Citas pendientes:</h4>
+                </div>
+
+                @*@foreach (var cita in usuario.Citas)
+                {
+                    @if (cita.EstadoCita == EEstadoCita.Pendiente)
+                    {
+                        <div class="container border-primary">
+                            <label class="text-left">Paciente: @cita.Paciente.UserName</label>
+                            <label class="text-left">Especializacion: @cita.EspecializacionCita</label>
+                            <label class="text-left">Fecha: @cita.Fecha</label>
+                        </div>
+                    }
+                }*@
+                
+                @for (int i = 0; i < 20; ++i)
+                {
+                    <div class="pl-4 pr-4 d-flex flex-column border border-primary rounded-pill">
+                        <label class="text-left">Paciente: Peper Rerep</label>
+                        <label class="text-left">Especializacion: Ginecologia</label>
+                        <label class="text-left">Fecha: @DateTimeOffset.Now</label>
+                    </div>
+                }
+
+            </div>
+
+            <div class="container p-3 border border-warning rounded">
+
+                @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+
+                <div>
+                    <h4 class="text-left">Nueva cita:</h4>
+                </div>
+
+                <form method="post"
+                      enctype="multipart/form-data"
+                      data-ajax="true"
+                      data-ajax-method="post"
+                      data-ajax-url="CreacionCita">
+
+                    <!--Paciente-->
+                    <div class="form-group">
+
+                        <label asp-for="PacienteId"></label>
+                        <select asp-for="PacienteId" asp-items="PacientesDisponibles" class="custom-select"></select>
+
+                        @Html.ValidationMessageFor(m => m.PacienteId, "", new {@class = "text-danger"})
+
+                    </div>
+
+                    <!--Seleccion especializacion de la cita-->
+                    <div class="form-group">
+
+                        <label asp-for="Especializacion"></label>
+                        <select asp-for="Especializacion" asp-items="EspecializacionesDisponibles" class="custom-select"></select>
+
+                        @Html.ValidationMessageFor(m => m.Especializacion, "", new {@class = "text-danger"})
+
+                    </div>
+
+                    <!--Seleccion fecha y horario de la cita-->
+                    <div class="form-group">
+
+                        <label asp-for="Fecha"></label>
+                        <div>
+                            <input asp-for="Fecha" class="form-control" value="@DateTimeOffset.Now"/>
+                        </div>
+
+                    </div>
+
+                    <!--Duracion de la cita-->
+                    <div class="form-group">
+
+                        <label asp-for="DuracionMinutos"></label>
+                        <input type="text" class="form-text" asp-for="DuracionMinutos"/>
+
+                        @Html.ValidationMessageFor(m => m.DuracionMinutos, "", new {@class = "text-danger"})
+
+                    </div>
+
+                    <!--Descripcion del motivo de la cita-->
+                    <div class="form-group">
+
+                        <label asp-for="Descripcion"></label>
+                        <textarea class="form-text overflow-auto w-100" asp-for="Descripcion"></textarea>
+
+                    </div>
+
+                    <!--Boton submit-->
+                    <div class="form-group mt-4">
+                        <input type="submit" value="Confirmar" class="form-text btn btn-primary"/>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    }
 }

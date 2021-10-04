@@ -14,18 +14,12 @@ using Microsoft.EntityFrameworkCore;
 namespace ComunaHealth.Pages.Citas
 {
     /// <summary>
-    /// Modelo de la pagina del menu de citas.
+    /// Modelo de la pagina encargada de lidiar con la muestra y gestion de citas.
     /// </summary>
     public class MenuCitasModel : PageModel
     {
         private readonly ComunaDbContext _dbContext;
         private readonly UserManager<ModeloUsuario> _userManager;
-
-
-        /// <summary>
-        /// Usuario actual.
-        /// </summary>
-        public ModeloUsuarioNoAdministrador UsuarioActual { get; set; }
 
         /// <summary>
         /// Estado de cita seleccionado para mostrar.

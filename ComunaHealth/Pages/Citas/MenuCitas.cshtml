@@ -4,7 +4,8 @@
 @model ComunaHealth.Pages.Citas.MenuCitasModel
 
 <div>
-
+    
+    <!--Form filtrado de citas-->
     <form method="post"
           enctype="multipart/form-data"
           data-ajax="true"
@@ -14,20 +15,23 @@
           class="form-inline">
 
         <!--Dropdown filtrado por estado de las citas-->
-        <div class="form-group">
+        <div class="form-group m-5">
 
-            <label class="m-2" asp-for="FiltroEstadoCitas"></label>
+            <label class="ml-2" asp-for="FiltroEstadoCitas"></label>
             <select asp-for="FiltroEstadoCitas" asp-items="@Model.EstadosDeCitaDisponibles" class="custom-select m-2"></select>
 
             @Html.ValidationMessageFor(m => m.FiltroEstadoCitas, "", new { @class = "text-danger" })
-        </div>
+        
+            <!--Boton submit-->
+            <div class="ml-2">
+                <input type="submit" value="Aplicar filtro" class="form-text btn btn-primary" />
+            </div>
 
-        <div class="m-2">
-            <input type="submit" value="Aplicar filtro" class="form-text btn btn-primary" />
         </div>
 
     </form>
     
+    <!--Partial view de la seccion de muestra y gestion de citas-->
     <div id="listaCitas">
         <partial name="_Citas" />
     </div>
