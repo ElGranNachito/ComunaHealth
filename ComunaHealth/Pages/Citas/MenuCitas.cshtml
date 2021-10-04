@@ -10,15 +10,15 @@
           enctype="multipart/form-data"
           data-ajax="true"
           data-ajax-method="post"
-          data-ajax-url="MenuCitas"
+          data-ajax-url="MenuCitas/FiltradoCitas"
           data-ajax-update="#listaCitas"
           class="form-inline">
 
         <!--Dropdown filtrado por estado de las citas-->
-        <div class="form-group m-5">
+        <div class="form-group ml-5">
 
-            <label class="ml-2" asp-for="FiltroEstadoCitas"></label>
-            <select asp-for="FiltroEstadoCitas" asp-items="@Model.EstadosDeCitaDisponibles" class="custom-select m-2"></select>
+            <label asp-for="FiltroEstadoCitas"></label>
+            <select asp-for="FiltroEstadoCitas" asp-items="@Model.EstadosDeCitaDisponibles" class="custom-select ml-2"></select>
 
             @Html.ValidationMessageFor(m => m.FiltroEstadoCitas, "", new { @class = "text-danger" })
         
@@ -32,7 +32,7 @@
     </form>
     
     <!--Partial view de la seccion de muestra y gestion de citas-->
-    <div id="listaCitas">
+    <div class="mt-3" id="listaCitas">
         <partial name="_Citas" />
     </div>
 

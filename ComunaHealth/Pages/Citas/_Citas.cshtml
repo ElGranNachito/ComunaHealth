@@ -6,43 +6,54 @@
 
 @{
     //Obtenemos el modelo del usuario actual.
-    var usuario = (ModeloUsuarioNoAdministrador) await _userManager.GetUserAsync(User);
+    var usuario = (ModeloUsuarioNoAdministrador)await _userManager.GetUserAsync(User);
 
     //Verificamos si el usuario actual tiene el rol de paciente o medico. La muestra y gestion de citas dependera del rol del usuario.
     if (User.IsInRole(Constantes.NombreRolPaciente))
     {
         var citas = ((ModeloPaciente)usuario).Citas;
 
-        <div class="container text-left">
+        <div class="d-flex flex-row h-75 w-75 position-absolute">
 
-            <div class="row bg-primary border-success">
+            <div class="ml-5 p-3 overflow-auto border border-warning rounded">
 
-                <label class="col-3">Especializacion</label>
-                <label class="col-3">Medico</label>
-                <label class="col-3">Fecha</label>
+                <div class="pb-3">
+                    <h4 class="text-left">Citas @Model.FiltroEstadoCitas.ToString():</h4>
+                </div>
 
-            </div>
+                @*<div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
 
-            @foreach (var cita in citas)
-            {
-                @if (cita.EstadoCita == @Model.FiltroEstadoCitas)
+                        <div class="d-flex flex-column">
+                            <label class="text-left">Paciente: Juancho Juanches</label>
+                            <label class="text-left">Especializacion: @EEspecializacion.Ginecologo</label>
+                            <label class="text-left">Fecha: @DateTimeOffset.Now</label>
+                        </div>
+
+                        <div class="pl-3 mr-2 mt-4">
+                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
+                            <a class="form-text btn btn-primary btn-sm" asp-page="EditarCita">Editar</a>
+                        </div>
+
+                    </div>*@
+
+                @foreach (var cita in citas)
                 {
-                    <div class="row">
+                    <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
 
-                        <label class="col-3">@cita.EspecializacionCita</label>
-                        <label class="col-3">@cita.Medico.UserName</label>
-                        <label class="col-3">@cita.Fecha</label>
+                        <div class="d-flex flex-column">
+                            <label class="text-left">Paciente: @cita.Paciente.UserName</label>
+                            <label class="text-left">Especializacion: @cita.EspecializacionCita</label>
+                            <label class="text-left">Fecha: @cita.Fecha</label>
+                        </div>
 
-                        <input class="col-3" class="form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Id)" />
+                        <div class="pl-3 mr-2 mt-4">
+                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
+                        </div>
 
-                    </div>
-
-                    <div class="row bg-primary border-success" id=@cita.Id>
-                        <label class="col-3">Descripcion</label>
-                        <label class="col-12">@cita.Descripcion</label>
                     </div>
                 }
-            }
+
+            </div>
 
         </div>
     }
@@ -51,57 +62,60 @@
         var citas = ((ModeloMedico)usuario).Citas;
 
 
-        <div class="form-inline">
+        <div class="d-flex flex-row h-75 w-75 position-absolute">
 
-            <div class="container">
+            <div class="ml-5 p-3 overflow-auto border border-warning rounded">
 
-                <div class="row bg-primary border-success">
-
-                    <label class="col-3">Especializacion</label>
-                    <label class="col-3">Paciente</label>
-                    <label class="col-3">Fecha</label>
-
+                <div class="pb-3">
+                    <h4 class="text-left">Citas @Model.FiltroEstadoCitas.ToString():</h4>
                 </div>
+
+                @*<div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
+
+                        <div class="d-flex flex-column">
+                            <label class="text-left">Paciente: Juancho Juanches</label>
+                            <label class="text-left">Especializacion: @EEspecializacion.Ginecologo</label>
+                            <label class="text-left">Fecha: @DateTimeOffset.Now</label>
+                        </div>
+
+                        <div class="pl-3 mr-2 mt-4">
+                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
+                            <a class="form-text btn btn-primary btn-sm" asp-page="EditarCita">Editar</a>
+                        </div>
+
+                    </div>*@
 
                 @foreach (var cita in citas)
                 {
-                    @if (cita.EstadoCita == @Model.FiltroEstadoCitas)
-                    {
-                        <div class="row">
+                    <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
 
-                            <label class="col-3">@cita.EspecializacionCita</label>
-                            <label class="col-3">@cita.Paciente.UserName</label>
-                            <label class="col-3">@cita.Fecha</label>
-
-                            <input class="col-3 form-text btn btn-primary" type="button" value="Mas" onclick="MostrarDescripcionCita(@cita.Id)"/>
-
+                        <div class="d-flex flex-column">
+                            <label class="text-left">Paciente: @cita.Paciente.UserName</label>
+                            <label class="text-left">Especializacion: @cita.EspecializacionCita</label>
+                            <label class="text-left">Fecha: @cita.Fecha</label>
                         </div>
 
-                        <div class="row bg-primary border-success" id=@cita.Id>
-                            <label class="col-3">Descripcion</label>
-                            <label class="col-12">@cita.Descripcion</label>
+                        <div class="pl-3 mr-2 mt-4">
+                            <a class="form-text btn btn-primary btn-sm" asp-page="InformacionCita">Info</a>
+                            <a class="form-text btn btn-primary btn-sm" asp-page="EditarCita">Editar</a>
                         </div>
-                    }
+
+                    </div>
                 }
 
             </div>
-
-            <div class="mr-5">
+            
+            <!--Partial view de muestra de informacion de la cita-->
+            <div class="ml-5" id="informacionCita">
+                <partial name="_InformacionCita" />
+            </div>
+            
+            <!--Boton para acceder a la pagina de creacion de citas-->
+            <div class="ml-5">
                 <a class="form-text btn btn-primary" asp-page="CreacionCita">Crear Cita</a>
             </div>
 
         </div>
 
-
     }
 }
-
-<script type="text/javascript">
-
-    @*Metodo llamado cuando el boton mostrar mas en la lista de citas es seleccionado*@
-    function MostrarDescripcionCita(descripcion)
-    {
-        descripcion.classList.toggle("collapse");
-    }
-
-</script>

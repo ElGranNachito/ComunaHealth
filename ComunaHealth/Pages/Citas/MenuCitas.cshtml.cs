@@ -48,9 +48,15 @@ namespace ComunaHealth.Pages.Citas
         }
 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostFiltradoCitas()
         {
             return Partial("_Citas", this);
+        }
+
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OnPostVerInformacionCita()
+        {
+            return Partial("_InformacionCita", this);
         }
     }
 }
