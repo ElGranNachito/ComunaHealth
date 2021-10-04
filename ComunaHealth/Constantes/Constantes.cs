@@ -22,5 +22,7 @@ namespace ComunaHealth
 
 		public const string TrueString = "true";
 		public const string FalseString = "false";
+
+		public const int LongitudKeyEncriptadoEntradas = 24;
 	}
 }

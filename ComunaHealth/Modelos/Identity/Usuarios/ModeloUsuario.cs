@@ -43,6 +43,12 @@ namespace ComunaHealth.Modelos
 		[Required]
 		public EEstadoCuenta EstadoCuenta { get; set; }
 
+		/// <summary>
+		/// Chats del usuario
+		/// </summary>
+		[Required]
+		public virtual List<ModeloChat> Chats { get; set; } = new List<ModeloChat>();
+
 		public ModeloUsuario()
 		{
 			SecurityStamp = Guid.NewGuid().ToString();

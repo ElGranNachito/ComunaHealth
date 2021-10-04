@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
+using ComunaHealth.Hubs;
 using ComunaHealth.Modelos;
 using ComunaHealth.Modelos.Identity.Usuarios;
 
@@ -56,6 +57,7 @@ namespace ComunaHealth
             });
 
             services.AddRazorPages();
+            services.AddSignalR();
 
             //Configuramos el servicio de autenticacion
             services.Configure<IdentityOptions>(configIdentity =>
@@ -118,6 +120,7 @@ namespace ComunaHealth
 
             app.UseEndpoints(endpoints =>
             {
+	            endpoints.MapHub<ChatHub>("/ChatHub");
                 endpoints.MapRazorPages();
             });
 

@@ -1,0 +1,126 @@
+﻿@page
+@using ComunaHealth.Modelos
+@using Microsoft.EntityFrameworkCore
+@model ComunaHealth.Pages.Chat.ChatModel
+
+@inject ComunaDbContext dbContext
+@inject UserManager<ModeloUsuario> userManager
+
+<div class="container-fluid h-100">
+
+    <div class="row h-100">
+        
+        @{
+            var idUsuarioActual = int.Parse(userManager.GetUserId(User));
+            var usuarioActual = await dbContext.Users.Where(u => u.Id == idUsuarioActual).Include(u => u.Chats).FirstOrDefaultAsync();
+
+        @*Lista de chats del usuario*@
+        <div class="col-3 d-flex flex-column text-center border-right">
+
+            <p class="mb-3">
+                Chats
+            </p>
+
+            @foreach (var chat in usuarioActual.Chats)
+            {
+                var chatActual = await dbContext.Chats.Where(c => c.Id == chat.Id).Include(c => c.Participantes).Include(c => c.Entradas).FirstOrDefaultAsync();
+
+                var participantesChatActual = chatActual?.Participantes;
+
+                var otroParticipante = participantesChatActual?.FirstOrDefault(u => u.Id != idUsuarioActual);
+
+                if (otroParticipante == null)
+                {
+                    return;
+                }
+
+                <form
+                    class="chat"
+                    id="chat-@chat.GuidChat"
+                    method="post" 
+                    style="max-height: 8%;">
+
+                    <input type="hidden" name="idChat" value="@chat.GuidChat"/>
+
+                    <button onclick="ActualizarVentanaChatActual(event, 'chat-@chat.GuidChat');" class="w-100 h-100 container btn btn-light pl-4" style="max-height: 100%; text-overflow: ellipsis; overflow: hidden;">
+                        <div class="row">
+                            <span class="text-left" style="font-size: small"> @otroParticipante.UserName </span>
+                        </div>
+
+                        <div class="row mt-2 text-left">
+                            <span style="max-height: 100%; font-size: small;">
+                                @chat.Entradas.LastOrDefault()?.Contenido
+                            </span>
+                        </div>
+                    </button>
+
+                </form>
+            }
+
+
+        </div>
+
+        @*Ventana de chat*@
+        <div class="col-9 h-100">
+            <div >
+
+                @*Mensajes*@
+                <div class="h-75 text-center d-flex flex-column" id="mensajes">
+
+                    <partial name="_MensajesChat"/>
+
+                </div>
+
+                @*Form enviar mensaje*@
+                <form class="h-25 d-flex flex-row" style="position: absolute; bottom: 0%">
+
+                    <div class="align-self-end">Mensaje: </div>
+
+                    <input type="text" title="Mensaje" class="align-self-end mx-4"/>
+
+                    <button type="submit" title="Mensaje" class="align-self-end btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+    }
+    </div>
+
+</div>
+
+@section Scripts{
+    
+    <script type="text/javascript" src="js/signalr/dist/browser/signalr.min.js"></script>
+
+    <script type="text/javascript">
+
+        "use strict";
+
+        InicializarSignalR();
+
+        function InicializarSignalR()
+        {
+            var conexionSignalR = signalR.HubConnectionBuilder().withUrl("/HubChat").build();
+        }
+
+        function ActualizarVentanaChatActual(e, form) {
+
+            e.preventDefault();
+
+            $.ajax({
+                type: "post",
+                datatype: "html",
+                contenttype: "application/json; charset=utf-8",
+                url: "Chat",
+                data: $('#' + form).serialize(),
+                beforesend: function(xhr) { xhr.setHeader("RequestValidationToken", $("input:hidden[name=__RequestVerificationToken]")) }
+            }).done(function(xhr) {
+                $('#mensajes').html(xhr);
+            });
+        }
+
+    </script>
+}

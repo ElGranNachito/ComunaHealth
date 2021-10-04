@@ -33,7 +33,7 @@
                 <div class="row">
 
                     <label class="col-3">@paciente.UserName</label>
-                    <img class="col-3" src="data:image;base64,@Convert.ToBase64String(paciente.FotoAnversoDNI)" />
+                    <img class="col-3" src="data:image;base64,@Convert.ToBase64String(paciente.FotoAnversoDNI)" style="max-height: 100px; max-width: 100px;" />
                     <label class="col-3">@paciente.Email</label>
                     <label class="col-3">@paciente.Descripcion</label>
 
@@ -47,7 +47,7 @@
                 <div class="row">
 
                     <label class="col-3">@medico.UserName</label>
-                    <img class="col-3" src="data:image;base64,@Convert.ToBase64String(medico.FotoReversoDNI)" />
+                    <img class="col-3" src="data:image;base64,@Convert.ToBase64String(medico.FotoReversoDNI)" style="max-height: 100px; max-width: 100px;"/>
                     <label class="col-3">@medico.Email</label>
                     <label class="col-3">@medico.StringEspecializaciones</label>
 

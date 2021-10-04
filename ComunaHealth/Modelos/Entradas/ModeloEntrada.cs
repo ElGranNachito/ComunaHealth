@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using ComunaHealth.Relaciones;
 
 namespace ComunaHealth.Modelos
@@ -11,11 +12,13 @@ namespace ComunaHealth.Modelos
 		/// <summary>
 		/// Contenido dentro de la entrada.
 		/// </summary>
+		[StringLength(2000)]
 		public string Contenido { get; set; }
 	
 		/// <summary>
 		/// Fecha de creacion de la entrada.
 		/// </summary>
+		[Required]
 		public DateTimeOffset FechaDeCreacion { get; set; }
 	}
 
@@ -27,6 +30,7 @@ namespace ComunaHealth.Modelos
 		/// <summary>
 		/// Estado en el que se encuentra el reporte.
 		/// </summary>
+		[Required]
 		public EEstadoReporte EstadoReporte { get; set; }
     }
 
@@ -38,7 +42,8 @@ namespace ComunaHealth.Modelos
 		/// <summary>
 		/// Usuario no administrador remitente del mensaje.
 		/// </summary>
-		public TIUsuarioNoAdministradorMensajeChat Remitente { get; set; }
+		[Required]
+		public ModeloUsuario Remitente { get; set; }
     }
 
 	/// <summary>
@@ -49,16 +54,17 @@ namespace ComunaHealth.Modelos
 		/// <summary>
 		/// Medico que crea el historial medico del paciente para cierta especialidad.
 		/// </summary>
-		public TIMedicoEntradaHistorialMedico MedicoCreador { get; set; }
+		public ModeloMedico MedicoCreador { get; set; }
 
 		/// <summary>
 		/// Paciente del que se trata el historial medico.
 		/// </summary>
-		public TIPacienteEntradaHistorialMedico Paciente { get; set; }
+		public ModeloPaciente Paciente { get; set; }
 
 		/// <summary>
 		/// Especializacion medica que abarga el historial.
 		/// </summary>
+		[Required]
 		public EEspecializacion Especializacion { get; set; }
 	}
 
@@ -70,6 +76,7 @@ namespace ComunaHealth.Modelos
 		/// <summary>
 		/// Administrador que realizo el log.
 		/// </summary>
-		public TIAdministradorLogAdministrador Administrador { get; set; }
+		[Required]
+		public ModeloAdministrador Administrador { get; set; }
 	}
 }

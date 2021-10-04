@@ -30,9 +30,10 @@ namespace ComunaHealth.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DNI = table.Column<int>(type: "int", nullable: false),
-                    TiposCuenta = table.Column<int>(type: "int", nullable: false),
+                    TiposCuenta = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EstadoCuenta = table.Column<int>(type: "int", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegionSanitaria = table.Column<int>(type: "int", nullable: true),
                     Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     MailEsPublico = table.Column<bool>(type: "bit", nullable: true),
                     TelefonoEsPublico = table.Column<bool>(type: "bit", nullable: true),
@@ -41,7 +42,7 @@ namespace ComunaHealth.Migrations
                     FotoReversoDNI = table.Column<byte[]>(type: "image", nullable: true),
                     Municipio = table.Column<int>(type: "int", nullable: true),
                     Especializaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Matricula = table.Column<int>(type: "int", nullable: true),
+                    Matricula = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -64,17 +65,29 @@ namespace ComunaHealth.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ModeloChat",
+                name: "IdentityUser<int>",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PuedeSerModificado = table.Column<bool>(type: "bit", nullable: false),
-                    ClaveEncriptado = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ModeloChat", x => x.Id);
+                    table.PrimaryKey("PK_IdentityUser<int>", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,7 +112,9 @@ namespace ComunaHealth.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PuedeSerModificado = table.Column<bool>(type: "bit", nullable: false),
+                    ClaveEncriptado = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,27 +126,13 @@ namespace ComunaHealth.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PuedeSerModificado = table.Column<bool>(type: "bit", nullable: false),
+                    ClaveEncriptado = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ModeloEntrada",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Contenido = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FechaDeCreacion = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Especializacion = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModeloEntrada", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -256,6 +257,28 @@ namespace ComunaHealth.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Chats",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidChat = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    ModeloUsuarioId = table.Column<int>(type: "int", nullable: true),
+                    PuedeSerModificado = table.Column<bool>(type: "bit", nullable: false),
+                    ClaveEncriptado = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chats_AspNetUsers_ModeloUsuarioId",
+                        column: x => x.ModeloUsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ModeloMedicoModeloPaciente",
                 columns: table => new
                 {
@@ -277,30 +300,6 @@ namespace ComunaHealth.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TIChatUsuario",
-                columns: table => new
-                {
-                    IdChat = table.Column<int>(type: "int", nullable: false),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TIChatUsuario", x => new { x.IdChat, x.IdUsuario });
-                    table.ForeignKey(
-                        name: "FK_TIChatUsuario_AspNetUsers_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TIChatUsuario_ModeloChat_IdChat",
-                        column: x => x.IdChat,
-                        principalTable: "ModeloChat",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -472,150 +471,6 @@ namespace ComunaHealth.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TIAdministradorLogAdministrador",
-                columns: table => new
-                {
-                    IdAdministrador = table.Column<int>(type: "int", nullable: false),
-                    IdLogAdministrador = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TIAdministradorLogAdministrador", x => new { x.IdLogAdministrador, x.IdAdministrador });
-                    table.ForeignKey(
-                        name: "FK_TIAdministradorLogAdministrador_AspNetUsers_IdAdministrador",
-                        column: x => x.IdAdministrador,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TIAdministradorLogAdministrador_ModeloEntrada_IdLogAdministrador",
-                        column: x => x.IdLogAdministrador,
-                        principalTable: "ModeloEntrada",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TIContenedorDeEntradasEntrada<ModeloEntrada>",
-                columns: table => new
-                {
-                    IdContenedorDeEntradas = table.Column<int>(type: "int", nullable: false),
-                    IdEntrada = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TIContenedorDeEntradasEntrada<ModeloEntrada>", x => new { x.IdContenedorDeEntradas, x.IdEntrada });
-                    table.ForeignKey(
-                        name: "FK_TIContenedorDeEntradasEntrada<ModeloEntrada>_ModeloContenedorDeEntradas<ModeloEntrada>_IdContenedorDeEntradas",
-                        column: x => x.IdContenedorDeEntradas,
-                        principalTable: "ModeloContenedorDeEntradas<ModeloEntrada>",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TIContenedorDeEntradasEntrada<ModeloEntrada>_ModeloEntrada_IdEntrada",
-                        column: x => x.IdEntrada,
-                        principalTable: "ModeloEntrada",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>",
-                columns: table => new
-                {
-                    IdContenedorDeEntradas = table.Column<int>(type: "int", nullable: false),
-                    IdEntrada = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>", x => new { x.IdContenedorDeEntradas, x.IdEntrada });
-                    table.ForeignKey(
-                        name: "FK_TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>_ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>_IdConte~",
-                        column: x => x.IdContenedorDeEntradas,
-                        principalTable: "ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>_ModeloEntrada_IdEntrada",
-                        column: x => x.IdEntrada,
-                        principalTable: "ModeloEntrada",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TIMedicoEntradaHistorialMedico",
-                columns: table => new
-                {
-                    IdMedico = table.Column<int>(type: "int", nullable: false),
-                    IdEntradaHistorialMedico = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TIMedicoEntradaHistorialMedico", x => new { x.IdEntradaHistorialMedico, x.IdMedico });
-                    table.ForeignKey(
-                        name: "FK_TIMedicoEntradaHistorialMedico_AspNetUsers_IdMedico",
-                        column: x => x.IdMedico,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TIMedicoEntradaHistorialMedico_ModeloEntrada_IdEntradaHistorialMedico",
-                        column: x => x.IdEntradaHistorialMedico,
-                        principalTable: "ModeloEntrada",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TIPacienteEntradaHistorialMedico",
-                columns: table => new
-                {
-                    IdPaciente = table.Column<int>(type: "int", nullable: false),
-                    IdEntradaHistorialMedico = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TIPacienteEntradaHistorialMedico", x => new { x.IdEntradaHistorialMedico, x.IdPaciente });
-                    table.ForeignKey(
-                        name: "FK_TIPacienteEntradaHistorialMedico_AspNetUsers_IdPaciente",
-                        column: x => x.IdPaciente,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TIPacienteEntradaHistorialMedico_ModeloEntrada_IdEntradaHistorialMedico",
-                        column: x => x.IdEntradaHistorialMedico,
-                        principalTable: "ModeloEntrada",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TIUsuarioNoAdministradorMensajeChat",
-                columns: table => new
-                {
-                    IdUsuarioNoAdministrador = table.Column<int>(type: "int", nullable: false),
-                    IdMensajeChat = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TIUsuarioNoAdministradorMensajeChat", x => new { x.IdMensajeChat, x.IdUsuarioNoAdministrador });
-                    table.ForeignKey(
-                        name: "FK_TIUsuarioNoAdministradorMensajeChat_AspNetUsers_IdUsuarioNoAdministrador",
-                        column: x => x.IdUsuarioNoAdministrador,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TIUsuarioNoAdministradorMensajeChat_ModeloEntrada_IdMensajeChat",
-                        column: x => x.IdMensajeChat,
-                        principalTable: "ModeloEntrada",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TICitaSolicitudCambioHorarioCita",
                 columns: table => new
                 {
@@ -663,6 +518,64 @@ namespace ComunaHealth.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ModeloEntrada",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Contenido = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    FechaDeCreacion = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModeloContenedorDeEntradasModeloEntradaId = table.Column<int>(name: "ModeloContenedorDeEntradas<ModeloEntrada>Id", type: "int", nullable: true),
+                    MedicoCreadorId = table.Column<int>(type: "int", nullable: true),
+                    PacienteId = table.Column<int>(type: "int", nullable: true),
+                    Especializacion = table.Column<int>(type: "int", nullable: true),
+                    ModeloContenedorDeEntradasModeloEntradaHistorialMedicoId = table.Column<int>(name: "ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>Id", type: "int", nullable: true),
+                    RemitenteId = table.Column<int>(type: "int", nullable: true),
+                    ModeloChatId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModeloEntrada", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ModeloEntrada_AspNetUsers_MedicoCreadorId",
+                        column: x => x.MedicoCreadorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModeloEntrada_AspNetUsers_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModeloEntrada_AspNetUsers_RemitenteId",
+                        column: x => x.RemitenteId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModeloEntrada_Chats_ModeloChatId",
+                        column: x => x.ModeloChatId,
+                        principalTable: "Chats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModeloEntrada_ModeloContenedorDeEntradas<ModeloEntrada>_ModeloContenedorDeEntradas<ModeloEntrada>Id",
+                        column: x => x.ModeloContenedorDeEntradasModeloEntradaId,
+                        principalTable: "ModeloContenedorDeEntradas<ModeloEntrada>",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModeloEntrada_ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>_ModeloContenedorDeEntradas<ModeloEntradaHistorialMedi~",
+                        column: x => x.ModeloContenedorDeEntradasModeloEntradaHistorialMedicoId,
+                        principalTable: "ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -703,25 +616,44 @@ namespace ComunaHealth.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Chats_ModeloUsuarioId",
+                table: "Chats",
+                column: "ModeloUsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModeloEntrada_MedicoCreadorId",
+                table: "ModeloEntrada",
+                column: "MedicoCreadorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModeloEntrada_ModeloChatId",
+                table: "ModeloEntrada",
+                column: "ModeloChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModeloEntrada_ModeloContenedorDeEntradas<ModeloEntrada>Id",
+                table: "ModeloEntrada",
+                column: "ModeloContenedorDeEntradas<ModeloEntrada>Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModeloEntrada_ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>Id",
+                table: "ModeloEntrada",
+                column: "ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModeloEntrada_PacienteId",
+                table: "ModeloEntrada",
+                column: "PacienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModeloEntrada_RemitenteId",
+                table: "ModeloEntrada",
+                column: "RemitenteId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ModeloMedicoModeloPaciente_PacientesId",
                 table: "ModeloMedicoModeloPaciente",
                 column: "PacientesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIAdministradorLogAdministrador_IdAdministrador",
-                table: "TIAdministradorLogAdministrador",
-                column: "IdAdministrador");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIAdministradorLogAdministrador_IdLogAdministrador",
-                table: "TIAdministradorLogAdministrador",
-                column: "IdLogAdministrador",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIChatUsuario_IdUsuario",
-                table: "TIChatUsuario",
-                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TICitaMedico_IdCita",
@@ -753,16 +685,6 @@ namespace ComunaHealth.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TIContenedorDeEntradasEntrada<ModeloEntrada>_IdEntrada",
-                table: "TIContenedorDeEntradasEntrada<ModeloEntrada>",
-                column: "IdEntrada");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>_IdEntrada",
-                table: "TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>",
-                column: "IdEntrada");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TIMedicoContenedorEntrada_IdEntrada",
                 table: "TIMedicoContenedorEntrada",
                 column: "IdEntrada");
@@ -771,17 +693,6 @@ namespace ComunaHealth.Migrations
                 name: "IX_TIMedicoContenedorEntradaHistorialMedico_IdEntradaHistorialMedico",
                 table: "TIMedicoContenedorEntradaHistorialMedico",
                 column: "IdEntradaHistorialMedico");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIMedicoEntradaHistorialMedico_IdEntradaHistorialMedico",
-                table: "TIMedicoEntradaHistorialMedico",
-                column: "IdEntradaHistorialMedico",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIMedicoEntradaHistorialMedico_IdMedico",
-                table: "TIMedicoEntradaHistorialMedico",
-                column: "IdMedico");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TIPacienteContenedorEntrada_IdContenedorEntrada",
@@ -797,28 +708,6 @@ namespace ComunaHealth.Migrations
                 name: "IX_TIPacienteContenedorEntradaHistorialMedico_IdEntradaHistorialMedico",
                 table: "TIPacienteContenedorEntradaHistorialMedico",
                 column: "IdEntradaHistorialMedico");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIPacienteEntradaHistorialMedico_IdEntradaHistorialMedico",
-                table: "TIPacienteEntradaHistorialMedico",
-                column: "IdEntradaHistorialMedico",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIPacienteEntradaHistorialMedico_IdPaciente",
-                table: "TIPacienteEntradaHistorialMedico",
-                column: "IdPaciente");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIUsuarioNoAdministradorMensajeChat_IdMensajeChat",
-                table: "TIUsuarioNoAdministradorMensajeChat",
-                column: "IdMensajeChat",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TIUsuarioNoAdministradorMensajeChat_IdUsuarioNoAdministrador",
-                table: "TIUsuarioNoAdministradorMensajeChat",
-                column: "IdUsuarioNoAdministrador");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TIUsuarioNoAdministradorSolicitudCambioHorarioCita_IdSolicitudPostergacionCita",
@@ -850,13 +739,13 @@ namespace ComunaHealth.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "IdentityUser<int>");
+
+            migrationBuilder.DropTable(
+                name: "ModeloEntrada");
+
+            migrationBuilder.DropTable(
                 name: "ModeloMedicoModeloPaciente");
-
-            migrationBuilder.DropTable(
-                name: "TIAdministradorLogAdministrador");
-
-            migrationBuilder.DropTable(
-                name: "TIChatUsuario");
 
             migrationBuilder.DropTable(
                 name: "TICitaMedico");
@@ -868,19 +757,10 @@ namespace ComunaHealth.Migrations
                 name: "TICitaSolicitudCambioHorarioCita");
 
             migrationBuilder.DropTable(
-                name: "TIContenedorDeEntradasEntrada<ModeloEntrada>");
-
-            migrationBuilder.DropTable(
-                name: "TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>");
-
-            migrationBuilder.DropTable(
                 name: "TIMedicoContenedorEntrada");
 
             migrationBuilder.DropTable(
                 name: "TIMedicoContenedorEntradaHistorialMedico");
-
-            migrationBuilder.DropTable(
-                name: "TIMedicoEntradaHistorialMedico");
 
             migrationBuilder.DropTable(
                 name: "TIPacienteContenedorEntrada");
@@ -892,19 +772,13 @@ namespace ComunaHealth.Migrations
                 name: "TIPacienteContenedorEntradaHistorialMedico");
 
             migrationBuilder.DropTable(
-                name: "TIPacienteEntradaHistorialMedico");
-
-            migrationBuilder.DropTable(
-                name: "TIUsuarioNoAdministradorMensajeChat");
-
-            migrationBuilder.DropTable(
                 name: "TIUsuarioNoAdministradorSolicitudCambioHorarioCita");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "ModeloChat");
+                name: "Chats");
 
             migrationBuilder.DropTable(
                 name: "ModeloCita");
@@ -916,13 +790,10 @@ namespace ComunaHealth.Migrations
                 name: "ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>");
 
             migrationBuilder.DropTable(
-                name: "ModeloEntrada");
+                name: "ModeloSolicitudCambioHorarioDeCita");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "ModeloSolicitudCambioHorarioDeCita");
         }
     }
 }

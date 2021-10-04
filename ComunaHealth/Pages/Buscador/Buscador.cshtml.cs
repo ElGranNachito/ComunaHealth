@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using ComunaHealth.Data;
+using ComunaHealth.Helpers;
 using ComunaHealth.Modelos;
 using ComunaHealth.Modelos.Identity.Usuarios;
 using Microsoft.AspNetCore.Authentication;
@@ -269,9 +270,41 @@ namespace ComunaHealth.Pages
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> OnPostComenzarChat()
 		{
-			var idUsuario = Request.Form["ID"];
+			if (!int.TryParse(Request.Form["ID"], out int idParseada))
+				return new JsonResult("Algo salio mal");
 
-			return Page();
+			var usuarioActual = await _userManager.GetUserAsync(User);
+
+			if(usuarioActual == null)
+				return new JsonResult("Algo salio mal");
+
+			if(usuarioActual.Chats.Any(m => m.Participantes.Any(p => p.Id == idParseada)))
+				return RedirectToPage("/Chat/Chat");
+
+			var otroUsuario = await _dbcontext.Users.FirstOrDefaultAsync(u => u.Id == idParseada);
+
+			if (otroUsuario == null)
+				return new JsonResult("Algo salio mal");
+
+			var nuevoChat = new ModeloChat
+			{
+				Participantes = new List<ModeloUsuario>
+				{
+					usuarioActual,
+					otroUsuario
+				},
+				
+				//Generamos la clave de encriptado
+				ClaveEncriptado = CryptoHelpers.GenerarStringAleatorio(Constantes.LongitudKeyEncriptadoEntradas)
+			};
+
+			usuarioActual.Chats.Add(nuevoChat);
+			otroUsuario.Chats.Add(nuevoChat);
+
+			await _dbcontext.AddAsync(nuevoChat);
+			await _dbcontext.SaveChangesAsync();
+
+			return RedirectToPage("/Chat/Chat");
 		}
 	}
 }

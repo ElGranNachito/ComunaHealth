@@ -18,10 +18,30 @@ namespace ComunaHealth.Data
 	/// </summary>
 	public class ComunaDbContext : IdentityDbContext<ModeloUsuario, ModeloRol, int>
 	{
+        /// <summary>
+        /// Pacientes registrados
+        /// </summary>
 		public DbSet<ModeloPaciente> Pacientes { get; set; }
+
+        /// <summary>
+        /// Medicos registrados
+        /// </summary>
 		public DbSet<ModeloMedico> Medicos { get; set; }
+
+        /// <summary>
+        /// Administradores registrados
+        /// </summary>
 		public DbSet<ModeloAdministrador> Administradores { get; set; }
+
+        /// <summary>
+        /// Administradores jefe
+        /// </summary>
 		public DbSet<ModeloAdministradorJefe> AdministradoresJefe { get; set; }
+
+        /// <summary>
+        /// Chats
+        /// </summary>
+        public DbSet<ModeloChat> Chats { get; set; }
 
 		public ComunaDbContext(DbContextOptions<ComunaDbContext> options)
 			: base(options)
@@ -33,6 +53,14 @@ namespace ComunaHealth.Data
 
 			modelBuilder.Entity<ModeloUsuario>().HasAlternateKey(u => u.DNI);
 			modelBuilder.Entity<IdentityUser<int>>().Property(u => u.Id).HasAnnotation("SqlServer:Identity", "(1, 1)");
+
+			modelBuilder.Entity<ModeloUsuario>()
+				.HasMany<ModeloChat>(u => u.Chats)
+				.WithMany(c => c.Participantes);
+
+			modelBuilder.Entity<ModeloChat>()
+				.HasMany<ModeloUsuario>(c => c.Participantes)
+				.WithMany(u => u.Chats);
             
             // Medico:
 
@@ -165,97 +193,6 @@ namespace ComunaHealth.Data
                 .HasOne(i => i.SolicitudCambioHorarioDeCita)
                 .WithOne(p => p.Cita)
                 .HasForeignKey<TICitaSolicitudCambioHorarioCita>(ip => ip.IdSolicitudCambioHorarioDeCita);
-
-            // ContenedorDeEntradas:
-
-            // - ContenedorEntrada Entrada:
-            modelBuilder.Entity<TIContenedorDeEntradasEntrada<ModeloEntrada>>().HasKey(e => new { e.IdContenedorDeEntradas, e.IdEntrada });
-
-            modelBuilder.Entity<TIContenedorDeEntradasEntrada<ModeloEntrada>>()
-                .HasOne(i => i.Entrada);
-
-            modelBuilder.Entity<TIContenedorDeEntradasEntrada<ModeloEntrada>>()
-                .HasOne(i => i.ContenedorDeEntradas)
-                .WithMany(p => p.Entradas)
-                .HasForeignKey(ip => ip.IdContenedorDeEntradas);
-
-            // - ContenedorEntrada EntradaHistorialMedico:
-            modelBuilder.Entity<TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>>().HasKey(e => new { e.IdContenedorDeEntradas, e.IdEntrada });
-
-            modelBuilder.Entity<TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>>()
-                .HasOne(i => i.Entrada);
-
-            modelBuilder.Entity<TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>>()
-                .HasOne(i => i.ContenedorDeEntradas)
-                .WithMany(p => p.Entradas)
-                .HasForeignKey(ip => ip.IdContenedorDeEntradas);
-
-            // Chat:
-
-            // - Chat Usuario:
-            modelBuilder.Entity<TIChatUsuario>().HasKey(e => new { e.IdChat, e.IdUsuario });
-
-            modelBuilder.Entity<TIChatUsuario>()
-                .HasOne(i => i.Usuario);
-
-            modelBuilder.Entity<TIChatUsuario>()
-                .HasOne(i => i.Chat)
-                .WithMany(p => p.Participantes)
-                .HasForeignKey(ip => ip.IdChat);
-
-
-            // EntradaHistorialMedico:
-
-            // - EntradaHistorialMedico Medico:
-            modelBuilder.Entity<TIMedicoEntradaHistorialMedico>().HasKey(e => new { e.IdEntradaHistorialMedico, e.IdMedico });
-
-            modelBuilder.Entity<TIMedicoEntradaHistorialMedico>()
-                .HasOne(i => i.Medico);
-
-            modelBuilder.Entity<TIMedicoEntradaHistorialMedico>()
-                .HasOne(i => i.EntradaHistorialMedico)
-                .WithOne(p => p.MedicoCreador)
-                .HasForeignKey<TIMedicoEntradaHistorialMedico>(ip => ip.IdEntradaHistorialMedico);
-
-            // - EntradaHistorialMedico Medico:
-            modelBuilder.Entity<TIPacienteEntradaHistorialMedico>().HasKey(e => new { e.IdEntradaHistorialMedico, e.IdPaciente });
-
-            modelBuilder.Entity<TIPacienteEntradaHistorialMedico>()
-                .HasOne(i => i.Paciente);
-
-            modelBuilder.Entity<TIPacienteEntradaHistorialMedico>()
-                .HasOne(i => i.EntradaHistorialMedico)
-                .WithOne(p => p.Paciente)
-                .HasForeignKey<TIPacienteEntradaHistorialMedico>(ip => ip.IdEntradaHistorialMedico);
-
-            // MensajeChat:
-
-            // - MensajeChat UsuarioNoAdministrador:
-            modelBuilder.Entity<TIUsuarioNoAdministradorMensajeChat>().HasKey(e => new { e.IdMensajeChat, e.IdUsuarioNoAdministrador });
-
-            modelBuilder.Entity<TIUsuarioNoAdministradorMensajeChat>()
-                .HasOne(i => i.UsuarioNoAdministrador);
-
-            modelBuilder.Entity<TIUsuarioNoAdministradorMensajeChat>()
-                .HasOne(i => i.MensajeChat)
-                .WithOne(p => p.Remitente)
-                .HasForeignKey<TIUsuarioNoAdministradorMensajeChat>(ip => ip.IdMensajeChat);
-
-            // LogAdministrador:
-
-            // - LogAdministrador Administrador:
-            modelBuilder.Entity<TIAdministradorLogAdministrador>().HasKey(e => new { e.IdLogAdministrador, e.IdAdministrador });
-
-            modelBuilder.Entity<TIAdministradorLogAdministrador>()
-                .HasOne(i => i.Administrador);
-
-            modelBuilder.Entity<TIAdministradorLogAdministrador>()
-                .HasOne(i => i.LogAdministrador)
-                .WithOne(p => p.Administrador)
-                .HasForeignKey<TIAdministradorLogAdministrador>(ip => ip.IdLogAdministrador);
-
-
-            
-        }
+		}
     }
 }

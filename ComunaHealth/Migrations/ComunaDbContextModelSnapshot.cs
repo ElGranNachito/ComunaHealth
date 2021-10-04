@@ -27,14 +27,21 @@ namespace ComunaHealth.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaveEncriptado")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("GuidChat")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("PuedeSerModificado")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ModeloChat");
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloCita", b =>
@@ -72,6 +79,14 @@ namespace ComunaHealth.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ClaveEncriptado")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("PuedeSerModificado")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("ModeloContenedorDeEntradas<ModeloEntrada>");
@@ -83,6 +98,14 @@ namespace ComunaHealth.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaveEncriptado")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("PuedeSerModificado")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -97,7 +120,8 @@ namespace ComunaHealth.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Contenido")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -106,7 +130,12 @@ namespace ComunaHealth.Migrations
                     b.Property<DateTimeOffset>("FechaDeCreacion")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int?>("ModeloContenedorDeEntradas<ModeloEntrada>Id")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ModeloContenedorDeEntradas<ModeloEntrada>Id");
 
                     b.ToTable("ModeloEntrada");
 
@@ -253,39 +282,6 @@ namespace ComunaHealth.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("ModeloUsuario");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIAdministradorLogAdministrador", b =>
-                {
-                    b.Property<int>("IdLogAdministrador")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdAdministrador")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdLogAdministrador", "IdAdministrador");
-
-                    b.HasIndex("IdAdministrador");
-
-                    b.HasIndex("IdLogAdministrador")
-                        .IsUnique();
-
-                    b.ToTable("TIAdministradorLogAdministrador");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIChatUsuario", b =>
-                {
-                    b.Property<int>("IdChat")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdChat", "IdUsuario");
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("TIChatUsuario");
-                });
-
             modelBuilder.Entity("ComunaHealth.Relaciones.TICitaMedico", b =>
                 {
                     b.Property<int>("IdCita")
@@ -339,36 +335,6 @@ namespace ComunaHealth.Migrations
                     b.ToTable("TICitaSolicitudCambioHorarioCita");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIContenedorDeEntradasEntrada<ComunaHealth.Modelos.ModeloEntrada>", b =>
-                {
-                    b.Property<int>("IdContenedorDeEntradas")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdEntrada")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdContenedorDeEntradas", "IdEntrada");
-
-                    b.HasIndex("IdEntrada");
-
-                    b.ToTable("TIContenedorDeEntradasEntrada<ModeloEntrada>");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIContenedorDeEntradasEntrada<ComunaHealth.Modelos.ModeloEntradaHistorialMedico>", b =>
-                {
-                    b.Property<int>("IdContenedorDeEntradas")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdEntrada")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdContenedorDeEntradas", "IdEntrada");
-
-                    b.HasIndex("IdEntrada");
-
-                    b.ToTable("TIContenedorDeEntradasEntrada<ModeloEntradaHistorialMedico>");
-                });
-
             modelBuilder.Entity("ComunaHealth.Relaciones.TIMedicoContenedorEntrada", b =>
                 {
                     b.Property<int>("IdMedico")
@@ -397,24 +363,6 @@ namespace ComunaHealth.Migrations
                     b.HasIndex("IdEntradaHistorialMedico");
 
                     b.ToTable("TIMedicoContenedorEntradaHistorialMedico");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIMedicoEntradaHistorialMedico", b =>
-                {
-                    b.Property<int>("IdEntradaHistorialMedico")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdMedico")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdEntradaHistorialMedico", "IdMedico");
-
-                    b.HasIndex("IdEntradaHistorialMedico")
-                        .IsUnique();
-
-                    b.HasIndex("IdMedico");
-
-                    b.ToTable("TIMedicoEntradaHistorialMedico");
                 });
 
             modelBuilder.Entity("ComunaHealth.Relaciones.TIPacienteContenedorEntrada", b =>
@@ -460,42 +408,6 @@ namespace ComunaHealth.Migrations
                     b.HasIndex("IdEntradaHistorialMedico");
 
                     b.ToTable("TIPacienteContenedorEntradaHistorialMedico");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIPacienteEntradaHistorialMedico", b =>
-                {
-                    b.Property<int>("IdEntradaHistorialMedico")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdPaciente")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdEntradaHistorialMedico", "IdPaciente");
-
-                    b.HasIndex("IdEntradaHistorialMedico")
-                        .IsUnique();
-
-                    b.HasIndex("IdPaciente");
-
-                    b.ToTable("TIPacienteEntradaHistorialMedico");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorMensajeChat", b =>
-                {
-                    b.Property<int>("IdMensajeChat")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUsuarioNoAdministrador")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdMensajeChat", "IdUsuarioNoAdministrador");
-
-                    b.HasIndex("IdMensajeChat")
-                        .IsUnique();
-
-                    b.HasIndex("IdUsuarioNoAdministrador");
-
-                    b.ToTable("TIUsuarioNoAdministradorMensajeChat");
                 });
 
             modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudCambioHorarioCita", b =>
@@ -676,6 +588,21 @@ namespace ComunaHealth.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ModeloChatModeloUsuario", b =>
+                {
+                    b.Property<int>("ChatsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParticipantesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChatsId", "ParticipantesId");
+
+                    b.HasIndex("ParticipantesId");
+
+                    b.ToTable("ModeloChatModeloUsuario");
+                });
+
             modelBuilder.Entity("ModeloMedicoModeloPaciente", b =>
                 {
                     b.Property<int>("MedicosId")
@@ -698,19 +625,37 @@ namespace ComunaHealth.Migrations
                     b.Property<int>("Especializacion")
                         .HasColumnType("int");
 
+                    b.Property<int?>("MedicoCreadorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("MedicoCreadorId");
+
+                    b.HasIndex("ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>Id");
+
+                    b.HasIndex("PacienteId");
+
                     b.HasDiscriminator().HasValue("ModeloEntradaHistorialMedico");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Modelos.ModeloLogAdministrador", b =>
-                {
-                    b.HasBaseType("ComunaHealth.Modelos.ModeloEntrada");
-
-                    b.HasDiscriminator().HasValue("ModeloLogAdministrador");
                 });
 
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloMensajeChat", b =>
                 {
                     b.HasBaseType("ComunaHealth.Modelos.ModeloEntrada");
+
+                    b.Property<int?>("ModeloChatId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RemitenteId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("ModeloChatId");
+
+                    b.HasIndex("RemitenteId");
 
                     b.HasDiscriminator().HasValue("ModeloMensajeChat");
                 });
@@ -786,42 +731,11 @@ namespace ComunaHealth.Migrations
                     b.HasDiscriminator().HasValue("ModeloPaciente");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIAdministradorLogAdministrador", b =>
+            modelBuilder.Entity("ComunaHealth.Modelos.ModeloEntrada", b =>
                 {
-                    b.HasOne("ComunaHealth.Modelos.ModeloAdministrador", "Administrador")
-                        .WithMany()
-                        .HasForeignKey("IdAdministrador")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComunaHealth.Modelos.ModeloLogAdministrador", "LogAdministrador")
-                        .WithOne("Administrador")
-                        .HasForeignKey("ComunaHealth.Relaciones.TIAdministradorLogAdministrador", "IdLogAdministrador")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Administrador");
-
-                    b.Navigation("LogAdministrador");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIChatUsuario", b =>
-                {
-                    b.HasOne("ComunaHealth.Modelos.ModeloChat", "Chat")
-                        .WithMany("Participantes")
-                        .HasForeignKey("IdChat")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComunaHealth.Modelos.ModeloUsuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chat");
-
-                    b.Navigation("Usuario");
+                    b.HasOne("ComunaHealth.Modelos.ModeloContenedorDeEntradas<ComunaHealth.Modelos.ModeloEntrada>", null)
+                        .WithMany("Entradas")
+                        .HasForeignKey("ModeloContenedorDeEntradas<ModeloEntrada>Id");
                 });
 
             modelBuilder.Entity("ComunaHealth.Relaciones.TICitaMedico", b =>
@@ -881,44 +795,6 @@ namespace ComunaHealth.Migrations
                     b.Navigation("SolicitudCambioHorarioDeCita");
                 });
 
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIContenedorDeEntradasEntrada<ComunaHealth.Modelos.ModeloEntrada>", b =>
-                {
-                    b.HasOne("ComunaHealth.Modelos.ModeloContenedorDeEntradas<ComunaHealth.Modelos.ModeloEntrada>", "ContenedorDeEntradas")
-                        .WithMany("Entradas")
-                        .HasForeignKey("IdContenedorDeEntradas")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComunaHealth.Modelos.ModeloEntrada", "Entrada")
-                        .WithMany()
-                        .HasForeignKey("IdEntrada")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ContenedorDeEntradas");
-
-                    b.Navigation("Entrada");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIContenedorDeEntradasEntrada<ComunaHealth.Modelos.ModeloEntradaHistorialMedico>", b =>
-                {
-                    b.HasOne("ComunaHealth.Modelos.ModeloContenedorDeEntradas<ComunaHealth.Modelos.ModeloEntradaHistorialMedico>", "ContenedorDeEntradas")
-                        .WithMany("Entradas")
-                        .HasForeignKey("IdContenedorDeEntradas")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComunaHealth.Modelos.ModeloEntradaHistorialMedico", "Entrada")
-                        .WithMany()
-                        .HasForeignKey("IdEntrada")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ContenedorDeEntradas");
-
-                    b.Navigation("Entrada");
-                });
-
             modelBuilder.Entity("ComunaHealth.Relaciones.TIMedicoContenedorEntrada", b =>
                 {
                     b.HasOne("ComunaHealth.Modelos.ModeloContenedorDeEntradas<ComunaHealth.Modelos.ModeloEntrada>", "Entrada")
@@ -948,25 +824,6 @@ namespace ComunaHealth.Migrations
 
                     b.HasOne("ComunaHealth.Modelos.ModeloMedico", "Medico")
                         .WithMany("NotasPacientes")
-                        .HasForeignKey("IdMedico")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntradaHistorialMedico");
-
-                    b.Navigation("Medico");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIMedicoEntradaHistorialMedico", b =>
-                {
-                    b.HasOne("ComunaHealth.Modelos.ModeloEntradaHistorialMedico", "EntradaHistorialMedico")
-                        .WithOne("MedicoCreador")
-                        .HasForeignKey("ComunaHealth.Relaciones.TIMedicoEntradaHistorialMedico", "IdEntradaHistorialMedico")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComunaHealth.Modelos.ModeloMedico", "Medico")
-                        .WithMany()
                         .HasForeignKey("IdMedico")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1031,44 +888,6 @@ namespace ComunaHealth.Migrations
                     b.Navigation("EntradaHistorialMedico");
 
                     b.Navigation("Paciente");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIPacienteEntradaHistorialMedico", b =>
-                {
-                    b.HasOne("ComunaHealth.Modelos.ModeloEntradaHistorialMedico", "EntradaHistorialMedico")
-                        .WithOne("Paciente")
-                        .HasForeignKey("ComunaHealth.Relaciones.TIPacienteEntradaHistorialMedico", "IdEntradaHistorialMedico")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComunaHealth.Modelos.ModeloPaciente", "Paciente")
-                        .WithMany()
-                        .HasForeignKey("IdPaciente")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntradaHistorialMedico");
-
-                    b.Navigation("Paciente");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorMensajeChat", b =>
-                {
-                    b.HasOne("ComunaHealth.Modelos.ModeloMensajeChat", "MensajeChat")
-                        .WithOne("Remitente")
-                        .HasForeignKey("ComunaHealth.Relaciones.TIUsuarioNoAdministradorMensajeChat", "IdMensajeChat")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ComunaHealth.Modelos.ModeloUsuarioNoAdministrador", "UsuarioNoAdministrador")
-                        .WithMany()
-                        .HasForeignKey("IdUsuarioNoAdministrador")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MensajeChat");
-
-                    b.Navigation("UsuarioNoAdministrador");
                 });
 
             modelBuilder.Entity("ComunaHealth.Relaciones.TIUsuarioNoAdministradorSolicitudCambioHorarioCita", b =>
@@ -1141,6 +960,21 @@ namespace ComunaHealth.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ModeloChatModeloUsuario", b =>
+                {
+                    b.HasOne("ComunaHealth.Modelos.ModeloChat", null)
+                        .WithMany()
+                        .HasForeignKey("ChatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ComunaHealth.Modelos.ModeloUsuario", null)
+                        .WithMany()
+                        .HasForeignKey("ParticipantesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ModeloMedicoModeloPaciente", b =>
                 {
                     b.HasOne("ComunaHealth.Modelos.ModeloMedico", null)
@@ -1156,9 +990,41 @@ namespace ComunaHealth.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ComunaHealth.Modelos.ModeloEntradaHistorialMedico", b =>
+                {
+                    b.HasOne("ComunaHealth.Modelos.ModeloMedico", "MedicoCreador")
+                        .WithMany()
+                        .HasForeignKey("MedicoCreadorId");
+
+                    b.HasOne("ComunaHealth.Modelos.ModeloContenedorDeEntradas<ComunaHealth.Modelos.ModeloEntradaHistorialMedico>", null)
+                        .WithMany("Entradas")
+                        .HasForeignKey("ModeloContenedorDeEntradas<ModeloEntradaHistorialMedico>Id");
+
+                    b.HasOne("ComunaHealth.Modelos.ModeloPaciente", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId");
+
+                    b.Navigation("MedicoCreador");
+
+                    b.Navigation("Paciente");
+                });
+
+            modelBuilder.Entity("ComunaHealth.Modelos.ModeloMensajeChat", b =>
+                {
+                    b.HasOne("ComunaHealth.Modelos.ModeloChat", null)
+                        .WithMany("Entradas")
+                        .HasForeignKey("ModeloChatId");
+
+                    b.HasOne("ComunaHealth.Modelos.ModeloUsuario", "Remitente")
+                        .WithMany()
+                        .HasForeignKey("RemitenteId");
+
+                    b.Navigation("Remitente");
+                });
+
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloChat", b =>
                 {
-                    b.Navigation("Participantes");
+                    b.Navigation("Entradas");
                 });
 
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloCita", b =>
@@ -1189,23 +1055,6 @@ namespace ComunaHealth.Migrations
 
                     b.Navigation("Solicitante")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ComunaHealth.Modelos.ModeloEntradaHistorialMedico", b =>
-                {
-                    b.Navigation("MedicoCreador");
-
-                    b.Navigation("Paciente");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Modelos.ModeloLogAdministrador", b =>
-                {
-                    b.Navigation("Administrador");
-                });
-
-            modelBuilder.Entity("ComunaHealth.Modelos.ModeloMensajeChat", b =>
-                {
-                    b.Navigation("Remitente");
                 });
 
             modelBuilder.Entity("ComunaHealth.Modelos.ModeloMedico", b =>

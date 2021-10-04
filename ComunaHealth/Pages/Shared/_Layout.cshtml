@@ -32,14 +32,17 @@
                     @*Si el usuario es un administrador no mostramos los botones 'Inicio' y 'Buscador'*@
                     @if (!User.IsInRole(Constantes.NombreRolAdministrador))
                     {
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Index">Inicio</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Buscador/Buscador">Buscador</a>
-                            </li>
-                        </ul>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Buscador/Buscador">Buscador</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Chat/Chat">Chat</a>
+                        </li>
+                    </ul>
                     }
                     
                 <div class="align-self-end">
@@ -49,67 +52,61 @@
             </div>
         </nav>
     </header>
-    <div>
-        <main role="main" class="pb-3">
-
-            @*Si el usuario es un administrador...*@
-            @if (User.IsInRole(Constantes.NombreRolAdministrador))
-            {
-                @*La estrucutra de la pagina esta conformada por un menu a la izquierda y el contenido aparecera a la derecha*@
-                <div class="container-fluid">
-                    
-                    @*Menu lateral*@
-                    <div class="row w-100">
-                        <nav class="navbar d-flex flex-column w-25 h-100 border-right col-3">
-
-                            <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-page="/Buscador/Buscador">
-                                Buscar usuarios
+<div class="w-100 h-100" style="position: absolute;">
+    <main role="main" class="pb-3 w-100 h-100">
+         
+        @*Si el usuario es un administrador...*@
+        @if (User.IsInRole(Constantes.NombreRolAdministrador))
+        {
+            @*La estrucutra de la pagina esta conformada por un menu a la izquierda y el contenido aparecera a la derecha*@
+            <div class="container-fluid h-100">
+         
+                @*Menu lateral*@
+                <div class="row w-100 h-100">
+                    <nav class="navbar d-flex flex-column justify-content-start w-25 h-100 border-right col-3">
+         
+                        <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-page="/Buscador/Buscador">
+                            Buscar usuarios
+                        </a>
+         
+                        <a class="nav-item align-self-start btn btn-light w-100 text-left">
+                            Ver reportes
+                        </a>
+         
+                        <a class="nav-item align-self-start btn btn-light w-100 text-left">
+                            Chat
+                        </a>
+         
+                        @*Si el usuario es el administrador jefe entonces añadimos una opcion al menu para administrar administradores*@
+                        @if (User.IsInRole(Constantes.NombreRolAdministradorjefe))
+                        {
+                            <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-page="/Buscador/Buscador" asp-route-tipoBuscador="@Constantes.NombreBuscadorAdministradores">
+                                Buscar administradores
                             </a>
-
-                            <a class="nav-item align-self-start btn btn-light w-100 text-left">
-                                Ver reportes
+         
+                            <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-area="" asp-page="/Identity/RegisterAdministrador">
+                                Crear administradores
                             </a>
-
-                            <a class="nav-item align-self-start btn btn-light w-100 text-left">
-                                Chat
-                            </a>
-
-                            @*Si el usuario es el administrador jefe entonces añadimos una opcion al menu para administrar administradores*@
-                            @if (User.IsInRole(Constantes.NombreRolAdministradorjefe))
-                            {
-                                <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-page="/Buscador/Buscador" asp-route-tipoBuscador="@Constantes.NombreBuscadorAdministradores">
-                                    Buscar administradores
-                                </a>
-
-                                <a class="nav-item align-self-start btn btn-light w-100 text-left" asp-area="" asp-page="/Identity/RegisterAdministrador">
-                                    Crear administradores
-                                </a>
-                            }
-                        </nav>
-                        
-                        @*Contenido actual*@
-                        <div class="col-9">
-                            @RenderBody()
-                        </div>
+                        }
+                    </nav>
+         
+                    @*Contenido actual*@
+                    <div class="col-9 h-100">
+                        @RenderBody()
                     </div>
                 </div>
-            }
-            else
-            {
-                @RenderBody()
-            }
-        </main>
-    </div>
+            </div>
+        }
+        else
+        {
+            @RenderBody()
+        }
+    </main>
+</div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - ComunaHealth - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
