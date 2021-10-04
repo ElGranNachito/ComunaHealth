@@ -69,17 +69,6 @@ namespace ComunaHealth.Data
             
             // Medico:
 
-            // - Medico Cita:
-            modelBuilder.Entity<TICitaMedico>().HasKey(e => new { e.IdMedico, e.IdCita});
-
-            modelBuilder.Entity<TICitaMedico>()
-                .HasOne(i => i.Cita);
-
-            modelBuilder.Entity<TICitaMedico>()
-                .HasOne(i => i.Medico)
-                .WithMany(p => p.Citas)
-                .HasForeignKey(ip => ip.IdMedico);
-
             // - Medico ContenedorEntrada:
             modelBuilder.Entity<TIMedicoContenedorEntrada>().HasKey(e => new { e.IdMedico, e.IdEntrada});
 
@@ -104,17 +93,6 @@ namespace ComunaHealth.Data
 
 
 			// Paciente:
-
-            // - Paciente Cita:
-            modelBuilder.Entity<TICitaPaciente>().HasKey(e => new { e.IdPaciente, e.IdCita});
-
-            modelBuilder.Entity<TICitaPaciente>()
-                .HasOne(i => i.Cita);
-
-            modelBuilder.Entity<TICitaPaciente>()
-                .HasOne(i => i.Paciente)
-                .WithMany(p => p.Citas)
-                .HasForeignKey(ip => ip.IdPaciente);
 
             // - Paciente ContenedorEntrada (Diario):
             modelBuilder.Entity<TIPacienteContenedorEntrada>().HasKey(e => new { e.IdPaciente, e.IdContenedorEntrada});
@@ -151,17 +129,6 @@ namespace ComunaHealth.Data
 
 
 			// Cita:
-
-			// - Cita Medico:
-            modelBuilder.Entity<TICitaMedico>().HasKey(e => new { e.IdCita, e.IdMedico});
-
-            modelBuilder.Entity<TICitaMedico>()
-                .HasOne(i => i.Medico);
-
-            modelBuilder.Entity<TICitaMedico>()
-                .HasOne(i => i.Cita)
-                .WithOne(p => p.Medico)
-                .HasForeignKey<TICitaMedico>(ip => ip.IdCita);
 
             // - Cita SolicitudPostergacion:
             modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>().HasKey(e => new { e.IdCita, e.IdSolicitudCambioHorarioDeCita});

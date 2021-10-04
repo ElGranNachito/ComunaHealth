@@ -36,7 +36,7 @@ namespace ComunaHealth.Modelos
 		/// <summary>
 		/// Citas con sus pacientes.
 		/// </summary>
-        public List<TICitaMedico> Citas { get; set; } = new List<TICitaMedico>();
+        public List<ModeloCita> Citas { get; set; } = new List<ModeloCita>();
 
 		/// <summary>
 		/// Especializaciones del medico

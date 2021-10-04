@@ -23,24 +23,4 @@ namespace ComunaHealth.Relaciones
         public ModeloSolicitudCambioHorarioDeCita SolicitudCambioHorarioDeCita { get; set; }
     }
 
-    /// <summary>
-    /// Representa una relacion de un <see cref="ModeloMedico"/> con la <see cref="ModeloCita"/> que tenga apuntada
-    /// </summary>
-    public class TICitaMedico : TICita
-    {
-        [ForeignKey(nameof(Medico))]
-        public int IdMedico { get; set; }
-        public ModeloMedico Medico { get; set; }
-    }
-
-    /// <summary>
-    /// Representa una relacion de un <see cref="ModeloPaciente"/> con la <see cref="ModeloCita"/> que tenga reservada
-    /// </summary>
-    public class TICitaPaciente : TICita
-    {
-        [ForeignKey(nameof(Paciente))]
-        public int IdPaciente { get; set; }
-        public ModeloPaciente Paciente { get; set; }
-    }
-
 }
