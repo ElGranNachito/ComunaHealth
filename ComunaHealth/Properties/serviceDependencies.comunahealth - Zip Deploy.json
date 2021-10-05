@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "mssql3": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/comunahealth/databases/ComunaHealthDb",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:AzureConnection",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}

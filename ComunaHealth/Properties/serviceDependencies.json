@@ -10,6 +10,10 @@
     "mssql2": {
       "type": "mssql",
       "connectionId": "ComunaHealthAzureDb"
+    },
+    "mssql3": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:AzureConnection"
     }
   }
 }

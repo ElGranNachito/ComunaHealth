@@ -30,9 +30,12 @@ namespace ComunaHealth
         {
             if (Environment.IsDevelopment())
             {
+                //services.AddDbContext<ComunaDbContext>(options =>
+                //options.UseSqlServer(
+                //    Configuration.GetConnectionString("DefaultConnection")));
                 services.AddDbContext<ComunaDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("AzureConnection")));
             }
             else
             {
@@ -124,8 +127,8 @@ namespace ComunaHealth
                 endpoints.MapRazorPages();
             });
 
-            CrearRolesSiNoExisten(servicios.GetRequiredService<RoleManager<ModeloRol>>(), servicios.GetRequiredService<UserManager<ModeloUsuario>>()).Wait();
             CrearBaseDeDatos(servicios).Wait();
+            CrearRolesSiNoExisten(servicios.GetRequiredService<RoleManager<ModeloRol>>(), servicios.GetRequiredService<UserManager<ModeloUsuario>>()).Wait();
             CrearAdministradorJefeSiNoExiste(servicios).Wait();
         }
 
@@ -163,8 +166,8 @@ namespace ComunaHealth
         private async Task CrearBaseDeDatos(IServiceProvider servicios)
         {
 	        await using (var context = servicios.CreateScope().ServiceProvider.GetRequiredService<ComunaDbContext>())
-	        {
-		        await context.Database.MigrateAsync();
+            {
+                await context.Database.MigrateAsync();
 	        }
         }
 
