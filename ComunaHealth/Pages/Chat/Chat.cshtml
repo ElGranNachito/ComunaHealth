@@ -65,17 +65,9 @@
             <div >
 
                 @*Mensajes*@
-<<<<<<< Updated upstream
-                <div class="d-flex flex-column" id="mensajes" style="overflow-scrolling: auto; overflow: auto; overflow-x: hidden; position: absolute; width: 95%; height: 90%; direction: rtl">
+                <div class="d-flex flex-column justify-content-end" id="mensajes" style=" overflow: scroll; overflow-x: hidden; position: absolute; width: 95%; height: 90%; direction:rtl;">
 
                     <partial name="_MensajesChat"/>
-=======
-                <div class="d-flex flex-column justify-content-end" id="mensajes" style=" overflow: scroll; overflow-x: hidden; position: absolute; width: 95%; height: 90%; direction:rtl;">
-                    
-                    <div style="direction: ltr">
-                        <partial name="_MensajesChat" />
-                    </div>
->>>>>>> Stashed changes
 
                 </div>
 
@@ -97,7 +89,7 @@
                     <input type="hidden" id="idChatActual" name="idChatActual"/>
                     
                     @*Boton enviar*@
-                    <button disabled="disabled" type="submit" title="Mensaje" class="align-self-center btn btn-primary" id="botonEnviar" onclick="EnviarMensaje(event, formEnviarMensaje);">
+                    <button disabled="disabled" type="submit" title="Mensaje" class="align-self-end btn btn-primary mb-2" id="botonEnviar" onclick="EnviarMensaje(event, formEnviarMensaje);">
                         <i class="fas fa-paper-plane"></i>
                     </button>
 
@@ -163,13 +155,16 @@
                 conexionSignalR.on("RecibirMensaje",
 
                     @*Cuando recibamos un mensaje...*@
-                    function (contenidoMensaje, fechaMensaje, nombreUsuario, idUsuario) {
+                    function (guidChat, contenidoMensaje, fechaMensaje, nombreUsuario, idUsuario) {
 
-                        @*Lo añadimos a la lista de mensajes*@
-                        AñadirMensaje(contenidoMensaje, fechaMensaje, nombreUsuario, idUsuario == idUsuarioActual);
+                        if (guidChat == guidChatActual) {
 
-                        @*Hacemos scroll al fondo de la lista de mensajes*@
-                        $('#mensajes').scrollTop($('#mensajes').prop('scrollHeight'));
+                            @* Lo añadimos a la lista de mensajes *@
+                            AñadirMensaje(contenidoMensaje, fechaMensaje, nombreUsuario, idUsuario == idUsuarioActual);
+
+                            @* Hacemos scroll al fondo de la lista de mensajes *@
+                            $('#mensajes').scrollTop($('#mensajes').prop('scrollHeight'));
+                        }                     
                     });
 
                 @*Habilitamos el boton de enviar mensaje*@
@@ -187,8 +182,6 @@
             @*Obtenemos la guid del nuevo chat*@
             guidChatActual = $('#' + form)[0]["idChat"].value;
             $('#idChatActual').val(guidChatActual);
-
-            console.log(guidChatActual);
 
             @*Enviamos la solicitud de listar los mensajes del chat al servidor*@
             $.ajax({

@@ -26,7 +26,7 @@ namespace ComunaHealth.Hubs
 
 		public async Task EnviarMensaje(string guidChat, string mensaje)
 		{
-			await Clients.Group(guidChat).SendAsync("RecibirMensaje", mensaje, DateTime.UtcNow.ToString("d"), _userManager.GetUserName(Context.User),_userManager.GetUserId(Context.User));
+			await Clients.Group(guidChat).SendAsync("RecibirMensaje", guidChat, mensaje, DateTime.UtcNow.ToString("d"), _userManager.GetUserName(Context.User),_userManager.GetUserId(Context.User));
 		}
 
 		public override async Task OnDisconnectedAsync(Exception? exception)

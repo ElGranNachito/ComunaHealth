@@ -5,11 +5,7 @@
     @*Form busqueda paciente*@
     <form method="post"
           class="d-flex flex-column justify-content-start align-top w-75"
-          data-ajax="true"
-          data-ajax-method="post"
-          data-ajax-mode="replace"
-          data-ajax-update="#buscador"
-          data-ajax-url="Buscador?handler=BuscarPacientes">
+          id="formBuscar">
 
         @*Nombre del paciente buscado*@
         <div class="form-group">
@@ -25,7 +21,7 @@
 
         @*Boton buscar*@
         <div class="form-group">
-            <input type="submit" class="btn btn-light" value="Buscar">
+            <input type="submit" class="btn btn-light" value="Buscar" onclick="Buscar(event, formBuscar, 'BuscarPacientes')">
         </div>
     </form>
 

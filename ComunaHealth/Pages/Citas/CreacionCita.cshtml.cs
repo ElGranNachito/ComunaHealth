@@ -38,19 +38,22 @@ namespace ComunaHealth.Pages.Citas
                 return Page();
 
             if(!int.TryParse(DuracionMinutos, out var duracionParseada))
-                ModelState.AddModelError("Cita.Duracion", "Duracion solo puede contener caracteres numericos");
+                ModelState.AddModelError(nameof(DuracionMinutos), "Duracion solo puede contener caracteres numericos");
 
             if(ModelState.ErrorCount > 0)
                 return Page();
 
             //Obtenemos al usuario medico actual.
             var usuarioMedico = (ModeloMedico) ((ModeloUsuarioNoAdministrador) await _userManager.GetUserAsync(User));
+            
+            //Obenermos al usuario paciente al que se le decide crear la cita.
+            var usuarioPaciente = usuarioMedico.Pacientes.Single(p => p.Id == PacienteId);
 
             //Creamos la nueva cita.
             ModeloCita nuevaCita = new ModeloCita
             {
                 Medico              = usuarioMedico,
-                Paciente            = usuarioMedico.Pacientes.Single(p => p.Id == PacienteId),
+                Paciente            = usuarioPaciente,
                 EspecializacionCita = Especializacion,
                 Fecha               = Fecha,
                 Duracion            = int.Parse(DuracionMinutos),
@@ -63,6 +66,7 @@ namespace ComunaHealth.Pages.Citas
                 _dbcontext.Attach(nuevaCita).State = EntityState.Added;
 
                 usuarioMedico.Citas.Add(nuevaCita);
+                usuarioPaciente.Citas.Add(nuevaCita);
 
                 await _dbcontext.SaveChangesAsync();
             }

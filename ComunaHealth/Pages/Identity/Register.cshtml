@@ -147,7 +147,7 @@
             <div class="form-group">
 
                 <label asp-for="RegistroDatosGenerales.TipoCuenta"></label>
-                <select asp-for="RegistroDatosGenerales.TipoCuenta" asp-items="@Model.TiposDeCuentaDisponibles" onchange="TipoDeUsuarioCambio(this.selectedIndex);" class="custom-select"></select>
+                <select asp-for="RegistroDatosGenerales.TipoCuenta" asp-items="@Model.TiposDeCuentaDisponibles" onchange="TipoDeUsuarioCambio(this.selectedIndex);" class="custom-select" id="selectTipoUsuario"></select>
 
                 @Html.ValidationMessageFor(m => m.RegistroDatosGenerales.TipoCuenta, "", new { @class = "text-danger" })
             </div>
@@ -218,8 +218,6 @@
                         $('#inputMatricula').removeClass("collapse");
                         $('#selectEspecializaciones').removeClass("collapse");
                     }
-
-                    console.log(nuevoIndiceSeleccionado);
                 }
 
                 $('#inputAnversoDNI').on('change', archivoSeleccionadoHandler);

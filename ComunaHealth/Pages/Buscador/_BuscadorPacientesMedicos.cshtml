@@ -3,20 +3,17 @@
 <div class="container d-flex flex-column">
 
     <div class="form-group">
+        <label asp-for="TipoBuscador"></label>
 
-        <div class="form-group">
-            <label asp-for="TipoBuscador"></label>
+        <!--Tipo de cuenta buscada-->
+        <select class="custom-select btn btn-light"
+                id="selectTipoBuscador"
+                asp-for="TipoBuscador"
+                asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(new[] {ETipoCuenta.Administrador, ETipoCuenta.AdministradorJefe, ETipoCuenta.NINGUNO}))"
+                onchange="ActualizarBuscador()">
+        </select>
 
-            <!--Tipo de cuenta buscada-->
-            <select class="custom-select btn btn-light"
-                    id="selectTipoBuscador"
-                    asp-for="TipoBuscador"
-                    asp-items="@EnumHelpers.ToSelectListItemList(EnumHelpers.ObtenerValores<ETipoCuenta>(new[] {ETipoCuenta.Administrador, ETipoCuenta.AdministradorJefe, ETipoCuenta.NINGUNO}))"
-                    onchange="ActualizarBuscador()">
-            </select>
-
-            @Html.ValidationMessageFor(m => m.TipoBuscador, "", new { @class = "text-danger" })
-        </div>
+        @Html.ValidationMessageFor(m => m.TipoBuscador, "", new { @class = "text-danger" })
     </div>
 
     <div class="buscador">

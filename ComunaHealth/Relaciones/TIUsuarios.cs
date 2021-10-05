@@ -24,16 +24,6 @@ namespace ComunaHealth.Relaciones
     }
 
     /// <summary>
-    /// Representa una relacion de un <see cref="ModeloUsuarioNoAdministrador"/> con la <see cref="ModeloSolicitudCambioHorarioDeCita"/> que tenga pendiente
-    /// </summary>
-    public class TIUsuarioNoAdministradorSolicitudCambioHorarioCita : TIUsuarioNoAdministrador
-    {
-        [ForeignKey(nameof(SolicitudPostergacionCita))]
-        public int IdSolicitudPostergacionCita { get; set; }
-        public ModeloSolicitudCambioHorarioDeCita SolicitudPostergacionCita { get; set; }
-    }
-
-    /// <summary>
     /// Representa una relacion de un <see cref="ModeloUsuarioNoAdministrador"/> con un <see cref="ModeloMensajeChat"/> que haya remitido.
     /// </summary>
     public class TIUsuarioNoAdministradorMensajeChat : TIUsuarioNoAdministrador
