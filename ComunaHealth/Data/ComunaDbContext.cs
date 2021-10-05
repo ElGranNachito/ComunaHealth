@@ -127,44 +127,10 @@ namespace ComunaHealth.Data
                 .WithMany(p => p.HistorialMedico)
                 .HasForeignKey(ip => ip.IdPaciente);
 
+            // Cita:
 
-			// Cita:
-
-            // - Cita SolicitudPostergacion:
-            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>().HasKey(e => new { e.IdCita, e.IdSolicitudCambioHorarioDeCita});
-
-            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
-                .HasOne(i => i.SolicitudCambioHorarioDeCita);
-
-            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
-                .HasOne(i => i.Cita)
-                .WithOne(p => p.SolicitudCambioHorario)
-                .HasForeignKey<TICitaSolicitudCambioHorarioCita>(ip => ip.IdCita);
-
-
-            // SolicitudPostergacionDeCita: 
-
-            // - SolicitudPostergacion UsuarioNoAdministrador:
-            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>().HasKey(e => new { e.IdSolicitudPostergacionCita, e.IdUsuarioNoAdministrador });
-
-            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>()
-                .HasOne(i => i.UsuarioNoAdministrador);
-
-            modelBuilder.Entity<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>()
-                .HasOne(i => i.SolicitudPostergacionCita)
-                .WithOne(p => p.Solicitante)
-                .HasForeignKey<TIUsuarioNoAdministradorSolicitudCambioHorarioCita>(ip => ip.IdSolicitudPostergacionCita);
-
-            // - SolicitudPostergacion Cita:
-            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>().HasKey(e => new { e.IdSolicitudCambioHorarioDeCita, e.IdCita});
-
-            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
-                .HasOne(i => i.Cita);
-
-            modelBuilder.Entity<TICitaSolicitudCambioHorarioCita>()
-                .HasOne(i => i.SolicitudCambioHorarioDeCita)
-                .WithOne(p => p.Cita)
-                .HasForeignKey<TICitaSolicitudCambioHorarioCita>(ip => ip.IdSolicitudCambioHorarioDeCita);
-		}
+            modelBuilder.Entity<ModeloSolicitudCambioHorarioDeCita>().HasOne(s => s.Cita).WithOne(c => c.SolicitudCambioHorario);
+            modelBuilder.Entity<ModeloSolicitudCambioHorarioDeCita>().HasOne(s => s.Solicitante);
+        }
     }
 }

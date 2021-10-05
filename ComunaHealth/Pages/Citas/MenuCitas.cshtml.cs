@@ -35,7 +35,7 @@ namespace ComunaHealth.Pages.Citas
         /// <summary>
         /// Cita que el usuario selecciona para mostrar en la vista _InformacionCita>
         /// </summary>
-        public ModeloCita CitaSeleccionada { get; set; }
+        public ModeloCita CitaSeleccionada { get; set; } = null;
 
         /// <summary>
         /// Constructor del modelo.
@@ -61,6 +61,17 @@ namespace ComunaHealth.Pages.Citas
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostVerInformacionCita()
         {
+            if (await _userManager.GetUserAsync(User) is ModeloMedico usuarioMedicoActual && 
+                User.IsInRole(Constantes.NombreRolMedico))
+            {
+                CitaSeleccionada = usuarioMedicoActual.Citas.Single(p => p.Id == Request.Form["idCita"]);
+            }
+            else if (await _userManager.GetUserAsync(User) is ModeloPaciente usuarioPacienteActual && 
+                User.IsInRole(Constantes.NombreRolPaciente))
+            {
+                CitaSeleccionada = usuarioPacienteActual.Citas.Single(p => p.Id == Request.Form["idCita"]);
+            }
+
             return Partial("_InformacionCita", this);
         }
     }

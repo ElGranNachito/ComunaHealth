@@ -38,7 +38,7 @@ namespace ComunaHealth.Pages.Citas
                 return Page();
 
             if(!int.TryParse(DuracionMinutos, out var duracionParseada))
-                ModelState.AddModelError("Cita.Duracion", "Duracion solo puede contener caracteres numericos");
+                ModelState.AddModelError(nameof(DuracionMinutos), "Duracion solo puede contener caracteres numericos");
 
             if(ModelState.ErrorCount > 0)
                 return Page();

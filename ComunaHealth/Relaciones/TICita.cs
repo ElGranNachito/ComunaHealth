@@ -16,11 +16,11 @@ namespace ComunaHealth.Relaciones
     /// <summary>
     /// Representa una relacion de una <see cref="ModeloSolicitudCambioHorarioDeCita"/> con la <see cref="ModeloCita"/> a postergar.
     /// </summary>
-    public class TICitaSolicitudCambioHorarioCita : TICita
-    {
-        [ForeignKey(nameof(SolicitudCambioHorarioDeCita))]
-        public int IdSolicitudCambioHorarioDeCita { get; set; }
-        public ModeloSolicitudCambioHorarioDeCita SolicitudCambioHorarioDeCita { get; set; }
-    }
+    //public class TICitaSolicitudCambioHorarioCita : TICita
+    //{
+    //    [ForeignKey(nameof(SolicitudCambioHorarioDeCita))]
+    //    public int IdSolicitudCambioHorarioDeCita { get; set; }
+    //    public ModeloSolicitudCambioHorarioDeCita SolicitudCambioHorarioDeCita { get; set; }
+    //}
 
 }

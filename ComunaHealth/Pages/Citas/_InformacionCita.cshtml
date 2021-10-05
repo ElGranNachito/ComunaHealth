@@ -6,22 +6,40 @@
 @{
     <div class="container p-3 border border-warning rounded">
 
-        <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
+        @if (Model.CitaSeleccionada != null)
+        {
+            <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
 
-            <div class="d-flex flex-column">
-                <label class="text-left">Medico: @Model.CitaSeleccionada.Medico.UserName</label>
-                <label class="text-left">Paciente: @Model.CitaSeleccionada.Paciente.UserName</label>
-                <label class="text-left">Especializacion: @Model.CitaSeleccionada.EspecializacionCita</label>
-                <label class="text-left">Fecha: @Model.CitaSeleccionada.Fecha</label>
-                <label class="text-left">Duracion: @Model.CitaSeleccionada.Duracion</label>
-                <label class="text-left">Descripcion: @Model.CitaSeleccionada.Descripcion</label>
+                <div class="d-flex flex-column">
+                    <label class="text-left">Medico: @Model.CitaSeleccionada.Medico.UserName</label>
+                    <label class="text-left">Paciente: @Model.CitaSeleccionada.Paciente.UserName</label>
+                    <label class="text-left">Especializacion: @Model.CitaSeleccionada.EspecializacionCita</label>
+                    <label class="text-left">Fecha: @Model.CitaSeleccionada.Fecha</label>
+                    <label class="text-left">Duracion: @Model.CitaSeleccionada.Duracion</label>
+                    <label class="text-left">Descripcion: @Model.CitaSeleccionada.Descripcion</label>
+                </div>
+
+                <div class="float-right">
+                    <a class="form-text btn btn-primary" asp-page="SolicitarCambioDeHorario" asp-route-idCita=@Model.CitaSeleccionada.Id>Solicitar cambio de horario</a>
+                </div>
+
             </div>
+        }
+        else
+        {
+            <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
 
-            <div class="float-right">
-                <a class="form-text btn btn-primary" asp-page="SolicitarCambioDeHorario">Solicitar cambio de horario</a>
+                <div class="d-flex flex-column">
+                    <label class="text-left text-danger">Medico: ???</label>
+                    <label class="text-left text-danger">Paciente: ???</label>
+                    <label class="text-left text-danger">Especializacion: ???</label>
+                    <label class="text-left text-danger">Fecha: ???</label>
+                    <label class="text-left text-danger">Duracion: ???</label>
+                    <label class="text-left text-danger">Descripcion: ???</label>
+                </div>
+
             </div>
-
-        </div>
+        }
 
     </div>
 }
