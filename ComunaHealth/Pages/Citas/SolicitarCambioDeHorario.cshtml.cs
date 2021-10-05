@@ -51,11 +51,11 @@ namespace ComunaHealth.Pages.Citas
             //Creamos la nueva cita.
             ModeloSolicitudCambioHorarioDeCita modeloSolicitudCambioHorarioDeCita = new ModeloSolicitudCambioHorarioDeCita
             {
-                Solicitante = usuarioSolicitante,
-                Cita = User.IsInRole(Constantes.NombreRolMedico) ? ((ModeloMedico)usuarioSolicitante).Citas.Select(p => p.Id == CitaId),
-                NuevaFecha = NuevaFecha,
-                NuevaDuracion = int.Parse(NuevaDuracion),
-                Razon = Razon
+                //Solicitante = usuarioSolicitante,
+                //Cita = User.IsInRole(Constantes.NombreRolMedico) ? ((ModeloMedico)usuarioSolicitante).Citas.Select(p => p.Id == CitaId),
+                //NuevaFecha = NuevaFecha,
+                //NuevaDuracion = int.Parse(NuevaDuracion),
+                //Razon = Razon
             };
 
             //Intentamos crear la cita y guardarla en la base de datos
@@ -69,9 +69,9 @@ namespace ComunaHealth.Pages.Citas
             }
             catch (Exception ex)
             {
-                //Si la cita ya se guardo en la base de datos, la borramos ya que fallo en los pasos anteriores.
-                if (nuevaCita.Id != 0)
-                    _dbcontext.Remove(nuevaCita);
+                ////Si la cita ya se guardo en la base de datos, la borramos ya que fallo en los pasos anteriores.
+                //if (nuevaCita.Id != 0)
+                //    _dbcontext.Remove(nuevaCita);
 
                 await _dbcontext.SaveChangesAsync();
 

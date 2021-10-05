@@ -65,9 +65,11 @@
             <div >
 
                 @*Mensajes*@
-                <div class="d-flex flex-column justify-content-end" id="mensajes" style=" overflow: scroll; overflow-x: hidden; position: absolute; width: 95%; height: 90%; direction:rtl;">
-
-                    <partial name="_MensajesChat"/>
+                <div class="d-flex flex-column " id="scrollMensajes" style=" overflow: scroll; overflow-x: hidden; position: absolute; width: 95%; height: 90%; direction:rtl;">
+                    
+                    <div class="d-flex flex-column justify-content-end" style="direction: ltr;" id="mensajes">
+                        <partial name="_MensajesChat" />
+                    </div>
 
                 </div>
 
@@ -163,7 +165,7 @@
                             AñadirMensaje(contenidoMensaje, fechaMensaje, nombreUsuario, idUsuario == idUsuarioActual);
 
                             @* Hacemos scroll al fondo de la lista de mensajes *@
-                            $('#mensajes').scrollTop($('#mensajes').prop('scrollHeight'));
+                            $('#scrollMensajes').scrollTop($('#scrollMensajes').prop('scrollHeight'));
                         }                     
                     });
 

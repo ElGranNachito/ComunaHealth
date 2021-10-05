@@ -5,7 +5,6 @@
 
 @inject UserManager<ModeloUsuario> UserManager
 @inject ComunaDbContext DbContext
-
 @*Si no hay chat actual nos pegamos la vuelta*@
 @if (Model.chatActual == null)
 {
@@ -21,27 +20,27 @@
     @*Si el remitente de este mensaje es el usuario actual...*@
     @if (mensajeActual.Remitente.Id.ToString() == UserManager.GetUserId(User))
     {
-        <div class="align-self-start d-flex my-2" style="max-width: 40%;">
-            <div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;">
-                <p>:@mensaje.Remitente.UserName</p>
-                <span>@mensaje.Contenido</span>
-            </div>
-            <div class="align-self-end ml-2">
-                @mensaje.FechaDeCreacion.ToLocalTime().ToString("d")
-            </div>
-        </div>
-    }
-    @*Si no lo es...*@
-    else
-    {
         <div class="align-self-end d-flex my-2" style="max-width: 40%;">
 
             <div class="align-self-end mr-2">
                 @mensaje.FechaDeCreacion.ToLocalTime().ToString("d")
             </div>
             <div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;">
-                <p>:@mensaje.Remitente.UserName</p>
+                <p>@mensaje.Remitente.UserName:</p>
                 <span>@mensaje.Contenido</span>
+            </div>
+        </div>
+    }
+    @*Si no lo es...*@
+    else
+    {
+        <div class="align-self-start d-flex my-2" style="max-width: 40%;">
+            <div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;">
+                <p>@mensaje.Remitente.UserName:</p>
+                <span>@mensaje.Contenido</span>
+            </div>
+            <div class="align-self-end ml-2">
+                @mensaje.FechaDeCreacion.ToLocalTime().ToString("d")
             </div>
         </div>
     }
@@ -55,9 +54,9 @@
         console.log("Mensaje añadido");
 
         if (esDeEsteUsuario) {
-            $('#mensajes').append('<div class="align-self-start d-flex my-2" style="max-width: 40%;"><div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</P><span>' + contenido + '</span></div><div class="align-self-end ml-2">' + fecha + '</div></div>');
+            $('#mensajes').append('<div class="align-self-end d-flex my-2" style="max-width: 40%;"><div class="align-self-end mr-2">' + fecha + '</div><div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;"><p>' + remitente + ':</p><span>' + contenido + '</span></div></div>');
         } else {
-            $('#mensajes').append('<div class="align-self-end d-flex my-2" style="max-width: 40%;"><div class="align-self-end mr-2">' + fecha + '</div><div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</p><span>' + contenido + '</span></div></div>');
+            $('#mensajes').append('<div class="align-self-start d-flex my-2" style="max-width: 40%;"><div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;"><p>' + remitente + ':</P><span>' + contenido + '</span></div><div class="align-self-end ml-2">' + fecha + '</div></div>');
         }
     }
 </script>

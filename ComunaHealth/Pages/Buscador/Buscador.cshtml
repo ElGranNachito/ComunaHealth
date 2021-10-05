@@ -44,8 +44,6 @@
 
         <script type="text/javascript">
 
-            $(".selectpicker").selectpicker();
-
             function Buscar(evento, form, nombreHandler) {
 
                 console.log(form);
@@ -60,7 +58,9 @@
                     data: $(form).serialize(),
                     url: "Buscador?handler=" + nombreHandler,
                     beforesend: function (xhr) { xhr.setRequestHeader("RequestValidationToken", $('input:hidden[name=__RequestVerificationToken]').val()); },
-                    success: function (respuesta) { $(form.parentNode).html(respuesta); }
+                    success: function(respuesta) {
+                         $(form.parentNode).html(respuesta); $(".selectpicker").selectpicker();
+                    }
                 });
             }
         </script>
