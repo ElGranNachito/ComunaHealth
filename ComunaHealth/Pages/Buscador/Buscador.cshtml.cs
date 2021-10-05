@@ -292,12 +292,17 @@ namespace ComunaHealth.Pages
 			if (!int.TryParse(Request.Form["ID"], out int idParseada))
 				return new JsonResult("Algo salio mal");
 
-			var usuarioActual = await _userManager.GetUserAsync(User);
+			var idUsuario = _userManager.GetUserId(User);
+
+			var usuarioActual = await _dbcontext.Users.Where(u => u.Id.ToString() == idUsuario).Include(u => u.Chats).FirstOrDefaultAsync();
+
+			var chatsUsuarioActual = await _dbcontext.Chats.Include(c => c.Participantes).Where(c => c.Participantes.Any(p => p.Id == usuarioActual.Id)).ToListAsync();
 
 			if(usuarioActual == null)
 				return new JsonResult("Algo salio mal");
 
-			if(usuarioActual.Chats.Any(m => m.Participantes.Any(p => p.Id == idParseada)))
+			//Si ya existe un chat entre los usuarios entonces lo mandamos directamente al chat
+			if(chatsUsuarioActual.Any(m => m.Participantes.Any(p => p.Id == idParseada)))
 				return RedirectToPage("/Chat/Chat");
 
 			var otroUsuario = await _dbcontext.Users.FirstOrDefaultAsync(u => u.Id == idParseada);

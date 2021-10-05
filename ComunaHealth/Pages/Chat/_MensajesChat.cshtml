@@ -24,7 +24,7 @@
         <div class="align-self-start d-flex my-2" style="max-width: 40%;">
             <div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;">
                 <p>:@mensaje.Remitente.UserName</p>
-                <span style="overflow-wrap: break-word; max-width: 100%;">@mensaje.Contenido</span>
+                <span>@mensaje.Contenido</span>
             </div>
             <div class="align-self-end ml-2">
                 @mensaje.FechaDeCreacion.ToLocalTime().ToString("d")
@@ -39,7 +39,7 @@
             <div class="align-self-end mr-2">
                 @mensaje.FechaDeCreacion.ToLocalTime().ToString("d")
             </div>
-            <div class="p-2" style="overflow-wrap: break-word; background: aqua;">
+            <div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;">
                 <p>:@mensaje.Remitente.UserName</p>
                 <span>@mensaje.Contenido</span>
             </div>
@@ -55,9 +55,9 @@
         console.log("Mensaje añadido");
 
         if (esDeEsteUsuario) {
-            $('#mensajes').append('<div class="align-self-start d-flex my-2" style="max-width: 40%;"><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</P><span>' + contenido + '</span></div><div class="align-self-end ml-2">' + fecha + '</div></div>');
+            $('#mensajes').append('<div class="align-self-start d-flex my-2" style="max-width: 40%;"><div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</P><span>' + contenido + '</span></div><div class="align-self-end ml-2">' + fecha + '</div></div>');
         } else {
-            $('#mensajes').append('<div class="align-self-end d-flex my-2" style="max-width: 40%;"><div class="align-self-end mr-2">' + fecha + '</div><div class="p-2" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</p><span>' + contenido + '</span></div></div>');
+            $('#mensajes').append('<div class="align-self-end d-flex my-2" style="max-width: 40%;"><div class="align-self-end mr-2">' + fecha + '</div><div class="p-2 w-100" style="overflow-wrap: break-word; background: aqua;"><p>:' + remitente + '</p><span>' + contenido + '</span></div></div>');
         }
     }
 </script>
