@@ -30,12 +30,16 @@
             <div class="pl-4 pr-4 d-flex flex-row border border-primary rounded-pill">
 
                 <div class="d-flex flex-column">
-                    <label class="text-left text-danger">Medico: ???</label>
-                    <label class="text-left text-danger">Paciente: ???</label>
-                    <label class="text-left text-danger">Especializacion: ???</label>
-                    <label class="text-left text-danger">Fecha: ???</label>
-                    <label class="text-left text-danger">Duracion: ???</label>
-                    <label class="text-left text-danger">Descripcion: ???</label>
+                    <label class="text-left text-danger">Medico: Juan Rodrigez</label>
+                    <label class="text-left text-danger">Paciente: John Rodrik</label>
+                    <label class="text-left text-danger">Especializacion: @EEspecializacion.Dermatologo</label>
+                    <label class="text-left text-danger">Fecha: @DateTimeOffset.Now</label>
+                    <label class="text-left text-danger">Duracion: 60 minutos</label>
+                    <label class="text-left text-danger">Descripcion: Problemas de acne.</label>
+                </div>
+                
+                <div class="float-right">
+                    <a class="form-text btn btn-primary" asp-page="SolicitarCambioDeHorario" asp-route-idCita="1">Solicitar cambio de horario</a>
                 </div>
 
             </div>

@@ -1,5 +1,53 @@
 ﻿@page
 @model ComunaHealth.Pages.Citas.SolicitarCambioDeHorario
 @{
+    <div class="container p-3 border border-warning rounded">
 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div>
+            <h4 class="text-left">Nueva cita:</h4>
+        </div>
+
+        <form method="post"
+              enctype="multipart/form-data"
+              data-ajax="true"
+              data-ajax-method="post"
+              data-ajax-url="SolicitarCambioDeHorario">
+
+            <!--Seleccion de nueva fecha y horario propuestos para la cita-->
+            <div class="form-group">
+
+                <label asp-for="NuevaDuracion"></label>
+                <div>
+                    <input asp-for="NuevaDuracion" class="form-control" value="@DateTimeOffset.Now" />
+                </div>
+
+            </div>
+
+            <!--Nueva duracion propuesta para la cita-->
+            <div class="form-group">
+
+                <label asp-for="NuevaDuracion"></label>
+                <input type="text" class="form-text" asp-for="NuevaDuracion" />
+
+                @Html.ValidationMessageFor(m => m.NuevaDuracion, "", new { @class = "text-danger" })
+
+            </div>
+
+            <!--Razon u motivo del cambio de horario de la cita-->
+            <div class="form-group">
+
+                <label asp-for="Razon"></label>
+                <textarea class="form-text overflow-auto w-100" asp-for="Razon"></textarea>
+
+            </div>
+
+            <!--Boton submit-->
+            <div class="form-group mt-4">
+                <input type="submit" value="Confirmar" class="form-text btn btn-primary" />
+            </div>
+        </form>
+
+    </div>
 }
