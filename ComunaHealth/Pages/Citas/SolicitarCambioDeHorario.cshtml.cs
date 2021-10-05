@@ -21,6 +21,10 @@ namespace ComunaHealth.Pages.Citas
         private readonly ComunaDbContext _dbcontext;
         private readonly UserManager<ModeloUsuario> _userManager;
 
+        /// <summary>
+        /// Id del modelo de cita al que se le añadira la solicitud de cambio de horario.
+        /// </summary>
+        public int CitaId { get; set; }
 
         public SolicitarCambioDeHorario(ComunaDbContext dbContext, UserManager<ModeloUsuario> userManager)
         {
@@ -52,7 +56,7 @@ namespace ComunaHealth.Pages.Citas
             ModeloSolicitudCambioHorarioDeCita modeloSolicitudCambioHorarioDeCita = new ModeloSolicitudCambioHorarioDeCita
             {
                 Solicitante = usuarioSolicitante,
-                Cita = User.IsInRole(Constantes.NombreRolMedico) ? ((ModeloMedico)usuarioSolicitante).Citas.Select(p => p.Id == CitaId),
+                Cita = User.IsInRole(Constantes.NombreRolMedico) ? ((ModeloMedico)usuarioSolicitante).Citas.Single(p => p.Id == CitaId) : ((ModeloPaciente)usuarioSolicitante).Citas.Single(p => p.Id == CitaId),
                 NuevaFecha = NuevaFecha,
                 NuevaDuracion = int.Parse(NuevaDuracion),
                 Razon = Razon
@@ -63,15 +67,18 @@ namespace ComunaHealth.Pages.Citas
             {
                 _dbcontext.Attach(modeloSolicitudCambioHorarioDeCita).State = EntityState.Added;
 
-                
+                if (User.IsInRole(Constantes.NombreRolMedico))
+                    ((ModeloMedico) usuarioSolicitante).Citas.Single(p => p.Id == CitaId).SolicitudCambioHorario = modeloSolicitudCambioHorarioDeCita;
+                else if (User.IsInRole(Constantes.NombreRolPaciente))
+                    ((ModeloPaciente) usuarioSolicitante).Citas.Single(p => p.Id == CitaId).SolicitudCambioHorario = modeloSolicitudCambioHorarioDeCita;
                 
                 await _dbcontext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 //Si la cita ya se guardo en la base de datos, la borramos ya que fallo en los pasos anteriores.
-                if (nuevaCita.Id != 0)
-                    _dbcontext.Remove(nuevaCita);
+                if (modeloSolicitudCambioHorarioDeCita.Id != 0)
+                    _dbcontext.Remove(modeloSolicitudCambioHorarioDeCita);
 
                 await _dbcontext.SaveChangesAsync();
 
@@ -84,10 +91,6 @@ namespace ComunaHealth.Pages.Citas
 
         #region Propiedades para la creacion de la solicitud
 
-        [Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
-        [BindProperty]
-        public int CitaId { get; set; }
-
         [StringLength(500)]
         [BindProperty]
         public string Razon { get; set; }
@@ -96,7 +99,6 @@ namespace ComunaHealth.Pages.Citas
         [Display(Name = "Nueva duracion en minutos")]
         [BindProperty]
         public string NuevaDuracion { get; set; }
-
 
         [Required(ErrorMessage = Constantes.MensajeErrorEsteCampoNoPuedeQuedarVacio)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
