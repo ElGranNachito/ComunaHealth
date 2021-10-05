@@ -18,7 +18,7 @@
             <div class="ml-5 p-3 overflow-auto border border-warning rounded">
 
                 <div class="pb-3">
-                    <h4 class="text-left">Citas @Model.FiltroEstadoCitas.ToString():</h4>
+                    <h4 class="text-left">Citas:</h4>
                 </div>
 
                 @foreach (var cita in citas)
@@ -36,9 +36,11 @@
                               enctype="multipart/form-data"
                               data-ajax="true"
                               data-ajax-method="post"
-                              data-ajax-url="MenuCitas/InformacionCita"
+                              data-ajax-url="MenuCitas?handler=InformacionCita"
                               data-ajax-update="#informacionCita"
                               class="form-inline">
+
+                            <input type="hidden" name="idCita" value="@cita.Id"/>
                             
                             <div class="pl-3 mr-2 mt-4">
                                 <input type="submit" value="Mas" class="form-text btn btn-primary" />
@@ -81,9 +83,11 @@
                               enctype="multipart/form-data"
                               data-ajax="true"
                               data-ajax-method="post"
-                              data-ajax-url="MenuCitas/InformacionCita"
+                              data-ajax-url="MenuCitas?handler=InformacionCita"
                               data-ajax-update="#informacionCita"
                               class="form-inline">
+
+                            <input type="hidden" name="idCita" value="@cita.Id" />
 
                             <div class="pl-3 mr-2 mt-4">
                                 <input type="submit" value="Mas" class="form-text btn btn-primary" />

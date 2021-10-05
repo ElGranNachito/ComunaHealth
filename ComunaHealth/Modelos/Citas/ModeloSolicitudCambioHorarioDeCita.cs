@@ -1,6 +1,7 @@
 ﻿using ComunaHealth.Relaciones;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ComunaHealth.Modelos
 {
@@ -9,17 +10,20 @@ namespace ComunaHealth.Modelos
     /// </summary>
     public class ModeloSolicitudCambioHorarioDeCita : ModeloBase
     {
+        [ForeignKey(nameof(Cita))]
+        public int IdCita { get; set; }
+
         /// <summary>
         /// Usuario no administrador que solicita para postergacion de la cita.
         /// </summary>
         [Required]
-        public TIUsuarioNoAdministradorSolicitudCambioHorarioCita Solicitante { get; set; }
+        public ModeloUsuarioNoAdministrador Solicitante { get; set; }
 
         /// <summary>
         /// Cita que se pretende postergar.
         /// </summary>
         [Required]
-        public TICitaSolicitudCambioHorarioCita Cita { get; set; }
+        public ModeloCita Cita { get; set; }
 
         /// <summary>
         /// Razon de la solicitud.
